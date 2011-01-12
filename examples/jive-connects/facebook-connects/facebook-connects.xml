@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ===================================================================
+  = Facebook Authorization Example App  (Jive Connects version)
+  = Jive Software
+  = Licensed under Creative Commons
+  =
+  = Sample app to demonstrate making an oAuth connection to Facebook
+  = via the Jive Application Gateway.
+  ===================================================================
+-->
+<Module>
+    <ModulePrefs
+            title="Facebook via Jive Connects"
+            author="Jive Software"
+            title_url="http://www.jivesoftware.com"
+            description="Demonstrates using oAuth 2.0 to connect to the Facebook graph API."
+    >
+        <Link rel="icon" href="http://s3.amazonaws.com/jive/icons/facebook_16x16.png" />
+
+        <Require feature="jive-connects-1.0.0">
+            <Param name="alias:facebook|title:Facebook">jive:service://facebook.com/api?version=1</Param>
+        </Require>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="opensocial-1.0"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="views"/>
+<!--
+        <Require feature="dynamic-height" />
+        <Require feature="opensocial-1.0" />
+        <Require feature="jquery-1.4.2" />
+        <Require feature="views" />
+        <Require feature="osapi" />
+        <Require feature="jive-connects-1.0.0">
+            <Param name="alias:facebook|title:Facebook">jive:service://facebook.com/api?version=1</Param>
+        </Require>
+-->
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <style>		
+			html, body, div, span, p, pre, a, img {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				font-size: 100%;
+				font-family: inherit;
+				vertical-align: baseline;
+				}
+			.clearfix:after {/* for modern browsers */
+				clear: both;
+				content: "'";
+				display: block;
+				font-size: 0; /* fix FF bug */
+				height: 0;
+				overflow: hidden;
+				visibility: hidden;
+				}
+			.clearfix { min-height: 0; } /*IE7*/
+            body {
+                color: #575757;
+                background-color: #fdfdfd;
+                font: 13px "Helvetica Neue", Arial, Helvetica, sans-serif;
+                line-height: 1.22;
+                text-align: left;
+                }
+            .app-form > p {
+                margin-bottom: 10px;
+                position: relative;
+                }
+            .app-form > p:last-child {
+                margin-bottom: 0px;
+                }
+            .icon-header * {
+                display: inline-block;
+                white-space: normal;
+                *zoom:1; /*ie7*/
+                *display:inline; /*ie7*/
+                vertical-align: middle;
+                margin: 0 1ex 0 0;
+                float:left;
+                position: relative;
+                z-index: 1;
+                }
+            .container {
+                postion: relative;
+                margin: 10px;
+                }
+            .app-form {
+                width: 100%;
+                clear:both;
+                padding: 1px 0 0;
+                }
+            .app-form-buttons {
+                text-align: center;
+                margin: 1em 0;
+                padding: 1ex 0;
+                background: #EDEFF4;
+                }
+            .app-form-buttons button {
+                background: #627AAD;
+                border: 1px solid #444;
+                color: #fff;
+                -moz-text-shadow: 0 -1px 1px rgba(0,0,0,.2);
+                -webkit-text-shadow: 0 -1px 1px rgba(0,0,0,.2);
+                text-shadow: 0 -1px 1px rgba(0,0,0,.2);
+                font-size: 1.1em;
+                }
+            #approval > p,
+            #waiting > p {
+            	padding-left: 54px;
+            	}
+            #myprofile {
+                float: right;
+                margin: 0;
+                }
+            #myprofile * {
+                display: inline;
+                }
+            #myprofile img {
+                float: right;
+                margin: 0;
+                }
+            #main {
+                margin: 0px;
+                padding: 0px;
+                font-size: small;
+                clear: both; 
+                }
+            #friends {
+                padding: 10px 0;
+                overflow: auto;
+                }
+            #friends > div {
+                overflow: hidden;
+                padding: 5px 10px;
+                min-height: 35px;
+                }
+            #friends div h4, 
+            .friend-text {
+                margin: 0 0 0 45px;
+                }
+            #friends div img {
+                float: left;
+                padding: 0 1ex 0 3px;
+                }
+        </style>
+
+        <div class="container clearfix">
+            <div class="icon-header">
+                <img src="images/facebook_48x48.png" width="48" height="48" alt="Facebook"></img>
+                <div id="myprofile"></div>
+            </div>
+            <!-- Show one of three divs based on the authorization state we're in.  -->
+            <div id="approval" style="display: none">
+                <p>This app demonstrates performing authorization against Facebook using oAuth 2 Draft 10. Click
+                the button below to authorize access to your Facebook account for the app.</p>
+                <form method="post" action="#" onsubmit="return false;" class="app-form">
+                	<p class="app-form-buttons">
+	                	<button id="authorize">Grant Access</button>
+                	</p>
+                </form>
+            </div>
+            <div id="waiting" style="display: none">
+                <p>Awaiting authorization. Please click the button below once you've approved access
+                to your data.</p>
+                	<p class="app-form-buttons">
+                		<button id="authorizeDone">Authorization Granted</button>
+                	</p>
+            </div>
+            <div id="main" style="display: none">
+                <div id="friends" class="clearfix">
+                    <div id="[friendid]" class="clearfix">
+                        <img width="35px" src="[image_url]"></img>
+                        <h4 style="align: left">[friend_name]</h4>
+                        <div style="" class="friend-text"></div>
+                    </div>
+                </div>
+            </div>
+        <div>
+
+        <script type="text/javascript">
+
+            var ALIAS = 'facebook';
+
+            // Show a single content section.
+            function showOneSection(toshow) {
+                var sections = [ 'main', 'approval', 'waiting' ];
+                for (var i=0; i < sections.length; ++i) {
+                    var s = sections[i];
+                    var el = document.getElementById(s);
+                    if (s === toshow) {
+                        el.style.display = "block";
+                    }
+                    else {
+                        el.style.display = "none";
+                    }
+                }
+                // Adjust the app height
+                gadgets.window.adjustHeight();
+            }
+
+            // Extract and return the error message from the actual response content (if any); else from the error block
+            function extractMessage(response) {
+                if (response.content) {
+                    if (response.content.message) {
+                        return response.content.message;
+                    }
+                }
+                return response.error.message;
+            }
+
+            function fetchData() {
+                console.log("loadData() called");
+                osapi.jive.connects.get({
+                    alias : ALIAS,
+                    href :  '/me'
+                }).execute(function (response) {
+                    console.log("loadData() response is " + JSON.stringify(response));
+                    if (response.error) {
+                        if (response.error.code == 401) {
+                            console.log("Triggering a reconfigure");
+                            osapi.jive.connects.reconfigure(ALIAS, response, function(result) {
+                                console.log("fetch reconfigure result = " + JSON.stringify(result));
+                                fetchData();
+                            });
+                            return;
+                        }
+                        else {
+                            alert("Error " + response.error.code + " loading data: " + extractMessage(response));
+                        }
+                    }
+                    else {
+                        var profile = response.content;
+                        $('#myprofile').append('<h2 id="profname"></h2><img width="50" id="profimg" />');
+                        $('#profname')[0].innerHTML = profile.name;
+                        $('#profimg')[0].src = "http://graph.facebook.com/" + profile.id + "/picture";
+                        showOneSection('main');
+                        setTimeout(populateFriends, 100);
+                    }
+                })
+            }
+
+            function populateFriends() {
+                osapi.jive.connects.get({
+                    alias : ALIAS,
+                    href : '/me/friends'
+                }).execute(function (response) {
+                    console.log("populateFriends response is " + JSON.stringify(response));
+                    if (response.error) {
+                        if (response.error.code == 401) {
+                            console.log("Triggering a reconfigure");
+                            osapi.jive.connects.reconfigure(ALIAS, response, function(result) {
+                                console.log("populate reconfigure result = " + JSON.stringify(result));
+                                populateFriends();
+                            });
+                            return;
+                        }
+                        else {
+                            alert("Error " + response.error.code + " loading data: " + extractMessage(response));
+                        }
+                    }
+                    else {
+                        var friends = response.content.data;
+                        friends.sort(function(f1, f2) { return f1.name < f2.name ? -1 : (f1.name > f2.name ? 1 : 0); });
+                        var itemTmpl = $("#friends").html();
+                        $("#friends").html('');
+                        $("#friends")[0].style.display = "block";
+                        var bgColor = [ '#EDEFF4', '#fefefe' ];
+                        for(var i = 0; i < 5; ++i) {
+                            var fr = friends[i];
+                            var itemHtml = itemTmpl.replace('[friend_name]', fr.name).replace('[friendid]', fr.id);
+                            $('#friends').append(itemHtml);
+                            var friendimg = '#' + fr.id + " img";
+                            $(friendimg)[0].src = "http://graph.facebook.com/" + fr.id + "/picture";
+                            $('#' + fr.id)[0].style.backgroundColor = bgColor[i % 2];
+                            // Update the friend's status in the background.
+                            setTimeout(function(id) { return function() { updateStatus(id); }; }(fr.id), 100);
+                        }
+                        // Adjust the app height
+                        gadgets.window.adjustHeight();
+                    }
+                });
+            }
+
+            function updateStatus(friendid) {
+                osapi.jive.connects.get({
+                    alias : ALIAS,
+                    href :  '/' + friendid + "/feed"
+                }).execute(function (response) {
+                    console.log("updateStatus(" + friendid + ") response is " + JSON.stringify(response));
+                    var statuses = response.content;
+                    window["status" + friendid] = statuses;
+                    if (statuses && statuses[0] && statuses[0].message) {
+                        var message = statuses[0].message;
+                        $('#' + friendid + " > :last-child")[0].innerHTML = message;
+                        // Update height
+                        gadgets.window.adjustHeight();
+                    }
+                });
+            }
+
+            gadgets.util.registerOnLoadHandler(fetchData);
+        </script>
+        ]]>
+  </Content>
+</Module>

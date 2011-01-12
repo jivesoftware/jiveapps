@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Salesforce.Com Example"
+                author="Jive Software"
+           description="Interact with the Salesforce.Com REST API">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-connects-1.0.0">
+            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://salesforce.com/api?version=1</Param>
+        </Require>
+        <Require feature="jive-core-5.0.0"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="opensocial-1.0"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="salesforce-connects.html"/>
+    <Content view="canvas" type="html" href="salesforce-connects.html"/>
+</Module>

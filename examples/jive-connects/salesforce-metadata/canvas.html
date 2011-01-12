@@ -1,0 +1,67 @@
+<script type="text/javascript" src="salesforce-metadata.js"></script>
+
+<div id="wrapper">
+
+    <div id="object-div" class="top-level-div" style="display:none">
+        <h3>Available Fields for Object Type <span class="object-title"></span></h3>
+        <table id="object-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Label</th>
+                    <th>Type</th>
+                    <th>Length</th>
+                    <th>Digits</th>
+                    <th>Case Sensitive</th>
+                    <th>Filterable</th>
+                    <th>Nillable</th>
+                    <th>Sortable</th>
+                    <th>Updateable</th>
+                </tr>
+            </thead>
+            <tbody id="object-table-body"></tbody>
+        </table>
+        <h3>Child Relationships for Object Type <span class="object-title"></span></h3>
+        <table id="relationship-table">
+            <thead>
+                <tr>
+                    <th>Child Object Name</th>
+                    <th>Child Field Name</th>
+                    <th>Cascade Delete</th>
+                    <th>Relationship Name</th>
+                </tr>
+            </thead>
+            <tbody id="relationship-table-body"></tbody>
+        </table>
+        <a id="back-to-objects" href="#">Back to Select Object</a>
+    </div>
+
+    <div id="objects-div" class="top-level-div" style="display:none">
+        <h3>Available Objects for API Version <span class="version-title"></span></h3>
+        <table id="objects-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Label</th>
+                    <th>Createable</th>
+                    <th>Deletable</th>
+                    <th>Queryable</th>
+                    <th>Retrieveable</th>
+                    <th>Updateable</th>
+                </tr>
+            </thead>
+            <tbody id="objects-table-body"></tbody>
+        </table>
+        <a id="back-to-versions" href="#">Back to Select Version</a>
+    </div>
+
+    <div id="status-div" class="top-level-div" style="display:none">
+        <p id="status-message"></p>
+    </div>
+
+    <div id="versions-div" class="top-level-div" style="display:none">
+        <p>Select the desired API version from those available:</p>
+        <ul id="versions-list"></ul>
+    </div>
+
+</div>
