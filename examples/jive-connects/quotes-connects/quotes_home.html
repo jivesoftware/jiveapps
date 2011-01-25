@@ -1,0 +1,36 @@
+<link rel="stylesheet" type="text/css" href="quotes.css"/>
+<script type="text/javascript" src="quotes.js"></script>
+<script type="text/javascript" src="quotes_home.js"></script>
+
+<!--
+<script type="text/os-data">
+    <jive:ConnectsRequest key="custs" alias="quotes" href="/customers?offset=0&limit=5"/>
+</script>
+-->
+
+<div class="wrapper">
+
+    <div class="title">My Quotes</div>
+
+    <div class="banner-div">
+        <img id="banner" src="magnifying-glass.jpg" alt="Quotes Banner" title="Click to enter ..." width="256" height="205"/>
+    </div>
+
+    <table class="h_view" style="display:none">
+        <thead>
+            <tr class="h_row">
+                <th>Due</th>
+                <th>Quote</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+
+    <div class="buttons" style="display:none">
+        <a id="previous" class="icon i-previous" href="#" >Previous</a>
+        <a id="refresh" class="icon i-refresh" href="#">Refresh</a>
+        <a id="next" class="icon i-next" href="#">Next</a>
+    </div>
+
+</div>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Quotes Approval"
+                author="Jive Software"
+           description="Manage pending sales quotations">
+        <Require feature="jive-connects-v1">
+            <Param name="alias:quotes|title:Quotes Service">jive:service://jivesoftware.com/demo/quotes?version=1</Param>
+        </Require>
+        <Require feature="jive-core-v2"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="quotes_home.html"/>
+    <Content view="canvas" type="html" href="quotes_canvas.html"/>
+</Module>

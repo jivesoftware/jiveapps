@@ -1,0 +1,96 @@
+/*
+body
+	{font-family:arial,helvetica,sans-serif;
+	color:#333}
+img
+	{border:0}
+a
+	{color:#5986ae;
+	text-decoration:none}
+a:hover
+	{text-decoration:underline}
+.approve
+	{color:#green}
+.reject
+	{color:#red}
+.wrapper
+	{margin:15px 10px 0px 0px;
+	padding:3px;
+	width:300px}
+.title
+	{float:left;
+	width:70%;
+	text-transform:uppercase;
+	color:#666;
+	font-weight:bold;
+	font-size:12px;
+	margin:0px 0px 10px 0px}
+.refresh
+	{float:right;
+	font-size:12px;
+	text-align:center}
+.h_view
+	{width:100%;
+	border-collapse:collapse}
+.h_view th
+	{font-size:12px;
+	text-align:left}
+.h_view tr
+	{font-size:11px;
+	text-align:left;
+	height:35px;
+	border-bottom:1px solid #e5e5e5}
+.h_view td
+	{padding:3px;
+	vertical-align:top}
+.h_view_more
+	{text-align:right;
+	font-weight:bold;
+	padding:10px 5px 0px 0px}
+.h_view .descr
+	{width:300px}
+.button
+	{padding:6px 15px 8px 15px;
+	color:#fff;
+	text-decoration:none}
+*/
+
+/* home view styles */
+    body {font-family: arial, helvetica, sans-serif; color:#333;background: url('sf_back.gif') repeat-x;}
+    img {border:0;}
+    a {color:#5986ae; text-decoration:none;}
+    a:hover {text-decoration:underline;}
+    .approve {color:#green;}
+    .reject {color:#red;}
+    .approved {color:#green;}
+    .rejected {color:#red;}
+    .wrapper {margin:10px 0px 0px 0px;padding:3px;}
+    .title {float:left;width:70%;text-transform:uppercase;color:#666;font-weight:bold;font-size:12px;margin:0px 0px 10px 0px;}
+    .refresh {float:right;font-size:12px;text-align:center;}
+    .h_view {width:100%;border-collapse:collapse;}
+    .h_view th {font-size: 12px;text-align:center;background: url('header_bg.gif') repeat-x;}
+    .h_view tr {font-size:11px;text-align:left;height:25px;border-bottom: 1px solid #e5e5e5;}
+    .h_view td {padding:3px;}
+    .h_view_prev {text-align:left; padding: 10px 5px 0px 0px;}
+    .h_view_next {text-align:right;padding: 10px 5px 0px 0px;}
+    .button {padding:6px 15px 8px 15px; color:#fff; text-decoration:none;background: url('blue-button.png') no-repeat;}
+    a.button:hover {text-decoration:none;}
+    .buttons {padding: 5px 5px 5px 5px;}
+    .center {text-align:center;}
+    .right {text-align:right;}
+/* canvas view styles */
+
+/* shared styles */
+.icon {
+	background: url(quotes-sprites.png) no-repeat 0 -100px;
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	text-indent: -9999px;
+    margin-left: 3px;
+	}
+.i-approve { background-position: 0 0; }
+.i-reject { background-position: -20px 0; }
+.i-previous { background-position: -80px 0; }
+.i-refresh { background-position: -60px 0; }
+.i-next { background-position: -40px 0; }
