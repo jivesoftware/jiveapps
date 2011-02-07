@@ -1,0 +1,85 @@
+<script type="text/javascript">
+
+    function init() {
+	console.log("Window Location Href is " + window.location.href);
+        console.log("Base URL is " + baseURL());
+        // Document the static image tag url
+	console.log("Left Image URL is " + $("#static-image").attr("src"));
+	// Render and document the dynamic image tags
+	var url = (baseURL() + "/" + "AKG-Headphone-icon.png").replace("http:","https:");
+        console.log("Middle Image URL is " + url);
+        var html = '<img src="' + url + '"/>';
+        $("#dynamic-image-1").html(html);
+	url = "https://www.google.com/intl/en/images/logos/chrome_logo.gif";
+	console.log("Right Image URL is " + url);
+	html = '<img src="' + url + '"/>';
+	$("#dynamic-image-2").html(html);
+        // Render the first Flash widget relative to our gadget.xml file
+        url = (baseURL() + "/" + "flash-christmas.swf").replace("http:","https:");
+//	url = gadgets.io.getProxyUrl(url);
+        console.log("First Flash URL is " + url);
+        gadgets.flash.embedFlash(url, "christmas-flash", {
+            id : "christmas-flash",
+            width : 300,
+            height : 150
+        });
+        // Render the second Flash widget from an absolute URL
+	url = "https://www.adobe.com/content/dotcom/en/devnet/actionscript/samples/game_1/_jcr_content/articlecontentAdobe/generic/file.res/1_maze%5b1%5d.swf";
+        console.log("Second Flash URL is " + url);
+        gadgets.flash.embedFlash(url, "maze-flash", {});
+        gadgets.window.adjustHeight(600);
+    }
+
+    // Return the base URL for our gadget, from which we can
+    // convert the relative URLs of our Flash files into
+    // absolute URLs required by gadgets.flash.embedFlash().
+    // WARNING - this logic is VERY dependent upon implementation
+    // details of the Jive OpenSocial container!!!
+    function baseURL() {
+        var location = window.location.href;
+        var index = location.indexOf("url=");
+        location = location.substring(index + 4);
+        index = location.indexOf("&");
+        if (index >= 0) {
+            location = location.substring(0, index);
+        }
+        location = unescape(location.replace(/\+/g, " "));
+        index = location.lastIndexOf("/");
+        if (index >= 0) {
+            location = location.substring(0, index);
+        }
+        return location;
+    }
+
+    gadgets.util.registerOnLoadHandler(init);
+</script>
+
+<div id="images">
+    <table border="1" cols="2">
+        <tr>
+	    <td>Static Image Tag (with Rewrite)</td>
+            <td>Dynamically Created Image Tag (Our Content)</td>
+            <td>Dynamically Created Image Tag (Remote Content)</td>
+        </tr>
+        <tr>
+            <td><img id="static-image" src="jivelogo.png"/></td>
+            <td id="dynamic-image-1"></td>
+            <td id="dynamic-image-2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id="christmas-div">
+    <p>Christmas Flash</p>
+    <hr />
+    <div id="christmas-flash" height="200px"></div>
+    <hr />
+</div>
+
+<div id="maze-div">
+    <p>Maze Flash</p>
+    <hr />
+    <div id="maze-flash" height="200px"></div>
+    <hr />
+</div>
+

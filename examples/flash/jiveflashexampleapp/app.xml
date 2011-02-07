@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Module>
+    <ModulePrefs title="Jive Flash Example">
+        <Require feature="dynamic-height"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="views"/>
+        <Require feature="flash"/>
+        <Optional feature="content-rewrite">
+            <Param name="include-url">*</Param>
+            <Param name="minify-css">false</Param>
+            <Param name="minify-js">false</Param>
+            <Param name="minify-html">false</Param>
+        </Optional>
+    </ModulePrefs>
+
+    <Content view="home,canvas" href="home.html">
+
+    </Content>
+
+</Module>
