@@ -56,33 +56,6 @@ function enableHandlers() {
         console.log("Rejecting quote " + JSON.stringify(quote));
         update(quote, "rejected");
     });
-    $(".user-profile").live("mouseout", function() {
-        console.log("Remove user profile (if any)");
-        gadgets.rpc.call(null, "profile_tooltip_mouse_out", null, null);
-    });
-    $(".user-profile").live("mouseover", function(event) {
-        var index = parseInt($(this).attr("data-index"));
-        console.log("Display user profile at index " + index);
-        var user = users[quotes[index].quoteUser.username];
-        if (user) {
-            var posx = 0;
-            var posy = 0;
-            if (!event) event = window.event;
-            if (event.pageX || event.pageY) {
-                posx = event.pageX;
-                posy = event.pageY;
-            }
-            else if (event.clientX || event.clientY) {
-                posx = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-                posy = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-            }
-            var mousePos = { left : posx , top : posy };
-            gadgets.rpc.call(null, "profile_tooltip_mouse_over", null, user.id, mousePos);
-        }
-        else {
-            alert("No user information for sales rep " + quotes[index].quoteUser.username);
-        }
-    });
 }
 
 // Generate an "approve" action for the specified row
