@@ -1,0 +1,157 @@
+/*
+ * Copyright 2011 Jive Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#jive-apps-photo-body {
+    padding: 5px;
+}
+
+#jive-apps-photo-body a {
+    border: 1px solid #5A5A5A;
+    background-color: #5A5A5A;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 0.8em;
+    margin: 2px;
+    padding: 2px 6px;
+    text-decoration: none;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+}
+
+#jive-apps-photo-form span.jive-apps-photo-radio {
+    font-size: 0.8em;
+}
+
+#jive-apps-photo-body table {
+    border-collapse: collapse;
+    margin: 5px;
+    padding: 0;
+}
+
+#jive-apps-photo-body td {
+    min-width: 140px;
+    vertical-align: top;
+}
+
+#jive-apps-photo-body .nobr {
+    white-space: nowrap;
+}
+
+.jive-apps-photo-title {
+    border-bottom: 1px dotted #CACACA;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 5px;
+    padding: 0 10px 5px 10px;
+}
+
+.jive-apps-photo-title .jive-apps-photo-more {
+    border-left: 1px dotted #CACACA;
+    color: #9A9A9A;
+    float: right;
+    font-size: 0.4em;
+    padding: 2px 0 2px 10px;
+    width: 65px;
+}
+
+.jive-apps-photo-header {
+    text-align: center;
+}
+
+.jive-apps-photo-progress {
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    border: 1px solid #CACACA;
+    display: inline-block;
+    height: 34px;
+    margin: 2px;
+    padding: 1px;
+    width: 34px;
+}
+
+.jive-apps-photo-gold {
+    background-image: url('../images/stars/star-gold32.png');
+    border-color: #1A1A1A;
+}
+
+.jive-apps-photo-green {
+    background-image: url('../images/stars/star-green32.png');
+}
+
+.jive-apps-photo-red {
+    background-image: url('../images/stars/star-red32.png');
+}
+
+.jive-apps-photo-white {
+    background-image: url('../images/stars/star-white32.png');
+}
+
+.jive-apps-photo-loading {
+    background-position: 54px 14px;
+    background-repeat: no-repeat;
+    background-image: url('../images/jive-image-loading.gif');
+    height: 60px;
+    width: 140px;
+}
+
+#jive-apps-photo-result {
+    color: #5A5A5A;
+    font-size: 0.8em;
+}
+
+#jive-apps-photo-result a {
+    font-size: 1.0em;
+}
+
+#jive-apps-photo-result {
+    border: 1px solid #CACACA;
+    margin: 2px 0 5px 0;
+    min-height: 20px;
+    padding: 5px 10px;
+}
+
+#jive-apps-photo-result .jive-correct {
+    color: #0F0;
+    font-weight: bold;
+}
+
+#jive-apps-photo-result .jive-incorrect {
+    color: #F00;
+    font-weight: bold;
+}
+
+#jive-apps-photo-result .jive-streak {
+    float: right;
+}
+
+.jive-apps-photo-display {
+    text-align: center;
+}
+
+.jive-apps-photo-display img {
+    border: 1px solid #CACACA;
+    margin: 5px;
+    padding: 3px;
+}
+
+.jive-apps-photo-finished {
+    color: #000;
+    font-weight: bold;
+}
+
+.jive-apps-photo-friend-control {
+    margin-top: 5px;
+}

@@ -1,0 +1,62 @@
+<!--
+   - Copyright 2011 Jive Software
+   -
+   - Licensed under the Apache License, Version 2.0 (the "License");
+   - you may not use this file except in compliance with the License.
+   - You may obtain a copy of the License at
+   -
+   -    http://www.apache.org/licenses/LICENSE-2.0
+   -
+   - Unless required by applicable law or agreed to in writing, software
+   - distributed under the License is distributed on an "AS IS" BASIS,
+   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   - See the License for the specific language governing permissions and
+   - limitations under the License.
+  -->
+<link rel="stylesheet" href="stylesheets/user-photo.css" type="text/css" media="screen" />
+<script type="text/javascript" charset="utf-8" src="javascripts/user-photo.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/canvas.js"></script>
+
+<div id="jive-apps-photo-body">
+
+<div class="jive-apps-photo-title">Who can you recognize from a photo?</div>
+
+<table>
+  <tr>
+      <td><div class="jive-apps-photo-header"><span>This is you.</span></div></td>
+      <td><div class="jive-apps-photo-header"><span>Who is this?</span></div></td>
+      <td><div class="jive-apps-photo-header"><span>Select your answer.</span></div></td>
+  </tr>
+  <tr>
+    <td><div id="jive-apps-photo-user" class="jive-apps-photo-display"></div></td>
+    <td><div id="jive-apps-photo-friend" class="jive-apps-photo-display"></div></td>
+    <td>
+      <div id="jive-apps-photo-similar">
+        <form id="jive-apps-photo-form"></form>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<table>
+<tr><td>
+  <span id="jive-apps-photo-progress-0" class="jive-apps-photo-progress jive-apps-photo-gold"></span>
+  <span id="jive-apps-photo-progress-1" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-2" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-3" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-4" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-5" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-6" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-7" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-8" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+  <span id="jive-apps-photo-progress-9" class="jive-apps-photo-progress jive-apps-photo-white"></span>
+</td></tr>
+<tr><td>
+  <div id="jive-apps-photo-result">
+      <span id="jive-apps-photo-correct">0</span>
+      <span>of 10 people correctly identified.</span>
+  </div>
+</td></tr>
+</table>
+
+</div>

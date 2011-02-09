@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Copyright 2011 Jive Software
+   -
+   - Licensed under the Apache License, Version 2.0 (the "License");
+   - you may not use this file except in compliance with the License.
+   - You may obtain a copy of the License at
+   -
+   -    http://www.apache.org/licenses/LICENSE-2.0
+   -
+   - Unless required by applicable law or agreed to in writing, software
+   - distributed under the License is distributed on an "AS IS" BASIS,
+   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   - See the License for the specific language governing permissions and
+   - limitations under the License.
+  -->
+<Module>
+  <ModulePrefs title="User Photo Recognition"
+               author="Robert Fernandes"
+               author_affiliation="Jive Software"
+               description="Can you recognize users based on their photos?"
+               height="300"
+               thumbnail="https://apphosting.jivesoftware.com/apps/user-photo-recognition/images/j-icon-user-48.png">
+    <Icon>https://apphosting.jivesoftware.com/apps/user-photo-recognition/images/j-icon-user-48.png</Icon>
+    <Require feature="dynamic-height" />
+    <Require feature="jive-core-v2" />
+    <Require feature="minimessage" />
+    <Require feature="settitle" />
+    <Require feature="views" />
+  </ModulePrefs>
+
+  <Content view="home" href="home.html" />
+  <Content view="canvas" href="canvas.html" />
+
+</Module>
