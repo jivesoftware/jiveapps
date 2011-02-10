@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="OpenSocial Person and Jive User App"
+               author="Mark Weitzel"
+               height="300"
+               description="TODO: Replace with real description of mdwexampleapp14 inside app.xml: Module/ModulePrefs/description"
+               thumbnail="https://apphosting.jivesoftware.com/apps/mdwexampleapp14/images/j-icon-jaf-48.png">
+    <Require feature="dynamic-height" />
+    <Require feature="jive-core-v2" />
+    <Require feature="opensocial-1.0"/>
+    <Require feature="osapi"/>
+    <Require feature="settitle"/>
+    <Require feature="views" />
+    <Require feature="jquery-1.4.2"/>
+  </ModulePrefs>
+
+
+  <Content view="home, canvas" href="home.html" />
+
+
+</Module>
