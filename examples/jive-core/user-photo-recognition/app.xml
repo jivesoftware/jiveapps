@@ -27,6 +27,8 @@
     <Require feature="minimessage" />
     <Require feature="settitle" />
     <Require feature="views" />
+    <Require feature="opensocial-1.0"/>
+    <Require feature="osapi"/>
   </ModulePrefs>
 
   <Content view="home" href="home.html" />
