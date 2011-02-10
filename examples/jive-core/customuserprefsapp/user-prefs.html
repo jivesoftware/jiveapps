@@ -19,6 +19,7 @@
   function updateData(){
        	 var prefs = new gadgets.Prefs();
 	     var value = document.getElementById('workLocationInput').value;
+		 prefs.set("work_location",value);
 	     jive.opensocial.editingDone("User prefs updated!", true); 
 	  
   };
