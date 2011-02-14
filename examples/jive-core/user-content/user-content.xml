@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="User Private Content Example"
+                author="Jive Software"
+                  icon="https://github.com/jivesoftware/jiveapps/raw/master/icon
+s/user-icon.png"
+           description="Manage user private documents for the logged-in user">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v2"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="user-content.html"/>
+    <Content view="canvas" type="html" href="user-content.html"/>
+</Module>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Group Content Example"
+                author="Jive Software"
+                  icon="https://github.com/jivesoftware/jiveapps/raw/master/icons/group-icon.png"
+           description="Manage group documents">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-5.0.0"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="group-content.html"/>
+    <Content view="canvas" type="html" href="group-content.html"/>
+</Module>
