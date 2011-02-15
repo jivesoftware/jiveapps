@@ -24,7 +24,7 @@
            personInfo.append("name.givenName: " + viewerData.name.givenName);
   		   personInfo.append("<br/>");
 		   personInfo.append("emails[0].value: " +  viewerData.emails[0].value);
-           thumbnail.append(viewerData.thumbnailUrl + " ");
+           thumbnail.append("thumbnailUrl: " + viewerData.thumbnailUrl + " ");
            thumbnail.append('<img src="' + viewerData.thumbnailUrl + '"/>');
            thumbnail.append('<br/>');
          };
