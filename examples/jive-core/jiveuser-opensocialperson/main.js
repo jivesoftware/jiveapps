@@ -58,10 +58,8 @@
 
 
 function init() {
-	
 	     var personFields = {fields: ['id','displayName', 'name','thumbnailUrl','emails']};
          osapi.people.getViewer(personFields).execute(getViewerCallback);
-
          osapi.jive.core.users.get({id: '@viewer'}).execute(jiveUserCallback);
        };
 
