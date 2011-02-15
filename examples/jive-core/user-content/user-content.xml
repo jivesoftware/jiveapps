@@ -5,6 +5,7 @@
                   icon="https://github.com/jivesoftware/jiveapps/raw/master/icon
 s/user-icon.png"
            description="Manage user private documents for the logged-in user">
+        <Link rel="Icon" href="https://github.com/jivesoftware/jiveapps/raw/master/icons/user-icon.png"/>
         <Require feature="dynamic-height"/>
         <Require feature="jive-core-v2"/>
         <Require feature="jquery-1.4.2"/>

@@ -2,8 +2,8 @@
 <Module>
     <ModulePrefs title="Group Content Example"
                 author="Jive Software"
-                  icon="https://github.com/jivesoftware/jiveapps/raw/master/icons/group-icon.png"
            description="Manage group documents">
+        <Link rel="Icon" href="https://github.com/jivesoftware/jiveapps/raw/master/icons/group-icon.png"/>
         <Require feature="dynamic-height"/>
         <Require feature="jive-core-5.0.0"/>
         <Require feature="jquery-1.4.2"/>
