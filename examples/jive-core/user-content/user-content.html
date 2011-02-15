@@ -1,0 +1,202 @@
+<script type="text/javascript" src="user-content.js"></script>
+
+<div id="wrapper">
+
+    <div id="discussion-div" class="top-level-div" style="display:none">
+        <h3 class="discussion-subject"></h3>
+        <div id="discussion-details">
+            <table border="0" padding="3px">
+                <tr>
+                    <td>Author:</td>
+                    <td id="discussion-author"></td>
+                </tr>
+                <tr>
+                    <td>Created:</td>
+                    <td id="discussion-creationDate"></td>
+                </tr>
+                <tr>
+                    <td>Likes:</td>
+                    <td id="discussion-likeCount"></td>
+                </tr>
+                <tr>
+                    <td>Modified:</td>
+                    <td id="discussion-modificationDate"></td>
+                </tr>
+                <tr>
+                    <td>Replies:</td>
+                    <td id="discussion-replyCount"></td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td id="discussion-status"></td>
+                </tr>
+                <tr>
+                    <td>Subject:</td>
+                    <td>
+                        <input id="discussion-subject" type="text" value="" style="width:100%"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>View Count:</td>
+                    <td id="discussion-viewCount"></td>
+                </tr>
+                <tr>
+                    <td>Text:</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <textarea id="discussion-text" style="width:100%"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="discussion-replies"></div>
+        <div id="discussion-buttons">
+            <button class="discussion-save">Save</button>
+            <button class="discussion-cancel">Cancel</button>
+            <button class="discussion-delete">Delete</button>
+        </div>
+    </div>
+
+    <div id="discussions-div" class="top-level-div" style="display:none">
+        <h3>Discussions for <span class="user-name"></span></h3>
+        <div id="discussions-list"></div>
+        <div id="discussions-links">
+            <button class="back-to-documents">&gt;Documents</button>
+            <button class="discussion-create">Create</button>
+        </div>
+    </div>
+
+    <div id="document-div" class="top-level-div" style="display:none">
+        <h3 class="document-subject"></h3>
+        <div id="document-details">
+            <table border="0" padding="3px">
+                <tr>
+                    <td>Author:</td>
+                    <td id="document-author"></td>
+                </tr>
+                <tr>
+                    <td>Created:</td>
+                    <td id="document-creationDate"></td>
+                </tr>
+                <tr>
+                    <td>Likes:</td>
+                    <td id="document-likeCount"></td>
+                </tr>
+                <tr>
+                    <td>Modified:</td>
+                    <td id="document-modificationDate"></td>
+                </tr>
+                <tr>
+                    <td>Replies:</td>
+                    <td id="document-replyCount"></td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td id="document-status"></td>
+                </tr>
+                <tr>
+                    <td>Subject:</td>
+                    <td>
+                        <input id="document-subject" type="text" value="" style="width:100%"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>View Count:</td>
+                    <td id="document-viewCount"></td>
+                </tr>
+                <tr>
+                    <td>Text:</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <textarea id="document-text" style="width:100%"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="document-replies" style="display:none"></div>
+        <div id="document-buttons">
+            <button class="document-save">Save</button>
+            <button class="document-cancel">Cancel</button>
+            <button class="document-delete">Delete</button>
+        </div>
+        <div id="document-attachments">
+            <h4>Attachments:</h4>
+            <ol id="document-attachments-list"></ol>
+            <button class="document-upload">Upload</button>
+        </div>
+    </div>
+
+    <div id="documents-div" class="top-level-div" style="display:none">
+        <h3>Documents for <span class="user-name"></span></h3>
+        <div id="documents-list"></div>
+        <div id="documents-links">
+            <button class="back-to-discussions">&gt;Discussions</button>
+            <button class="document-create">Create</button>
+        </div>
+    </div>
+
+    <div id="new-discussion-div" class="top-level-div" style="display:none">
+        <h3>New Discussion</h3>
+        <table>
+            <tr>
+                <td>Subject:</td>
+                <td>
+                    <input id="new-discussion-subject" type="text" value="" style="width:100%"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Text:</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea id="new-discussion-html" style="width:100%"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>Collaborators:</td>
+                <td>
+                    <select id="new-discussion-collaborators" multiple="multiple" style="width:100%"></select>
+                </td>
+            </tr>
+        </table>
+        <div id="new-discussion-buttons">
+            <button class="discussion-save">Save</button>
+            <button class="discussion-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <div id="new-document-div" class="top-level-div" style="display:none">
+        <h3>New Document</h3>
+        <table>
+            <tr>
+                <td>Subject:</td>
+                <td>
+                    <input id="new-document-subject" type="text" value="" style="width:100%"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Text:</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea id="new-document-html" style="width:100%"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div id="new-document-buttons">
+            <button class="document-save">Save</button>
+            <button class="document-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <div id="status-div" class="top-level-div" style="display:none">
+        <p id="status-message"></p>
+    </div>
+
+</div>
