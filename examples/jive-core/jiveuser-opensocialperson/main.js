@@ -22,10 +22,11 @@
            personInfo.append("name.formatted: " + viewerData.name.formatted);
            personInfo.append("<br/>");
            personInfo.append("name.givenName: " + viewerData.name.givenName);
+  		   personInfo.append("<br/>");
+		   personInfo.append("emails[0].value: " +  viewerData.emails[0].value);
            thumbnail.append(viewerData.thumbnailUrl + " ");
            thumbnail.append('<img src="' + viewerData.thumbnailUrl + '"/>');
            thumbnail.append('<br/>');
-           
          };
         
  };
@@ -51,16 +52,16 @@
            juHtml.append("<br/>");
            avatarHtml.append("avatarUrl: " + jiveUser.avatarURL);
            avatarHtml.append("<br/>");
-
-       
-         };
-       
+         }; 
   };
 
 
 
 function init() {
-         osapi.people.getViewer().execute(getViewerCallback);
+	
+	     var personFields = {fields: ['id','displayName', 'name','thumbnailUrl','emails']};
+         osapi.people.getViewer(personFields).execute(getViewerCallback);
+
          osapi.jive.core.users.get({id: '@viewer'}).execute(jiveUserCallback);
        };
 
