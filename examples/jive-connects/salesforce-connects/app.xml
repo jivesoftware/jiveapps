@@ -19,10 +19,10 @@
                 author="Jive Software"
            description="Interact with the Salesforce.Com REST API">
         <Require feature="dynamic-height"/>
-        <Require feature="jive-connects-1.0.0">
+        <Require feature="jive-connects-v1">
             <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://salesforce.com/api?version=1</Param>
         </Require>
-        <Require feature="jive-core-5.0.0"/>
+        <Require feature="jive-core-v2"/>
         <Require feature="jquery-1.4.2"/>
         <Require feature="opensocial-1.0"/>
         <Require feature="osapi"/>
