@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Copyright 2011 Jive Software
+   -
+   - Licensed under the Apache License, Version 2.0 (the "License");
+   - you may not use this file except in compliance with the License.
+   - You may obtain a copy of the License at
+   -
+   -    http://www.apache.org/licenses/LICENSE-2.0
+   -
+   - Unless required by applicable law or agreed to in writing, software
+   - distributed under the License is distributed on an "AS IS" BASIS,
+   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   - See the License for the specific language governing permissions and
+   - limitations under the License.
+  -->
+<Module>
+  <ModulePrefs title="Simple Groups Example">
+    <Require feature="opensocial-1.0" />
+    <Require feature="osapi"/>
+    <Require feature="jquery-1.4.2"/>
+    <Require feature="dynamic-height"/> 
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <script type="text/javascript">
+      var allGroups = [ ];
+      var myGroups = [ ];
+      function init() {
+        registerEvents();
+        // Retrieve all groups visible to me in this Jive instance
+        osapi.groups.get({
+          userId : "@me",
+          groupId : "@all",
+          sortBy : "title",
+          sortOrder : "ascending"
+        }).execute(function(response) {
+          if (response.error) {
+            alert("Error " + response.error.code + " retrieving all groups: " + response.error.message);
+          }
+          else {
+            console.log("All Groups response: " + JSON.stringify(response));
+            $(response.list).each(function(index, group) {
+              allGroups.push(group);
+            });
+            console.log("allGroups is now " + JSON.stringify(allGroups));
+            // Retrieve all groups I am a member of in this Jive instance
+            osapi.groups.get({
+              userId: "@me",
+              groupId: "@self"
+            }).execute(function(response) {
+              if (response.error) {
+                alert("Error " + response.error.code + " retrieving all groups: " + response.error.message);
+              }
+              else {
+                console.log("My Groups response: " + JSON.stringify(response));
+                $(response.list).each(function(index, group) {
+                  myGroups.push(group);
+                });
+                console.log("myGroups is now " + JSON.stringify(myGroups));
+                // Populate the list of groups in the UI
+                $(allGroups).each(function(index, group) {
+                  var html = '<li class="group-item" data-groupId="' + group.id + '">';
+                  if (memberOf(group)) {
+                    html += "<strong>";
+                  }
+                  html += group.title;
+                  if (memberOf(group)) {
+                    html += "</strong>";
+                  }
+                  html += "</li>";
+                  $("#groups-list").append(html);
+                });
+                $(".group-item").click(function() {
+                  showMembers($(this).attr("data-groupId"));
+                });
+                $("#gathering").hide();
+                $("#groups").show();
+                gadgets.window.adjustHeight();
+              }
+            });
+          }
+        });
+      }
+      gadgets.util.registerOnLoadHandler(init);
+
+      // Return the group with the specified id from the allGroups list
+      function lookup(groupId) {
+        var result = null;
+        $(allGroups).each(function(index, group) {
+          if (groupId == group.id) {
+            result = group;
+          }
+        });
+        return result;
+      }
+
+      // Return true if the specified group is in the myGroups list
+      function memberOf(candidate) {
+        var result = false;
+        $(myGroups).each(function(index, group) {
+          if (candidate.id == group.id) {
+            result = true;
+          }
+        });
+        return result;
+      }
+
+      function registerEvents() {
+        $("#members-back").click(function() {
+          $("#members").hide();
+          $("#groups").show();
+          gadgets.window.adjustHeight();
+        });
+      }
+
+      function showMembers(groupId) {
+        var group = lookup(groupId);
+        if (!group) {
+          alert("Invalid groupId '" + groupId + "'");
+          return;
+        }
+        var header = "Members for group '" + group.title + "':";
+        $("#members-header").html("").html(header);
+        $("#members-list").html("");
+        osapi.people.get({
+          userId : "@me",
+          groupId : groupId
+        }).execute(function(response) {
+          console.log("Members of group " + groupId + " are " + JSON.stringify(response));
+          $(response.list).each(function(index, person) {
+            var html = '<li class="member-item">';
+            html += '<img src="' + person.thumbnailUrl + '" height="44"/>';
+            html += person.displayName;
+            html += '</li>';
+            $("#members-list").append(html);
+          });
+        });
+        $("#groups").hide();
+        $("#members").show();
+        gadgets.window.adjustHeight();
+      }
+
+      </script>
+
+      <div id="gathering">
+        <p>Gathering group information ...</p>
+      </div>
+
+      <div id="groups" style="display: none">
+        <h2>Available groups (bold means you are a member)</h2>
+        <ul id="groups-list"></ul>
+      </div>
+
+      <div id="members" style="display: none">
+        <h3 id="members-header"></h3>
+        <ul id="members-list"></ul>
+        <button id="members-back">Back to groups list</button>
+      </div>
+
+    ]]>
+  </Content>
+</Module>
