@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   Copyright 2011 Jive Software
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Module>
+    <ModulePrefs title="Leveraging What Matters: Part 1, Activities"
+				description="Complete code example for the tutorial in the developer community (https://developers.jivesoftware.com/community/docs/DOC-1292)">
+    <Require feature="opensocial-1.0"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+    <Require feature="minimessage"/>
+</ModulePrefs>
+<UserPref name="work_location" display_name="Where do you work" datatype="string" default_value="" required="false" />
+<UserPref name="participant" display_name="Participating in challenge" datatype="bool" default_value="" required="false" />
+<UserPref name="defaultModeOfTransportation" display_name="How do you get to work?" datatype="enum" default_value="" required="false">
+      <EnumValue value="bicycle" display_value="Bicycle (15 points)" />
+      <EnumValue value="bus" display_value="Bus (10 points)" />
+      <EnumValue value="car" display_value="Car (1 points)" />
+      <EnumValue value="carpool" display_value="Carpool (5 points)" />
+      <EnumValue value="walk" display_value="Walk (20 points)" />
+      <EnumValue value="train" display_value="Train (10 points)" />
+</UserPref>
+<Content type="html" view="home,canvas">
+  <![CDATA[
+      <script  type="text/javascript">
+      function init() {
+        osapi.people.getViewer().execute(function(viewerData) {
+		   console.log(viewerData);
+           if (!viewerData.error) {
+              var viewerDiv = document.getElementById('current_user_id'),
+                  viewerThumbnailImg = document.getElementById('viewerThumbnailImg');
+              viewerDiv.innerHTML += viewerData.displayName;
+              gadgets.window.adjustHeight(400);
+           };
+        });
+
+        osapi.people.getViewerFriends().execute(function(viewerFriends) {
+           if (!viewerFriends.error){
+            var resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = viewerFriends.list.length;
+           }
+        });
+
+        var workLocationSpan = document.getElementById('workLocationSpan'),
+            prefs = new gadgets.Prefs(),
+            yourWorkLocation = prefs.getString("work_location");
+            workLocationSpan.innerHTML = yourWorkLocation;
+
+      };
+
+      function basicActivityPost(){
+        var params = {userId: "@viewer",
+                      activity: {title:"Basic Acitivity Post",
+                              body:"Posting to the stream is easy!"}
+                  };
+         osapi.activities.create(params).execute(myCallback);
+      };
+
+     
+   function advancedActivityPost(){
+        var params = {userId: "@viewer",
+                      activity: {title:"Advanced Activity Post",
+					             body:"Agenda for meeting on BRK created!",
+					             streamFaviconUrl: "http://apphosting.jivesoftware.com/apps/simplehelloworldapp/myFavIcon-16.gif",
+							  verb:["simpleHelloWord:postAgenda"],
+							  object: {
+							        id: "DOC-1528",
+							        summary: "<i><b>Warren confirmed the meeting. Let's make sure we have the latest vaccuume sales figures included.</b></i>",
+							        title: "Meeting Prep: Sales review of Berkshire Hathaway",
+							        mediaLink: {
+							            mediaType: "document",
+							            url: "https://app-sandbox.jivesoftware.com/docs/DOC-1528"},
+							  objectType: "document"}
+						     }
+                  };
+         osapi.activities.create(params).execute(myCallback);
+      };
+
+   function advancedActivityPostWithDifferentVerb(){
+        var params = {userId: "@viewer",
+                      activity: {title:"Advanced Activity Post",
+					             body:"Agenda for meeting on BRK created!",
+					             streamFaviconUrl: "http://apphosting.jivesoftware.com/apps/simplehelloworldapp/myFavIcon-16.gif",
+							  verb:["simpleHelloWord:updatedAgenda"],
+							  object: {
+							        id: "DOC-1528",
+							        summary: "Updated agenda for our next telecon include in doc. <i><b>UPDATED: Please review and comment.</b></i>",
+							        title: "Meeting Prep: Sales review of Berkshire Hathaway",
+							        mediaLink: {
+							            mediaType: "document",
+							            url: "https://app-sandbox.jivesoftware.com/docs/DOC-1528"},
+							  objectType: "document"}
+						     }
+                  };
+         osapi.activities.create(params).execute(myCallback);
+      };
+
+      function myCallback(){
+        var msg = new gadgets.MiniMessage(__MODULE_ID__);
+            msg.createDismissibleMessage("You just posted to What Matters!");
+            gadgets.window.adjustHeight();
+      };
+
+
+      gadgets.util.registerOnLoadHandler(init);
+      </script>
+
+      <p>Your display name is: <span id="current_user_id"></span></p>
+      <p>You have <span id='result'></span> friends.</p>
+      <p>You work at: <span id='workLocationSpan'></span></p>
+      <p><input type="button" value="Basic Activity Post" onclick="basicActivityPost(); return true;"/></p>
+	  <p><input type="button" value="Advanced Activity Post" onclick="advancedActivityPost(); return true;"/></p>
+	  <p><input type="button" value="Advanced Activity Post With Different Verb" onclick="advancedActivityPostWithDifferentVerb(); return true;"/></p>
+
+      ]]>
+</Content>
+</Module>
