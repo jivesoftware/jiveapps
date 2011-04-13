@@ -98,6 +98,23 @@ function init() {
   loadUser();
 }
 
+// Load the replies to the currently selected discussion
+function loadDiscussionReplies() {
+    console.log("loadDiscussionReplies() started");
+    var root = current.messages.root;
+    console.log("root message is " + JSON.stringify(root));
+    root.get().execute(function(response) {
+        console.log("get response is " + JSON.stringify(response));
+        root = response.data;
+        root.replies.get({}).execute(function(response) {
+            console.log("replies response is " + JSON.stringify(response));
+            var replies = response.data;
+            showDiscussionReplies(replies);
+        });
+    });
+
+}
+
 // Load the discussions for this group
 function loadDiscussions() {
   console.log("loadDiscussions() started");
@@ -295,12 +312,31 @@ function showDiscussion() {
   $("#discussion-creationDate").html("").html(current.message.creationDate);
   $("#discussion-likeCount").html("").html(current.message.likeCount);
   $("#discussion-modificationDate").html("").html(current.message.modificationDate);
+  $("#discussion-replies").hide();
   $("#discussion-replyCount").html("").html(current.message.replyCount);
   $("#discussion-status").html("").html(current.message.status);
   $("#discussion-subject").attr("value", current.message.subject);
   $("#discussion-text").html("").html(current.message.content.text);
   $("#discussion-viewCount").html("").html(current.viewCount);
   showOnly("discussion-div");
+  loadDiscussionReplies();
+}
+
+// Show the specified top level replies for the current discussion
+function showDiscussionReplies(replies) {
+    var html = "<hr>";
+    if (replies) {
+        $.each(replies, function(index, reply) {
+            html += '<p>Reply ' + (index + 1) + ' by ' + reply.author.name + '</p>';
+            html += '<p>' + reply.content.text + '</p>';
+            if (reply.replyCount && (reply.replyCount > 0)) {
+                html += '<p>' + reply.replyCount + ' replies (not shown)' + '</p>'
+            }
+            html += '<hr>';
+        });
+    }
+    $("#discussion-replies").html("").html(html).show();
+    gadgets.window.adjustHeight();
 }
 
 // Show the existing document in "current"
