@@ -176,7 +176,8 @@ function loadGroups() {
     console.log("loadGroups() started");
     showMessage("Showing visible groups for '" + user.name + "' ...");
     showOnly("groups-div");
-    var callback = function(data) {
+    var callback = function(response) {
+        var data = response.data;
         console.log("selected group: ", data);
 	console.log("selected group is an osapi.jive.core.Group? " + (data instanceof osapi.jive.core.Group));
         group = data;
