@@ -1,0 +1,652 @@
+.mceContentBody .jive-pre {
+background-image:url(../../../../../../images/jive-bg-pre.gif);
+}
+.mceContentBody  .jive-quote, .mceContentBody  .jive-pre, .mceContentBody  blockquote, .mceContentBody  pre {
+background-color:#FFFFFF;
+background-repeat:repeat;
+border-color:#EEEEEE rgb(238, 238, 238) rgb(238, 238, 238) rgb(204, 204, 204);
+border-style:solid;
+border-width:1px 1px 1px 2px;
+}
+.mceContentBody .jive-pre {
+background-color:#EEEEEE;
+margin:1em 2em 0.5em;
+padding:10px 10px 10px 1em;
+}
+
+.ieShim {
+    /* We need a way to put whitespace in the DOM (so that IE TextRanges can be positioned reliably) but not have it show up or be cursor-reachable.  This does that.*/
+    display: none;
+    position: absolute;
+}
+
+
+
+
+.mceContentBody .mceItemHidden .mceItemHiddenSpellWord{ border-bottom: 1px red dashed;}
+
+.mceContentBody .jive_text_macro {
+    background-image:url(../../../../../../images/jive-bg-pre.gif);
+    background-color:#FFFFFF;
+    background-repeat:repeat;
+    border-color:#EEEEEE rgb(238, 238, 238) rgb(238, 238, 238) rgb(204, 204, 204);
+    border-style:solid;
+    border-width:1px 1px 1px 2px;
+    margin: 0;
+    padding: 1px 1px 1px 1px;
+    width: auto;
+}
+
+.mceContentBody .jive-pre{
+    background-image:url(../../../../../../images/jive-bg-pre.gif);
+    background-color:#FFFFFF;
+    background-repeat:repeat;
+    border-color:#EEEEEE rgb(238, 238, 238) rgb(238, 238, 238) rgb(204, 204, 204);
+    border-style:solid;
+    border-width:1px 1px 1px 2px;
+    margin:1em 2em 0.5em;
+    padding:10px 10px 10px 1em;
+    display:block;
+    overflow:auto;
+    width: auto;
+}
+
+.mceContentBody pre.jive_macro_quote,
+    .mceContentBody  .jive-quote, .mceContentBody  blockquote, .mceContentBody  pre{
+    background-image:url(../../../../../../images/quote-background-1.gif);
+    margin:1em 2em 0.5em;
+    padding:10px 10px 10px 1em;
+    font-family:Lucida Grande,Arial,Helvetica,sans-serif;
+    white-space:normal;
+}
+.mceContentBody pre.jive_macro_quote pre.jive_macro_quote,
+    .mceContentBody  .jive-quote .jive-quote,
+    .mceContentBody blockquote blockquote {
+    border: 1px #eef solid;
+    border-left: 2px #ccf solid;
+    background: url(../../../../../../images/quote-background-2.gif );
+}
+
+.mceContentBody pre.jive_macro_quote pre.jive_macro_quote pre.jive_macro_quote,
+    .mceContentBody .jive-quote .jive-quote .jive-quote,
+    .mceContentBody blockquote blockquote blockquote {
+    border: 1px #efe solid;
+    border-left: 2px #cfc solid;
+    background: url(../../../../../../images/quote-background-3.gif );
+}
+
+.mceContentBody pre.jive_macro_quote pre.jive_macro_quote pre.jive_macro_quote pre.jive_macro_quote,
+    .mceContentBody .jive-quote .jive-quote .jive-quote .jive-quote,
+    .mceContentBody blockquote blockquote blockquote blockquote {
+    border: 1px #fee solid;
+    border-left: 2px #fcc solid;
+    background: url(../../../../../../images/quote-background-4.gif );
+}
+
+
+.mceContentBody a:link, .mceContentBody a:visited{
+    color: #2989C5;
+    text-decoration: none;
+}
+.mceContentBody a:hover{
+    text-decoration: underline;
+}
+.mceContentBody a.active_link{
+    outline: thin solid #2989C5;
+}
+.mceContentBody a.jive_macro.active_link{
+    padding: 0px 0px 0px 19px;
+}
+.mceContentBody a.active_link img {
+    border:1px solid #2989C5;
+}
+.mceContentBody a img {
+    border:1px solid #2989C5;
+}
+.mceContentBody img.jive-image { margin: 12px; }
+
+.mceContentBody span.jive_macro,
+    .mceContentBody a.jive_macro{
+    padding: 0px 0px 0px 19px;
+    background: url(../../../../../../images/jive-icon-profile-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_thread{
+    background: url(../../../../../../images/jive-icon-forum-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_tag{
+    background: url(../../../../../../images/jive-icon-tag-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_microblog{
+    background: url(../../../../../../images/jive-icon-status-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_message{
+    background: url(../../../../../../images/jive-icon-forum-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_document{
+    background: url(../../../../../../images/jive-icon-wiki-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_external-site{
+    background: url(../../../../../../images/jive-icon-link-external-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_blogpost{
+    background: url(../../../../../../images/jive-icon-blog-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_blog{
+    background: url(../../../../../../images/jive-icon-blog-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_community{
+    background: url(../../../../../../images/jive-icon-community-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_space{
+    background: url(../../../../../../images/jive-icon-community-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_user{
+    background: url(../../../../../../images/jive-icon-profile-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_project{
+    background: url(../../../../../../images/jive-icon-project-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_task{
+    background: url(../../../../../../images/jive-icon-task-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_group{
+    background: url(../../../../../../images/jive-icon-groups-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_youtube{
+    background: url(../../../../../../images/jive-icon-youtube-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_videolink{
+    background: url(../../../../../../images/jive-icon-video-12x12.png) no-repeat 3px 3px;
+}
+.mceContentBody a.jive_macro_polls{
+    background: url(../../../../../../images/jive-icon-poll-12x12.png) no-repeat 3px 3px;
+}
+
+.mceContentBody img.jive_macro_youtube{
+    background: white url(../../../../../../images/jive-icon-youtube.gif) no-repeat center center;
+    border: 1px solid black;
+}
+.mceContentBody img.jive_macro_vimeo{
+    background: white url(../../../../../../images/jive-icon-vimeo.gif) no-repeat center center;
+    border: 1px solid black;
+}
+.mceContentBody img.jive_macro_veoh{
+    background: black url(../../../../../../images/jive-icon-veoh.gif) no-repeat center center;
+    border: 1px solid black;
+}
+.mceContentBody img.jive_macro_dailymotion{
+    background: white url(../../../../../../images/jive-icon-dailymotion.gif) no-repeat center center;
+    border: 1px solid black;
+}
+.mceContentBody img.jive_macro_google{
+    background: white url(../../../../../../images/jive-icon-google.gif) no-repeat center center;
+    border: 1px solid black;
+}
+
+.mceContentBody img.jive_macro_videomacro {
+    background:white url(../../../../../../images/video-placeholder.png ) no-repeat scroll center;
+    border:1px solid black;
+    width: 400px;
+    height: 333px;
+    }
+
+.mceContentBody img.jive_macro_toc{
+    background: white url(../../../../../../images/tiny_mce3/themes/advanced/img/toc.png) no-repeat center center;
+    border: 1px solid black;
+    width:61px;
+    height:72px;
+}
+.mceContentBody .jive_emote,
+    .mceContentBody img.jive_macro_emoticon{
+    width: 16px;
+    height: 16px;
+    border: 0px;
+}
+
+
+
+
+body.mceContentBody {
+    color:#575757;
+    font-family: arial,helvetica,sans-serif;
+    font-size:10pt;
+    background:transparent;
+    margin:0;
+    padding:8px;
+    position:relative;
+    line-height: 1.5em;
+}
+
+.mceContentBody pre {
+    display:block;
+    white-space:pre;
+    width:auto;
+}
+.mceContentBody p,
+    .mceContentBody li{
+    margin:0pt;
+    padding:0pt;
+}
+.mceContentBody ul,
+    .mceContentBody ol {
+    margin:0pt;
+    padding:0pt 0pt 0pt 30px;
+}
+
+.mceContentBody ol {
+    list-style-type: decimal;
+}
+.mceContentBody li { margin: .2em 0;}
+.mceContentBody h1,
+    .mceContentBody h2,
+    .mceContentBody h3,
+    .mceContentBody h4,
+    .mceContentBody h5,
+    .mceContentBody h6 {
+    font-weight:bold;
+    margin:0pt;
+    padding:0px;
+}
+.mceContentBody h1{ font-size:24px; }
+.mceContentBody h2{ font-size:20px; }
+.mceContentBody h3{ font-size:16px; }
+.mceContentBody h4{ font-size:13px; }
+.mceContentBody h5{ font-size:13px; }
+.mceContentBody h6{ font-size:13px; }
+.mceContentBody img {border:0;}
+.mceContentBody table {cursor:default;border-collapse:collapse;border-color:black;margin:-1px -1px 2px;}
+.mceContentBody table td,
+    .mceContentBody table th { border-collapse:collapse; cursor:text; border-color:inherit; font-weight: normal; padding: 2px;
+}
+.mceContentBody table tr,
+    .mceContentBody table tbody,
+    .mceContentBody table td,
+    .mceContentBody table th { border: inherit; }
+* .mceContentBody table tr, * .mceContentBody table tbody, * .mceContentBody html table td, * .mceContentBody html table th {border-style:solid; border-color:inherit; border-width:inherit;}
+* + .mceContentBody table tr, * + .mceContentBody table tbody, * + .mceContentBody html table td, * + .mceContentBody html table th {border-style:solid; border-color:inherit; border-width:inherit;}
+
+.mceContentBody .mceItemTable,
+    .mceContentBody .mceItemTable td,
+    .mceContentBody .mceItemTable th,
+    .mceContentBody .mceItemTable caption,
+    .mceContentBody .mceItemVisualAid {border: 1px dashed #BBB;}
+.mceContentBody a.mceItemAnchor {width:12px; line-height:6px; overflow:hidden; padding-left:12px; background:url(../../../../../../images/tiny_mce3/themes/advanced/skins/default/img/items.gif) no-repeat bottom left;}
+.mceContentBody img.mceItemAnchor {width:12px; height:12px; background:url(../../../../../../images/tiny_mce3/themes/advanced/skins/default/img/items.gif) no-repeat;}
+.mceContentBody .jiveNoBorder,
+    .mceContentBody .jiveNoBorder td,
+    .mceContentBody .jiveNoBorder th {border: 1px dashed #BBB;}
+.mceContentBody .jiveBorder,
+    .mceContentBody .jiveBorder td,
+    .mceContentBody .jiveBorder th {border: inherit;}
+
+/* IE */
+* html body.mceContentBody  {
+scrollbar-3dlight-color:#F0F0EE;
+scrollbar-arrow-color:#676662;
+scrollbar-base-color:#F0F0EE;
+scrollbar-darkshadow-color:#DDD;
+scrollbar-face-color:#E0E0DD;
+scrollbar-highlight-color:#F0F0EE;
+scrollbar-shadow-color:#F0F0EE;
+scrollbar-track-color:#F5F5F5;
+}
+
+body.mceContentBody {
+    text-align: left;
+}
+
+
+/** syntax highlight **/
+
+/**
+ * for image macros, the css name should be img.jive_macro_macronamehere
+ * the macro name should be the same as defined in plugin.xml
+ */
+.mceContentBody pre.jive_macro_code {
+    background:transparent none repeat scroll 0 0;
+    border:0 none;
+    font-family:helvetica,arial;
+    font-size:9pt !important;
+    padding-bottom:0;
+    padding-left:59px;
+    padding-top:0;
+    color: transparent;
+    *color: inherit;
+    line-height: 12pt;
+}
+
+.mceContentBody pre.jive_macro_code * {
+    background:transparent none repeat scroll 0 0;
+    color: transparent;
+    *color: inherit;
+}
+
+.mceContentBody .dp-highlighter,
+    .dp-highlighter
+{
+    font-family: "Consolas", "Courier New", Courier, mono, serif;
+    font-size: 12px;
+    background-color: #E7E5DC;
+    width: 99%;
+    overflow: auto;
+    margin: 18px 0 18px 0 !important;
+    padding-top: 1px; /* adds a little border on top when controls are hidden */
+}
+
+
+/* clear styles */
+.mceContentBody .dp-highlighter ol,
+.mceContentBody .dp-highlighter ol li,
+.mceContentBody .dp-highlighter ol li span,
+.dp-highlighter ol,
+.dp-highlighter ol li,
+.dp-highlighter ol li span
+{
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.mceContentBody .dp-highlighter ol li span{
+    visibility: hidden\9;
+}
+
+
+.mceContentBody .dp-highlighter a,
+.mceContentBody .dp-highlighter a:hover,
+.dp-highlighter a,
+.dp-highlighter a:hover
+{
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mceContentBody .dp-highlighter .bar,
+.dp-highlighter .bar
+{
+    padding-left: 45px;
+}
+
+.mceContentBody .dp-highlighter.collapsed .bar,
+.mceContentBody .dp-highlighter.nogutter .bar,
+.dp-highlighter.collapsed .bar,
+.dp-highlighter.nogutter .bar
+{
+    padding-left: 0px;
+}
+
+.mceContentBody .dp-highlighter ol,
+.dp-highlighter ol
+{
+    list-style: decimal; /* for ie */
+    background-color: #fff;
+    margin: 0px 0px 1px 45px !important; /* 1px bottom margin seems to fix occasional Firefox scrolling */
+    padding: 0px;
+    color: #5C5C5C;
+}
+
+.mceContentBody .dp-highlighter.nogutter ol,
+.mceContentBody .dp-highlighter.nogutter ol li,
+.dp-highlighter.nogutter ol,
+.dp-highlighter.nogutter ol li
+{
+    list-style: none !important;
+    margin-left: 0px !important;
+}
+
+.mceContentBody .dp-highlighter ol li,
+.mceContentBody .dp-highlighter .columns div,
+.dp-highlighter ol li,
+.dp-highlighter .columns div
+{
+    list-style: decimal-leading-zero; /* better look for others, override cascade from OL */
+    list-style-position: outside !important;
+    border-left: 3px solid #6CE26C;
+    background-color: #F8F8F8;
+    color: #5C5C5C;
+    padding: 0 3px 0 10px !important;
+    margin: 0 !important;
+    line-height: 14px;
+}
+
+.mceContentBody .dp-highlighter.nogutter ol li,
+.mceContentBody .dp-highlighter.nogutter .columns div,
+.dp-highlighter.nogutter ol li,
+.dp-highlighter.nogutter .columns div
+{
+    border: 0;
+}
+
+.mceContentBody .dp-highlighter .columns,
+.dp-highlighter .columns
+{
+    background-color: #F8F8F8;
+    color: gray;
+    overflow: hidden;
+    width: 100%;
+}
+
+.mceContentBody .dp-highlighter .columns div,
+.dp-highlighter .columns div
+{
+    padding-bottom: 5px;
+}
+
+.mceContentBody .dp-highlighter ol li.alt,
+.dp-highlighter ol li.alt
+{
+    background-color: #FFF;
+    color: inherit;
+}
+
+.mceContentBody .dp-highlighter ol li span,
+.dp-highlighter ol li span
+{
+    color: black;
+    background-color: inherit;
+}
+
+/* Adjust some properties when collapsed */
+
+.mceContentBody .dp-highlighter.collapsed ol,
+.dp-highlighter.collapsed ol
+{
+    margin: 0px;
+}
+
+.mceContentBody .dp-highlighter.collapsed ol li,
+.dp-highlighter.collapsed ol li
+{
+    display: none;
+}
+
+/* Additional modifications when in print-view */
+
+.mceContentBody .dp-highlighter.printing,
+.dp-highlighter.printing
+{
+    border: none;
+}
+
+.mceContentBody .dp-highlighter.printing .tools,
+.dp-highlighter.printing .tools
+{
+    display: none !important;
+}
+
+.mceContentBody .dp-highlighter.printing li,
+.dp-highlighter.printing li
+{
+    display: list-item !important;
+}
+
+/* Styles for the tools */
+
+.mceContentBody .dp-highlighter .tools,
+.dp-highlighter .tools
+{
+    padding: 3px 8px 3px 10px;
+    font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
+    color: silver;
+    background-color: #f8f8f8;
+    padding-bottom: 10px;
+    border-left: 3px solid #6CE26C;
+    display: none;
+}
+
+.mceContentBody .dp-highlighter.nogutter .tools,
+.dp-highlighter.nogutter .tools
+{
+    border-left: 0;
+}
+
+.mceContentBody .dp-highlighter.collapsed .tools,
+.dp-highlighter.collapsed .tools
+{
+    border-bottom: 0;
+}
+
+.mceContentBody .dp-highlighter .tools a,
+.dp-highlighter .tools a
+{
+    font-size: 9px;
+    color: #a0a0a0;
+    background-color: inherit;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.mceContentBody .dp-highlighter .tools a:hover,
+.dp-highlighter .tools a:hover
+{
+    color: red;
+    background-color: inherit;
+    text-decoration: underline;
+}
+
+/* About dialog styles */
+
+.mceContentBody .dp-about { background-color: #fff; color: #333; margin: 0px; padding: 0px; }
+.mceContentBody .dp-about table { width: 100%; height: 100%; font-size: 11px; font-family: Tahoma, Verdana, Arial, sans-serif !important; }
+.mceContentBody .dp-about td { padding: 10px; vertical-align: top; }
+.mceContentBody .dp-about .copy { border-bottom: 1px solid #ACA899; height: 95%; }
+.mceContentBody .dp-about .title { color: red; background-color: inherit; font-weight: bold; }
+.mceContentBody .dp-about .para { margin: 0 0 4px 0; }
+.mceContentBody .dp-about .footer { background-color: #ECEADB; color: #333; border-top: 1px solid #fff; text-align: right; }
+.mceContentBody .dp-about .close { font-size: 11px; font-family: Tahoma, Verdana, Arial, sans-serif !important; background-color: #ECEADB; color: #333; width: 60px; height: 22px; }
+
+/* Language specific styles */
+
+.mceContentBody .dp-highlighter .comment,
+.mceContentBody .dp-highlighter .comments,
+.dp-highlighter .comment,
+.dp-highlighter .comments
+{
+    color: #008200;
+    background-color: inherit;
+}
+.mceContentBody .dp-highlighter .string,
+.dp-highlighter .string
+{
+    color: blue;
+    background-color: inherit;
+}
+.mceContentBody .dp-highlighter .number,
+.dp-highlighter .number
+{
+    color: green;
+    background-color: inherit;
+}
+.mceContentBody .dp-highlighter .keyword,
+.dp-highlighter .keyword
+{
+    color: #069;
+    background-color: inherit;
+}
+.mceContentBody .dp-highlighter .preprocessor,
+.dp-highlighter .preprocessor
+{
+    color: gray;
+    background-color: inherit;
+}
+
+
+/**
+ * jive styles for code
+ */
+.mceContentBody .dp-highlighter ol li span,
+.dp-highlighter ol li span
+{
+    font-size: 9pt !important;
+    font-family: helvetica, arial;
+    border: 0;
+}
+.mceContentBody .dp-highlighter,
+.dp-highlighter
+{
+    margin: 0px !important;
+    overflow: hidden;
+}
+.mceContentBody .dp-highlighter ol li,
+.mceContentBody .dp-highlighter .columns div,
+.dp-highlighter ol li,
+.dp-highlighter .columns div
+{
+    line-height: 12pt;
+    height:12pt;
+    position: relative;
+}
+
+
+
+/*body, td, pre {color:#575757; font-family:Arial, Helvetica, sans-serif; font-size:13px; margin:8px;}
+body {background:#FFF;}
+body.mceForceColors {background:#FFF; color:#000;}
+body.mceBrowserDefaults {background:transparent; color:inherit; font-size:inherit; font-family:inherit;}
+h1 {font-size: 2em}
+h2 {font-size: 1.5em}
+h3 {font-size: 1.17em}
+h4 {font-size: 1em}
+h5 {font-size: .83em}
+h6 {font-size: .75em}
+.mceItemTable, .mceItemTable td, .mceItemTable th, .mceItemTable caption, .mceItemVisualAid {border: 1px dashed #BBB;}
+a.mceItemAnchor {display:inline-block; width:11px !important; height:11px  !important; background:url(img/items.gif) no-repeat 0 0;}
+span.mceItemNbsp {background: #DDD}
+td.mceSelected, th.mceSelected {background-color:#3399ff !important}
+img {border:0;}
+table {cursor:default}
+table td, table th {cursor:text}
+ins {border-bottom:1px solid green; text-decoration: none; color:green}
+del {color:red; text-decoration:line-through}
+cite {border-bottom:1px dashed blue}
+acronym {border-bottom:1px dotted #CCC; cursor:help}
+abbr {border-bottom:1px dashed #CCC; cursor:help}
+p {margin:0;}
+*/
+/* IE */
+/** html body {
+scrollbar-3dlight-color:#F0F0EE;
+scrollbar-arrow-color:#676662;
+scrollbar-base-color:#F0F0EE;
+scrollbar-darkshadow-color:#DDD;
+scrollbar-face-color:#E0E0DD;
+scrollbar-highlight-color:#F0F0EE;
+scrollbar-shadow-color:#F0F0EE;
+scrollbar-track-color:#F5F5F5;
+}
+
+img:-moz-broken {-moz-force-broken-image-icon:1; width:24px; height:24px}
+font[face=mceinline] {font-family:inherit !important}
+
+.mceItemMedia {border:1px dotted #cc0000; background-position:center; background-repeat:no-repeat; background-color:#ffffcc}
+.mceItemShockWave {background-image:url(../../img/shockwave.gif)}
+.mceItemFlash {background-image:url(../../img/flash.gif)}
+.mceItemQuickTime {background-image:url(../../img/quicktime.gif)}
+.mceItemWindowsMedia {background-image:url(../../img/windowsmedia.gif)}
+.mceItemRealMedia {background-image:url(../../img/realmedia.gif)}
+.mceItemVideo {background-image:url(../../img/video.gif)}
+.mceItemIframe {background-image:url(../../img/iframe.gif)}
+.mcePageBreak {display:block;border:0;width:100%;height:12px;border-top:1px dotted #ccc;margin-top:15px;background:#fff url(../../img/pagebreak.gif) no-repeat center top;}
+*/
