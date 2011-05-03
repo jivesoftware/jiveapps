@@ -40,7 +40,15 @@ function initEditor() {
 function initPlacePickerButton() {
   $("#btn_choose_place").click(function() {
     osapi.jive.core.places.requestPicker({placeType: 'space', success: function(response) {
-      currentSpace = response.data;
+      // support older version of osapi.jive.core.places.requestPicker which returned space directly
+      if(response instanceof osapi.jive.core.Space) {
+        currentSpace = response;
+
+      // support newer version of osapi.jive.core.places.requestPicker which returns space inside response.data
+      } else if (response.hasOwnProperty("data") && response.data instanceof osapi.jive.core.Space) {
+        currentSpace = response.data;
+      }
+
       $("#document_list_title").html("Documents for Space: " + currentSpace.name);
       $("#btn_new").show();
       initDocList(currentSpace);
@@ -80,7 +88,6 @@ function initPublishButton() {
       currentDoc.content.text = tinyMCE.get('doc_content').getContent();
       currentDoc.update().execute(publishCallback);
     }
-
 
   });
 }
