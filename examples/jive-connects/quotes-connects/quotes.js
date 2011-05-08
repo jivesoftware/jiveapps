@@ -29,6 +29,28 @@ function enableHandlers() {
         var quote = quotes[index];
         console.log("Approving quote " + JSON.stringify(quote));
         update(quote, "approved");
+        var verb = "Approved";
+        var user = users[quote.quoteUser.username];
+        var entry = {
+            activity : {
+                body : '{@actor} approved a quote for {@target}',
+                object : {
+                    summary : 'The approved quote totaled $<b>' + quote.totalPriceString
+                            + '</b> for account <i>' + quote.customer.name + '</i>.  '
+                },
+                target : {
+                    id : user.resources.self.ref,
+                    summary : user.name
+                },
+//                title : verb + ' A Quote',
+                verb : verb
+            }
+        };
+        console.log("Creating activity stream entry = " + JSON.stringify(entry));
+        osapi.activities.create(entry).execute(function(response) {
+            console.log("creating activity stream entry response = " + JSON.stringify(response));
+            alert("Created an activity stream entry");
+        });
     });
     $("#next").click(function() {
         console.log("Next clicked at offset " + params.offset);
@@ -169,6 +191,7 @@ function loadQuotes() {
             }
         }
         else {
+            console.log("loadQuotes response is " + JSON.stringify(response));
             var html = "";
             quotes = response.content;
             $.each(quotes, function(index, quote) {
