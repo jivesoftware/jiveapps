@@ -178,7 +178,7 @@ function loadGroups() {
     showOnly("groups-div");
     var callback = function(response) {
         var data = response.data;
-        console.log("selected group: ", data);
+        console.log("selected group: ", JSON.stringify(data));
 	console.log("selected group is an osapi.jive.core.Group? " + (data instanceof osapi.jive.core.Group));
         group = data;
         $(".group-name").html("").html(group.name);
