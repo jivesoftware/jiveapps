@@ -39,10 +39,10 @@ function enableHandlers() {
                             + '</b> for account <i>' + quote.customer.name + '</i>.  '
                 },
                 target : {
-                    id : user.resources.self.ref,
-                    summary : user.name
+                    id : 'urn:jiveObject:user/' + user.id,
+                    url : 'http://craig-z800.jiveland.com:8080/people/sales1',
+                    title : user.name
                 },
-//                title : verb + ' A Quote',
                 verb : verb
             }
         };
