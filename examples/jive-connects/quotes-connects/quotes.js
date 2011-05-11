@@ -31,17 +31,21 @@ function enableHandlers() {
         update(quote, "approved");
         var verb = "Approved";
         var user = users[quote.quoteUser.username];
+        var url = $("#hidden-approval").attr("src");
+        console.log("Image url is " + url);
         var entry = {
             activity : {
                 body : '{@actor} approved a quote for {@target}',
                 object : {
+                    mediaLink : {
+                        url : url
+                    },
                     summary : 'The approved quote totaled $<b>' + quote.totalPriceString
                             + '</b> for account <i>' + quote.customer.name + '</i>.  '
                 },
                 target : {
-                    id : 'urn:jiveObject:user/' + user.id,
-                    url : 'http://craig-z800.jiveland.com:8080/people/sales1',
-                    title : user.name
+                    id : 'urn:jiveObject:user/' + user.id
+//                    title : user.name
                 },
                 verb : verb
             }

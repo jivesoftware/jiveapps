@@ -10,6 +10,10 @@
         <Require feature="jquery-1.4.2"/>
         <Require feature="dynamic-height"/>
         <Require feature="views"/>
+        <Require feature="content-rewrite">
+            <Param name="include-url">*.gif</Param>
+            <Param name="include-uri">*.png</Param>
+        </Require>
     </ModulePrefs>
     <Content view="home" type="html" href="quotes_home.html"/>
     <Content view="canvas" type="html" href="quotes_canvas.html"/>
