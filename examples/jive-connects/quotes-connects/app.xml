@@ -3,7 +3,7 @@
     <ModulePrefs title="Quotes Approval"
                 author="Jive Software"
            description="Manage pending sales quotations">
-        <Link rel="Icon" href="wiretrasnfer_16x16.png"/>
+        <Link rel="Icon" href="wiretransfer_16x16.png"/>
         <Link rel="MediumIcon" href="wiretransfer_48x48.png"/>
         <Link rel="LargeIcon" href="wiretransfer_128x128.png"/>
         <Require feature="jive-connects-v1">
