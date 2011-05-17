@@ -36,6 +36,7 @@ function enableHandlers() {
         var entry = {
             activity : {
                 body : '{@actor} approved a quote for {@target}',
+                jiveDisplay : 'grouped', // Default is "update" for individual rows
                 object : {
                     mediaLink : {
                         url : url
@@ -45,15 +46,15 @@ function enableHandlers() {
                 },
                 target : {
                     id : 'urn:jiveObject:user/' + user.id
-//                    title : user.name
                 },
+                title : "Approved Quotes", // Recommended for grouped activities
                 verb : verb
             }
         };
         console.log("Creating activity stream entry = " + JSON.stringify(entry));
         osapi.activities.create(entry).execute(function(response) {
             console.log("creating activity stream entry response = " + JSON.stringify(response));
-            alert("Created an activity stream entry");
+//            alert("Created an activity stream entry");
         });
     });
     $("#next").click(function() {
