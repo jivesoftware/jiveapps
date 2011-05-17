@@ -109,13 +109,47 @@ function enableHandlers() {
 //            alert("Created an activity stream entry");
         });
     });
+    $(".review").live("click", function() {
+        var index = parseInt($(this).attr("data-index"));
+        var quote = quotes[index];
+        console.log("Reviewing quote " + JSON.stringify(quote));
+        var verb = "post";
+        var user = users[quote.quoteUser.username];
+        var url = $("#hidden-refresh").attr("src");
+        // Create an action for the specified sales rep
+        var entry = {
+            activity : {
+                body : '{@target} needs to review a quote with {@actor}',
+                object : {
+                    actionLinks : [
+                        { title : 'Done' }
+                    ],
+                    mediaLink : {
+                        url : url
+                    },
+                    summary : 'The quote to review totals $<b>' + quote.totalPriceString
+                            + '</b> for account <i>' + quote.customer.name + '</i>.  '
+                },
+                target : {
+                    id : 'urn:jiveObject:user/' + user.id
+                },
+                title : 'Schedule Quote Review'
+            },
+            deliverTo : user.id // Can be an array of ids to send a task to multiple users
+        };
+        console.log("Creating action = " + JSON.stringify(entry));
+        osapi.activities.create(entry).execute(function(response) {
+            console.log("Creating action response = " + JSON.stringify(response));
+            alert("Created a task");
+        });
+    });
 }
 
 // Generate an "approve" action for the specified row
 function generateApprove(index) {
     var html = "<a href=\"#\"";
     html += " class=\"icon i-approve approve\"";
-    html += " data-index=\"" + index + "\"";
+    html += " data-index=\"" + index + "\">";
     html += "Approve";
     html += "</a>";
     return html;
@@ -125,8 +159,18 @@ function generateApprove(index) {
 function generateReject(index) {
     var html = "<a href=\"#\"";
     html += " class=\"icon i-reject reject\"";
-    html += " data-index=\"" + index + "\"";
+    html += " data-index=\"" + index + "\">";
     html += "Reject";
+    html += "</a>";
+    return html;
+}
+
+// Generate a "review" action for the specified row
+function generateReview(index) {
+    var html = "<a href=\"#\"";
+    html += " class=\"icon i-refresh review\"";
+    html += " data-index=\"" + index + "\">";
+    html += "Review";
     html += "</a>";
     return html;
 }

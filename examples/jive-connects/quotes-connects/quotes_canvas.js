@@ -8,7 +8,7 @@ function populateRow(index, quote, html) {
     html += "<td class=\"switch-view\" data-index=\"" + index + "\" align=\"center\">" + quote.quoteNumber + "</td>"
     html += "<td class=\"switch-view\" data-index=\"" + index + "\" align=\"right\">$" + quote.totalPriceString + "</td>";
     if (quote.status == "pending") {
-        html += "<td align=\"center\">" + generateApprove(index) + generateReject(index) + "</td>";
+        html += "<td align=\"center\">" + generateApprove(index) + generateReview(index) + generateReject(index) + "</td>";
     }
     else {
         html += "<td align=\"center\"><span class=\"" + quote.status + "\">" + quote.status + "</span></td>";

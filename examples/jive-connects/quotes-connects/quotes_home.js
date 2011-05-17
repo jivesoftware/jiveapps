@@ -7,7 +7,7 @@ function populateRow(index, quote, html) {
     html += "<span class=\"user-profile\" data-index=\"" + index + "\">" + quote.quoteUser.firstName + " " + quote.quoteUser.lastName + "</span>";
     html += "</td>";
     if (quote.status == "pending") {
-        html += "<td align=\"center\">" + generateApprove(index) + generateReject(index) + "</td>";
+        html += "<td align=\"center\">" + generateApprove(index) + generateReview(index) + generateReject(index) + "</td>";
     }
     else {
         html += "<td align=\"center\"><span class=\"" + quote.status + "\">" + quote.status + "</span></td>";
