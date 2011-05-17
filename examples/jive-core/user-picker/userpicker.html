@@ -1,0 +1,23 @@
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="javascripts/main.js"></script>
+
+<h2>Select a User</h2>
+
+<input type="checkbox" id="select_multiple" name="select_multiple" value="select_multiple"> Select Multiple?<br>
+<input type="button" id="btn_user_picker"   name="btn_user_picker"   value="Select User" />
+
+<div id="user-info" style="display: none">
+  <p>User Info:</p>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="user-content">
+    </tbody>
+  </table>
+</div>
