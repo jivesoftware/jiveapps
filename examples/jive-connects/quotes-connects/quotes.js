@@ -32,10 +32,11 @@ function enableHandlers() {
         var verb = "Approved";
         var user = users[quote.quoteUser.username];
         var url = $("#hidden-approval").attr("src");
+        // Describe an activity stream entry that will be grouped under the specified title
         var entry = {
             activity : {
                 body : '{@actor} approved a quote for {@target}',
-                jiveDisplay : 'grouped', // Default is "update" for individual rows
+                jiveDisplay : 'grouped', // Request grouping
                 object : {
                     mediaLink : {
                         url : url
@@ -46,13 +47,13 @@ function enableHandlers() {
                 target : {
                     id : 'urn:jiveObject:user/' + user.id
                 },
-                title : "Approved Quotes", // Recommended for grouped activities
+                title : "Approved Quotes", // Grouped entries SHOULD have a title but will get a blank one if not present
                 verb : verb
             }
         };
         console.log("Creating activity stream entry = " + JSON.stringify(entry));
         osapi.activities.create(entry).execute(function(response) {
-            console.log("creating activity stream entry response = " + JSON.stringify(response));
+            console.log("Creating activity stream entry response = " + JSON.stringify(response));
 //            alert("Created an activity stream entry");
         });
     });
@@ -84,10 +85,11 @@ function enableHandlers() {
         var verb = "Rejected";
         var user = users[quote.quoteUser.username];
         var url = $("#hidden-reject").attr("src");
+        // Describe an activity stream entry that will NOT be grouped
         var entry = {
             activity : {
                 body : '{@actor} rejected a quote for {@target}',
-                jiveDisplay : 'update',
+                jiveDisplay : 'update', // Optional, because this is the default
                 object : {
                     mediaLink : {
                         url : url
@@ -98,13 +100,12 @@ function enableHandlers() {
                 target : {
                     id : 'urn:jiveObject:user/' + user.id
                 },
-                title : "Rejected Quotes", // Recommended for grouped activities
                 verb : verb
             }
         };
         console.log("Creating activity stream entry = " + JSON.stringify(entry));
         osapi.activities.create(entry).execute(function(response) {
-            console.log("creating activity stream entry response = " + JSON.stringify(response));
+            console.log("Creating activity stream entry response = " + JSON.stringify(response));
 //            alert("Created an activity stream entry");
         });
     });
