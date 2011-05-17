@@ -32,7 +32,6 @@ function enableHandlers() {
         var verb = "Approved";
         var user = users[quote.quoteUser.username];
         var url = $("#hidden-approval").attr("src");
-        console.log("Image url is " + url);
         var entry = {
             activity : {
                 body : '{@actor} approved a quote for {@target}',
@@ -82,6 +81,32 @@ function enableHandlers() {
         var quote = quotes[index];
         console.log("Rejecting quote " + JSON.stringify(quote));
         update(quote, "rejected");
+        var verb = "Rejected";
+        var user = users[quote.quoteUser.username];
+        var url = $("#hidden-reject").attr("src");
+        var entry = {
+            activity : {
+                body : '{@actor} rejected a quote for {@target}',
+                jiveDisplay : 'update',
+                object : {
+                    mediaLink : {
+                        url : url
+                    },
+                    summary : 'The rejected quote totaled $<b>' + quote.totalPriceString
+                            + '</b> for account <i>' + quote.customer.name + '</i>.  '
+                },
+                target : {
+                    id : 'urn:jiveObject:user/' + user.id
+                },
+                title : "Rejected Quotes", // Recommended for grouped activities
+                verb : verb
+            }
+        };
+        console.log("Creating activity stream entry = " + JSON.stringify(entry));
+        osapi.activities.create(entry).execute(function(response) {
+            console.log("creating activity stream entry response = " + JSON.stringify(response));
+//            alert("Created an activity stream entry");
+        });
     });
 }
 
