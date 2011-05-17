@@ -18,8 +18,8 @@
     <ModulePrefs title="Salesforce.Com Metadata Browser"
                 author="Jive Software"
            description="Browse metadata for the Salesforce.Com REST API">
-        <Require feature="jive-connects-1.0.0">
-            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://salesforce.com/api?version=1</Param>
+        <Require feature="jive-connects-v1">
+            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://appiriosfdc/api?version=1</Param>
         </Require>
         <Require feature="jquery-1.4.2"/>
         <Require feature="dynamic-height"/>
