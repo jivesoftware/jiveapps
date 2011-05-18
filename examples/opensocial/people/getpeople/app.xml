@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Copyright 2011 Jive Software
+   -
+   - Licensed under the Apache License, Version 2.0 (the "License");
+   - you may not use this file except in compliance with the License.
+   - You may obtain a copy of the License at
+   -
+   -    http://www.apache.org/licenses/LICENSE-2.0
+   -
+   - Unless required by applicable law or agreed to in writing, software
+   - distributed under the License is distributed on an "AS IS" BASIS,
+   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   - See the License for the specific language governing permissions and
+   - limitations under the License.
+  -->
+<Module>
+  <ModulePrefs title="Get People Example">
+    <Require feature="opensocial-1.0" />
+    <Require feature="opensocial-data"/>
+    <Require feature="opensocial-templates"/>
+    <Require feature="osapi"/>
+    <Require feature="jquery-1.4.2"/>
+    <Require feature="dynamic-height"/> 
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
+        <os:ViewerRequest key="viewer"/>
+      </script>
+
+      <script type="text/javascript">
+
+        var people = [ ];
+
+        var viewer;
+
+        function init() {
+            registerEvents();
+            viewer = opensocial.data.getDataContext().getDataSet('viewer');
+            console.log("Viewer is " + JSON.stringify(viewer));
+            gadgets.window.adjustHeight();
+        }
+
+        function registerEvents() {
+          $("#selector").change(function() {
+              var groupID = $("#selector").val();
+              console.log("Selecting people for groupID '" + groupID + "'");
+              osapi.people.get({
+                  userId : '@me',
+                  groupId : groupID
+              }).execute(function(response) {
+                console.log("Select response is " + JSON.stringify(response));
+                var html = "";
+                if (response.list) {
+                    $.each(response.list, function(index, user) {
+                        html += "<li>" + user.displayName + "</li>";
+                    });
+                }
+                else {
+                    var user = response;
+                    html += "<li>" + user.displayName + "</li>";
+                }
+                $("#list").html("").html(html);
+                gadgets.window.adjustHeight();
+              });
+          });
+        }
+
+        gadgets.util.registerOnLoadHandler(init);
+
+
+      </script>
+
+        <div>
+            <p>Hello <span id="viewer-name"></span></p>
+            <p>Pick the group of people you would like to see</p>
+            <select id="selector">
+                <option value="" disabled="disabled">----------</option>
+                <option value="@self">@self</option>
+                <option value="@friends">@friends</option>
+                <option value="@all">@all</option>
+            </select>
+            <ul id="list"></ul>
+        </div>
+
+    ]]>
+  </Content>
+</Module>
