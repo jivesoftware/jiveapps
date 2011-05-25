@@ -16,11 +16,17 @@ var connection;
 // Customers on this page, keyed by customerID
 var customers = { };
 
+// Factory for mini messages
+var mini;
+
 // Quotes for this page, as an array
 var quotes = [ ];
 
 // Users (sales reps) on this page, keyed by username
 var users = { };
+
+// The viewing user
+var viewer;
 
 // Enable all of the active page elements
 function enableHandlers() {
@@ -116,13 +122,13 @@ function enableHandlers() {
         var verb = "post";
         var user = users[quote.quoteUser.username];
         var url = $("#hidden-refresh").attr("src");
-        // Create an action for the specified sales rep
+        // Create an action alert for the specified sales rep
         var entry = {
             activity : {
                 body : '{@target} needs to review a quote with {@actor}',
                 object : {
                     actionLinks : [
-                        { title : 'Done' }
+                        { title : 'Dismiss' }
                     ],
                     mediaLink : {
                         url : url
@@ -135,12 +141,12 @@ function enableHandlers() {
                 },
                 title : 'Schedule Quote Review'
             },
-            deliverTo : user.id // Can be an array of ids to send a task to multiple users
+            deliverTo : [ viewer.id, user.id ] // Can be an array of ids to send a task to multiple users
         };
         console.log("Creating action = " + JSON.stringify(entry));
         osapi.activities.create(entry).execute(function(response) {
             console.log("Creating action response = " + JSON.stringify(response));
-            alert("Created a task");
+            mini.createTimerMessage("Created an action alert for " + user.name, 5);
         });
     });
 }
@@ -177,6 +183,7 @@ function generateReview(index) {
 
 // On-view-load initialization
 function init() {
+    mini = new gadgets.MiniMessage();
     var data = gadgets.views.getParams();
     console.log("Received params " + JSON.stringify(data));
     if (data && data.offset) {
@@ -186,6 +193,7 @@ function init() {
     enableHandlers();
     switchViewControls();
     gadgets.window.adjustHeight();
+    loadViewer();
 //    loadQuotes(); // Called from within switchViewControls at the appropriate time
 }
 
@@ -244,15 +252,15 @@ function loadCustomers() {
 
 // Retrieve all the quotes on this page, respecting our pagination controls
 function loadQuotes() {
-    var message = "Loading data at offset " + params.offset;
-    console.log(message);
-    $("#table-body").html("<tr><td colspan=\"5\" align=\"center\">" + message + "</td></tr>");
+    var message = mini.createStaticMessage("Loading quotes for page " + ((params.offset / params.limit) + 1));
+    $("#table-body").html("<tr><td colspan=\"5\" align=\"center\">&nbsp;</td></tr>");
     osapi.jive.connects.get({
         alias : QUOTES,
         headers : { 'Accept' : [ 'application/json' ] },
         href : '/quotes',
         params : params
     }).execute(function(response) {
+        mini.dismissMessage(message);
         if (response.error) {
             if (response.error.code == 401) {
                 console.log("Received a 401 response, triggering reconfiguration before trying again");
@@ -262,7 +270,7 @@ function loadQuotes() {
                 })
             }
             else {
-                alert("Error " + response.error.code + " loading data: " + response.error.message);
+                mini.createDismissibleMessage("Error " + response.error.code + " loading data: " + response.error.message);
             }
         }
         else {
@@ -329,7 +337,7 @@ function loadUsers() {
     $.each(usernames, function(index, username) {
         loadUser(username).execute(function(response) {
             if (response.error) {
-                alert("Error looking up user information for username '" + username + "', code=" +
+                mini.createDismissibleMessage("Error looking up user information for username '" + username + "', code=" +
                       response.error.code + ", message='" + response.error.message + "'");
             }
             else {
@@ -340,6 +348,22 @@ function loadUsers() {
                 users[user.username] = user;
             }
         });
+    });
+}
+
+// Load the viewer user
+function loadViewer() {
+    console.log("Loading viewing user");
+    osapi.jive.core.users.get({
+        id : "@viewer"
+    }).execute(function(response) {
+        if (response.error) {
+            console.log("Error loading viewing user, code=" + response.error.code + ", message=" + response.error.message);
+        }
+        else {
+            viewer = response.data;
+            console.log("Got user " + JSON.stringify(viewer));
+        }
     });
 }
 

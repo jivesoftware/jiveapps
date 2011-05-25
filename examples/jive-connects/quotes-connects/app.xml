@@ -11,6 +11,7 @@
         </Require>
         <Require feature="jive-core-v2"/>
         <Require feature="dynamic-height"/>
+        <Require feature="minimessage"/>
         <Require feature="views"/>
         <Require feature="content-rewrite">
             <Param name="include-url">*.gif</Param>
