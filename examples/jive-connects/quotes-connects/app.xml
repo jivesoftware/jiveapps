@@ -10,7 +10,6 @@
             <Param name="alias:quotes|title:Quotes Service">jive:service://jivesoftware.com/demo/quotes?version=1</Param>
         </Require>
         <Require feature="jive-core-v2"/>
-        <Require feature="jquery-1.4.2"/>
         <Require feature="dynamic-height"/>
         <Require feature="views"/>
         <Require feature="content-rewrite">
