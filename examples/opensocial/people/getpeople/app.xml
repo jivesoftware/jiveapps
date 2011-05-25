@@ -48,18 +48,29 @@
               console.log("Selecting people for groupID '" + groupID + "'");
               osapi.people.get({
                   userId : '@me',
-                  groupId : groupID
+                  groupId : groupID,
+                  fields : 'id,name,thumbnail_url,jive_enabled'
               }).execute(function(response) {
                 console.log("Select response is " + JSON.stringify(response));
                 var html = "";
                 if (response.list) {
                     $.each(response.list, function(index, user) {
-                        html += "<li>" + user.displayName + "</li>";
+                        if (user.jive_enabled) {
+                            html += "<li>" + user.displayName + "</li>";
+                        }
+                        else {
+                            html += "<li>" + user.displayName + " (disabled)" + "</li>";
+                        }
                     });
                 }
                 else {
                     var user = response;
-                    html += "<li>" + user.displayName + "</li>";
+                    if (user.jive_enabled) {
+                        html += "<li>" + user.displayName + "</li>";
+                    }
+                    else {
+                        html += "<li>" + user.displayName + " (disabled)" + "</li>";
+                    }
                 }
                 $("#list").html("").html(html);
                 gadgets.window.adjustHeight();
