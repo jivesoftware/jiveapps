@@ -13,20 +13,41 @@
    - See the License for the specific language governing permissions and
    - limitations under the License.
 -->
-<script type="text/javascript" src="updates.js"></script>
-<link rel="stylesheet" href="updates.css" type="text/css" media="screen" />
-
+<head>
+  <script type="text/javascript" src="updates.js"></script>
+  <link rel="stylesheet" href="updates.css" type="text/css" media="screen"/>
+  <link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.13.css" type="text/css" media="screen"/>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js" type="text/javascript"></script>
+</head>
+<body>
 <!-- Form to create an update -->
-<form id="update_form" action="">
-  <p>
-    <label for="update_entry">What's going on?</label><br/>
-    <input id="update_entry"/>
-    <input type="submit" value="Go">
+<form id="update-form" action="" class="ui-corner-all">
+  <p style="padding: 4px;">
+    <label for="update-entry">What's going on?</label>
+  </p>
+  <p style="padding: 4px;">
+    <input id="update-entry"/>
+  </p>
+  <p style="text-align: right; padding: 4px;">
+    <input id="update-post" type="submit" value="Go">
   </p>
 </form>
 
+
 <!-- Display recent updates -->
-<div id="updates">
-  <h3>Most Recent Updates</h3>
-  <ul id="recent_updates"></ul>
+<div style="margin: 5px">
+  <div id="updates-accordion">
+    <h3 id="all-updates-header"><a href="#">All Updates</a></h3>
+
+    <div>
+      <ul id="all-updates" class="updates"></ul>
+    </div>
+
+    <h3 id="my-updates-header"><a href="#">My Updates</a></h3>
+    <div>
+      <ul id="my-updates" class="updates"></ul>
+    </div>
+  </div>
 </div>
+</body>

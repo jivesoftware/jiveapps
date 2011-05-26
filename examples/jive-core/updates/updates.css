@@ -2,18 +2,18 @@
     font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
   }
 
-  #update_form {
+  #update-form {
     margin: 5px;
     background: #f6f6f6;
     border: 1px solid #ccc;
     padding: 3px;
   }
 
-  #update_form p {
+  #update-form p {
     margin: 0;
   }
 
-  #update_entry {
+  #update-entry {
     width: 95%;
     border: 1px solid #ccc;
     font-size: 12px;
@@ -27,19 +27,18 @@
     overflow: auto;
   }
 
-  #updates h3 {
+  #updates-accordion h3 a {
     margin: 0 0 5px 0;
-    border-bottom: 1px solid #ccc;
     font-weight: normal;
   }
 
-  #recent_updates {
+  ul.updates {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  #recent_updates li {
+  ul.updates li {
     border-bottom: 1px solid #ccc;
     font-size: 11px;
     padding: 6px 0;
