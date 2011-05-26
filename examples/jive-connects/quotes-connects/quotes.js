@@ -5,7 +5,7 @@ var QUOTES = "quotes";
 var params = {
     direction : "ascending",
     index : 0,
-    limit : 5,
+    limit : 3, // Will be replaced from user preferences
     offset : 0,
     order :  "dueDate"
 }
@@ -62,12 +62,14 @@ function enableHandlers() {
             console.log("Creating activity stream entry response = " + JSON.stringify(response));
 //            alert("Created an activity stream entry");
         });
+        return false;
     });
     $("#next").click(function() {
         console.log("Next clicked at offset " + params.offset);
         params.offset += params.limit;
         $(this).blur();
         loadQuotes();
+        return false;
     })
     $("#previous").click(function() {
         console.log("Previous clicked at offset " + params.offset);
@@ -77,11 +79,13 @@ function enableHandlers() {
         }
         $(this).blur();
         loadQuotes();
+        return false;
     });
     $("#refresh").click(function() {
         console.log("Refresh clicked at offset " + params.offset);
         $(this).blur();
         loadQuotes();
+        return false;
     });
     $(".reject").live("click", function() {
         var index = parseInt($(this).attr("data-index"));
@@ -114,6 +118,7 @@ function enableHandlers() {
             console.log("Creating activity stream entry response = " + JSON.stringify(response));
 //            alert("Created an activity stream entry");
         });
+        return false;
     });
     $(".review").live("click", function() {
         var index = parseInt($(this).attr("data-index"));
@@ -148,6 +153,7 @@ function enableHandlers() {
             console.log("Creating action response = " + JSON.stringify(response));
             mini.createTimerMessage("Created an action alert for " + user.name, 5);
         });
+        return false;
     });
 }
 
@@ -189,6 +195,9 @@ function init() {
     if (data && data.offset) {
         params = data;
     }
+    prefs = new gadgets.Prefs();
+    console.log("Limit preference is " + prefs.getString("limit"));
+    params.limit = prefs.getInt("limit");
     console.log("Params are now " + JSON.stringify(params));
     enableHandlers();
     switchViewControls();

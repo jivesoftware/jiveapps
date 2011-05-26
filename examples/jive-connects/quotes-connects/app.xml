@@ -18,6 +18,13 @@
             <Param name="include-uri">*.png</Param>
         </Require>
     </ModulePrefs>
+    <UserPref name="limit" datatype="enum" display_name="Page Size" default_value="5">
+        <EnumValue value="4" display_value="4"/>
+        <EnumValue value="5" display_value="5"/>
+        <EnumValue value="6" display_value="6"/>
+        <EnumValue value="7" display_value="7"/>
+        <EnuMValue value="8" display_value="8"/>
+    </UserPref>
     <Content view="home" type="html" href="quotes_home.html"/>
     <Content view="canvas" type="html" href="quotes_canvas.html"/>
 </Module>
