@@ -1,58 +1,17 @@
 /*
-body
-	{font-family:arial,helvetica,sans-serif;
-	color:#333}
-img
-	{border:0}
-a
-	{color:#5986ae;
-	text-decoration:none}
-a:hover
-	{text-decoration:underline}
-.approve
-	{color:#green}
-.reject
-	{color:#red}
-.wrapper
-	{margin:15px 10px 0px 0px;
-	padding:3px;
-	width:300px}
-.title
-	{float:left;
-	width:70%;
-	text-transform:uppercase;
-	color:#666;
-	font-weight:bold;
-	font-size:12px;
-	margin:0px 0px 10px 0px}
-.refresh
-	{float:right;
-	font-size:12px;
-	text-align:center}
-.h_view
-	{width:100%;
-	border-collapse:collapse}
-.h_view th
-	{font-size:12px;
-	text-align:left}
-.h_view tr
-	{font-size:11px;
-	text-align:left;
-	height:35px;
-	border-bottom:1px solid #e5e5e5}
-.h_view td
-	{padding:3px;
-	vertical-align:top}
-.h_view_more
-	{text-align:right;
-	font-weight:bold;
-	padding:10px 5px 0px 0px}
-.h_view .descr
-	{width:300px}
-.button
-	{padding:6px 15px 8px 15px;
-	color:#fff;
-	text-decoration:none}
+   Copyright 2011 Jive Software
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 
 /* home view styles */
