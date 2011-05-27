@@ -1,23 +1,48 @@
+var core = osapi.jive.core;
+
 function loadUpdates(updatesHtml, userId) {
+  core.updates.get({limit: 10, userId: userId}).execute(function(response) {
+    processUpdates(updatesHtml, response);
+  });
+}
 
-  osapi.jive.core.updates.get({limit: 10, userId: userId}).execute(function(response) {
-    if (response.error) {
-      return;
+function processUpdates(updatesHtml, response) {
+  if (response.error) {
+    return;
+  }
+  var updates = response.data;
+
+  var newUpdatesHtml = updatesHtml.clone().html('');
+  for (var i = 0; i < updates.length; i++) {
+    var update = updates[i];
+    var user = update.author;
+
+    var userAnchor;
+    if (user) {
+      userAnchor = $("<a href='javascript:void(0);'>" + user.name + ":</a>").data("userResource",
+          user.self.get()).click(loadUserUpdates);
+    } else {
+      userAnchor = "";
     }
-    var updates = response.data;
+    var updateListItem = $("<li></li>");
+    updateListItem.append($("<strong></strong>").append(userAnchor));
+    updateListItem.append(update.content.text);
 
-    var newUpdatesHtml = updatesHtml.clone().html('');
-    for (var i = 0; i < updates.length; i++) {
-      var update = updates[i];
-      var user = update.author;
+    updateListItem.appendTo(newUpdatesHtml);
+  }
 
-      newUpdatesHtml.append("<li><strong>" + (user ? user.name + ": " : "") + "</strong>" +
-          update.content.text + "</li>");
-    }
+  updatesHtml.replaceWith(newUpdatesHtml);
+  $("#updates-accordion").accordion("resize");
+}
 
-    updatesHtml.replaceWith(newUpdatesHtml);
-    $("#updates-accordion").accordion("resize");
-    gadgets.window.adjustHeight();
+function loadUserUpdates() {
+  var userResource = $(this).data("userResource");
+  userResource.execute(function(response) {
+    var user = new core.User(response.data);
+    user.updates.get().execute(function(response) {
+      $("#updates-accordion").accordion("activate", 2);
+      processUpdates($("#user-updates"), response)
+    });
   });
 }
 
@@ -49,6 +74,9 @@ gadgets.util.registerOnLoadHandler(function() {
     return false;
   };
   $("#updates-accordion").accordion({changestart: accordionChange});
+    $("#updates-accordion").accordion({change: function() {
+      gadgets.window.adjustHeight();
+    }});
   $("#update-post").button();
 
   loadUpdates($("#all-updates"), null);
