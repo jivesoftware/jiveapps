@@ -1,32 +1,38 @@
 <script type="text/javascript">
 
     function init() {
-        gadgets.window.adjustHeight(800);
-        console.log("Window Location Href is " + window.location.href);
-        console.log("Base URL is " + baseURL());
+        gadgets.window.adjustHeight(725);
+        gadgets.log("Window Location Href is " + window.location.href);
+        gadgets.log("Base URL is " + baseURL());
+        // What version of Flash are we running?
+        gadgets.log("Flash version is " + gadgets.flash.getMajorVersion());
         // Document the static image tag url
-        console.log("Left Image URL is " + $("#static-image").attr("src"));
+        gadgets.log("Left Image URL is " + $("#static-image").attr("src"));
         // Render and document the dynamic image tags
         var url = (baseURL() + "/" + "AKG-Headphone-icon.png"); // .replace("http:","https:");
-        console.log("Middle Image URL is " + url);
+        gadgets.log("Middle Image URL is " + url);
         var html = '<img src="' + url + '"/>';
         $("#dynamic-image-1").html(html);
         url = "https://www.google.com/intl/en/images/logos/chrome_logo.gif";
-        console.log("Right Image URL is " + url);
+        gadgets.log("Right Image URL is " + url);
         html = '<img src="' + url + '"/>';
         $("#dynamic-image-2").html(html);
         // Render the first Flash widget relative to our gadget.xml file
         url = (baseURL() + "/" + "flash-christmas.swf"); // .replace("http:","https:");
-        console.log("First Flash URL is " + url);
+        gadgets.log("First Flash URL is " + url);
         gadgets.flash.embedFlash(url, "christmas-flash", 9, {
             id : "christmas-flash",
             width : 300,
-            height : 150
+            height : 100
         });
         // Render the second Flash widget from an absolute URL
         url = "https://www.adobe.com/content/dotcom/en/devnet/actionscript/samples/game_1/_jcr_content/articlecontentAdobe/generic/file.res/1_maze%5b1%5d.swf";
-        console.log("Second Flash URL is " + url);
-        gadgets.flash.embedFlash(url, "maze-flash", 9);
+        gadgets.log("Second Flash URL is " + url);
+        gadgets.flash.embedFlash(url, "maze-flash", 9, {
+            id : "maze-flash",
+            width : 800,
+            height : 300
+        });
     }
 
     // Return the base URL for our gadget, from which we can

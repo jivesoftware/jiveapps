@@ -235,7 +235,12 @@ function loadConnection() {
 }
 
 function _contains(ids, id) {
-    return (ids.indexOf(id) >= 0);
+    for (var i = 0; i < ids.length; i++) {
+        if (ids[i] == id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Return a request object to retrieve the specified customer by customerID
