@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2011 Jive Software
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Module>
+    <!-- http://venaglia-z800.jiveland.com:8000/throttling/throttle-test.xml -->
+    <ModulePrefs title="API throttling test app" author="Jive Software" author_link="http://www.jivesoftware.com"
+            description="An app suitable for testing throttling functions, specifically against the activity API.">
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="osapi"/>
+        <Require feature="views" />
+    </ModulePrefs>
+    <Content type="html" view="home,canvas" preferred_height="400">
+    <![CDATA[
+        <style type="text/css">
+            body {
+                margin: 1em;
+            }
+
+            body, td, th, p {
+                font-family: sans-serif;
+                font-size: 12px;
+                margin: 1em;
+            }
+
+            .danger {
+                color: #C00;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .progressBox {
+                margin: 2px 3%;
+            }
+
+            .progressBox .bar {
+                position: relative;
+                height: 12px;
+                margin: 6px 0 2px;
+                border: #666 1px solid;
+            }
+
+            .progressBox .bar > * {
+                float: left;
+                width: 100%;
+                height: 12px;
+                text-align: center;
+            }
+
+            .progressBox .bar + label {
+                font-size: 10px;
+                display: block;
+                margin: -6px 0 6px 4px;
+                clear: both;
+            }
+
+            .monitorOnHint {
+                font-size: 12px;
+                margin: 12px 32px;
+            }
+
+            .monitorOnHint img {
+		position: absolute;
+                left: 24px;
+                padding-top: 2px;
+            }
+
+            #count_sent {
+                background-color: #66A;
+            }
+
+            #count_success {
+                background-color: #090;
+            }
+
+            #count_error {
+                background-color: #900;
+            }
+
+            #count_busy {
+                background-color: #FC0;
+            }
+        </style>
+        <script type="text/javascript">
+
+            function getProfile() {
+                var profile = /^(\d+):((0\.)?\d+)$/.exec($("#profile").val());
+                return { "count": Number(profile[1]), "duration": Number(profile[2]) };
+            }
+
+            function wireLaunch() {
+                $("#processing").hide();
+                $("#landing").show();
+                $("#go").one("click", function() {
+                    var profile = getProfile();
+                    launch(profile.count, profile.duration);
+                });
+                $("#profile").change();
+                gadgets.window.adjustHeight();
+            }
+
+            function launch(count, duration) {
+                duration = Math.round(duration * 1000); // seconds to ms
+                var startTime = new Date().getTime();
+                var endTime = startTime + duration;
+                var ratePerMS = count / duration;
+                var countSent = 0;
+                var responseCount = {"success":0, "error":0, "busy":0, "total":0};
+                var stopSending = null;
+                var stopProgress = null;
+
+                function abortSending() {
+                    if (stopSending) {
+                        window.clearTimeout(stopSending);
+                        stopSending = null;
+                    }
+                    $("#stop").hide();
+                    $("#close").show();
+                    gadgets.window.adjustHeight();
+                }
+
+                function percent(dom, done, label) {
+                    var p = Math.max(Math.min(done / count, 1.0), 0.0);
+                    p = Math.round(p * 10000.0) / 100.0;
+                    dom.width(String(p) + "%").attr("title", done + " " + label);
+                }
+
+                function updateProgress() {
+                    stopProgress = null;
+                    var now = Math.min(new Date().getTime(), endTime);
+                    percent($("#count_sent"), countSent, "sent");
+                    percent($("#count_success"), responseCount.success, "succeeded");
+                    percent($("#count_error"), responseCount.error, "failed");
+                    percent($("#count_busy"), responseCount.busy, "too busy");
+                    if (responseCount.total < count) {
+                        stopProgress = window.setTimeout(updateProgress, 250);
+                    }
+                }
+
+                function mockBatch() {
+                    var resp = {};
+                    return {
+                        add: function(id) {
+                            var rnd = Math.random();
+                            var r = {};
+                            if (rnd < 0.05) r.error = { code: 500 };
+                            else if (rnd < 0.7) r.error = { code: 503 };
+                            else r.data = [];
+                            resp[id] = r;
+                        },
+                        execute: function(f) {
+                            window.setTimeout(function() {
+                                f(resp);
+                            }, Math.round(Math.random() * 380) + 20); // execute in 20-400ms
+                        }
+                    }
+                }
+
+                function doRequests(startSeq, count) {
+                    var batch = osapi.newBatch(); // use for real server calls
+//                    var batch = mockBatch(); // use to simulate server calls
+                    for (var i = 0; i < count; ++i) {
+                        var seq = "seq" + String(startSeq + i);
+                        batch.add(seq, osapi.people.get({}));
+                    }
+                    batch.execute(function(response) {
+//                        console.log(response);
+                        for (var key in response) {
+                            if (!response.hasOwnProperty(key)) continue;
+                            responseCount.total++;
+                            var r = response[key];
+                            if (!r.error) {
+                                var obj = r.data; // do something with the result
+                                responseCount.success++;
+                            } else { // handle the error
+                                if (r.error.code == 503) {
+                                    responseCount.busy++;
+                                } else {
+                                    responseCount.error++;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function more() {
+                    stopSending = null;
+                    var now = Math.min(new Date().getTime(), endTime);
+                    var shouldBeSent = Math.round((now - startTime) * ratePerMS);
+                    if (countSent < shouldBeSent) {
+                        doRequests(countSent, shouldBeSent - countSent);
+                        countSent = shouldBeSent;
+                    }
+                    if (now < endTime) {
+                        stopSending = window.setTimeout(more, 5);
+                    } else {
+                        abortSending();
+                    }
+                }
+
+                // go!
+                updateProgress();
+                window.setTimeout(more, 5);
+                $(".frame").hide();
+                $("#stop").show().unbind("click").click(function() {
+                    abortSending();
+                });
+                $("#close").hide().unbind("click").click(function() {
+                    if (stopProgress) {
+                        window.clearTimeout(stopProgress);
+                        stopProgress = null;
+                    }
+                    wireLaunch();
+                });
+                $("#processing").show();
+                gadgets.window.adjustHeight();
+            }
+
+            function init() {
+                var fn = function() {
+                    var profile = getProfile();
+                    $("#count").text(Math.round(profile.count));
+                    $("#duration").text(Math.round(profile.duration));
+                };
+                $("#profile").change(fn).click(fn).keyup(fn);
+                wireLaunch();
+            }
+
+            gadgets.util.registerOnLoadHandler(init);
+        </script>
+        <div id="landing" class="frame">
+            <p class="danger">
+                This app will deliberately create an extreme load against the
+                Jive server!
+            </p>
+            <p class="danger">
+                Running this test may have detrimental effects!
+            </p>
+
+            <p>
+                This test will generate <span id="count" class="test-param">5</span>
+                requests in <span id="duration" class="test-param">0</span> seconds.<br/>
+                <select id="profile">
+                    <option value="5:0.005">One ping only</option>
+                    <option value="150:45">Angry</option>
+                    <option value="500:45">Cruel</option>
+                    <option value="2500:45">Vicious</option>
+                    <option value="50000:120">Eats Puppies for Breakfast</option>
+                </select>
+                <button id="go">Launch all zig!</button>
+            </p>
+        </div>
+        <div id="processing" class="frame" style="display:none;">
+            <div class="progressBox">
+                <div class="bar">
+                    <div id="count_sent" style="width:0;"></div>
+                </div>
+                <label>requests sent</label>
+            </div>
+            <div class="progressBox">
+                <div class="bar">
+                    <div id="count_success" style="width:0;"></div>
+                    <div id="count_error" style="width:0;"></div>
+                    <div id="count_busy" style="width:0;"></div>
+                </div>
+                <label>responses received</label>
+            </div>
+            <div class="monitorOnHint">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAbrwAAG68BXhqRHAAAAAd0SU1FB9sGChYnNcAN+gwAAAKRSURBVDjLjZJJTBNxFMbffzoznQ6IVLYCLWGxFUSIhoMHqQdCFINNOMCBQIzEg9xU1MQl6sGAJ008euRgvGiIjmAM5SCliBFkDQSloQ0Whg4zhbbTZZjFi5CmUOO7veT7fvneApBSNWebAQCg41pPC/Np5MVn5+jLuw/72gAAUEZ5qhx0yY29qR2QDnLqz18cvn+7u9NWUUKY8nPy6s7UXvnNSa0Ig+HistM77NrSvgelEq/feDJ5wlqxKUuRL4WFJiOuxWaECNYiq1D7Y3pO3//qmZVhGM3hcBxMcLX7Xmtn2wXJ51l6RxGqF8N0ApDHOgg9VY5hKNHUeC43KOqExw96pvc8WDJgbmZKslaUG+Px2K6qQSZFH20iCUQgNTFPkRhXZMoTa6qPW5I9eHJD0zQe4Lh5k6kgVlJmK8Zx0qvI0iiVn1stihEBVNmfnUULaQE4SQpO5whvsZg1ms4oUwAUVYeqEChChkEf9vlWt5d/ethkz/4ILpcLFFWbWFj2WVRFkWORbZcYFX9pAH49jvExMeRhhpzxNf/65M07jw4msNvtAABxfXO7l+ODRFZWZnB+ZV1fkGdMyEZDiAtsJrxrrDg08DoydFgCAACGYcA5+Gbs6+RiYTgcVtc3Wfr77II+Ghb48W+zOQpBjT/tew5pd7B3WyEY9MiyimgDHtpVEK5poHF80P/hbT+8/9cnAgCUlpYCy7JUQka3pLhYL0vxusXFlaq52Rk3z20EUvUHPvFvHXFcvhSyWW0aQjhU15xCXV1dZgDwpwqxNABli98CA0WihsYG5POuAiBMPUyYDhDFkG5pgw2Ae8wNUz+mAhjSdv4bUFlpA/f4xMnsbONAkdn8kWEGLb29fdHDtH8AJA4Wqx2DCMQAAAAASUVORK5CYII=" width="16" height="16"/>
+                To view server load, select "Monitor On" from the context menu and
+                point to the small gray box that overlays the chrome.
+            </div>
+            <button id="stop">Abort Test</button>
+            <button id="close">Close</button>
+        </div>
+        ]]>
+    </Content>
+
+</Module>
