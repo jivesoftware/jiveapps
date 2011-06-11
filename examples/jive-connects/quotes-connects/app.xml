@@ -28,6 +28,9 @@
         <Require feature="jive-custom-settings-1.0.0"/>
         <Require feature="dynamic-height"/>
         <Require feature="minimessage"/>
+        <Require feature="opensocial-templates">
+            <Param name="requireLibrary">templates.xml</Param>
+        </Require>
         <Require feature="setprefs"/>
         <Require feature="views"/>
         <Require feature="content-rewrite">

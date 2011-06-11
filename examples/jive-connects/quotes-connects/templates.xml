@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Templates xmlns:q="http://jivesoftware.com/templates/quotes"
+          xmlns:os="http://opensocial.org/templates">
+
+    <Namespace prefix="q" url="http://jivesoftware.com/templates/quotes"/>
+
+    <!-- Individual table row for the canvas view -->
+    <Template tag="q:canvasRow">
+        <tr data-index="${???}">
+            <td class="switch-view">${My.quote.dueDateString}</td>
+            <td class="switch-view"><strong>${My.quote.customer.name}</strong></td>
+            <td align="center">
+                ${My.quote.quoteUser.firstName} ${My.quote.quoteUser.lastName}
+            </td>
+            <td class="switch-view" align="center">${My.quote.quoteNumber}</td>
+            <td class="switch-view" align="right">${My.quote.totalPriceString}</td>
+            <!-- If pending -->
+            <td align="center">
+                TODO - three buttons
+            </td>
+            <!-- If not pending -->
+            <td align="center" class="${My.quote.status}">${My.quote.status}</td>
+        </tr>
+    </Template>
+
+    <!-- Individual table row for home view -->
+    <Template tag="q:homeRow">
+    </Template>
+
+</Templates>
