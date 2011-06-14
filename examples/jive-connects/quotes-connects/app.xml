@@ -45,7 +45,7 @@
         <EnumValue value="7" display_value="7"/>
         <EnuMValue value="8" display_value="8"/>
     </UserPref>
-    <Content view="home" type="html" href="quotes_home.html"/>
+    <Content view="home" type="html" href="quotes_home.html" preferred_height="400"/>
     <Content view="canvas" type="html" href="quotes_canvas.html"/>
-    <Content view="user-prefs" type="html" href="user_prefs.html" preferred_height="450"/>
+    <Content view="user-prefs" type="html" href="user_prefs.html" preferred_height="600"/>
 </Module>

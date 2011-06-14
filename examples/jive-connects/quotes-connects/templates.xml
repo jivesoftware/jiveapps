@@ -4,9 +4,18 @@
 
     <Namespace prefix="q" url="http://jivesoftware.com/templates/quotes"/>
 
+    <!-- Table body for the canvas view -->
+    <Template tag="q:canvasBody">
+        <tbody id="table-body">
+            <os:Repeat expression="${Top.quotes}" var="Quote">
+                <q:canvasRow quote="{Quote}" index="{Index}"/>
+            </os:Repeat>
+        </tbody>
+    </Template>
+
     <!-- Individual table row for the canvas view -->
     <Template tag="q:canvasRow">
-        <tr data-index="${???}">
+        <tr data-index="${My.index}">
             <td class="switch-view">${My.quote.dueDateString}</td>
             <td class="switch-view"><strong>${My.quote.customer.name}</strong></td>
             <td align="center">
@@ -14,17 +23,16 @@
             </td>
             <td class="switch-view" align="center">${My.quote.quoteNumber}</td>
             <td class="switch-view" align="right">${My.quote.totalPriceString}</td>
-            <!-- If pending -->
-            <td align="center">
-                TODO - three buttons
-            </td>
-            <!-- If not pending -->
-            <td align="center" class="${My.quote.status}">${My.quote.status}</td>
+            <os:If condition="${My.quote.status} == 'approved'">
+                <td align="center" class="${My.quote.status}">${My.quote.status}</td>
+            </os:If>
+            <os:If condition="${My.quote.status} == 'rejected'">
+                <td align="center" class="${My.quote.status}">${My.quote.status}</td>
+            </os:If>
+            <os:If condition="${My.quote.status} == 'pending'">
+                <td align="center">TODO - buttons</td>
+            </os:If>
         </tr>
-    </Template>
-
-    <!-- Individual table row for home view -->
-    <Template tag="q:homeRow">
     </Template>
 
 </Templates>

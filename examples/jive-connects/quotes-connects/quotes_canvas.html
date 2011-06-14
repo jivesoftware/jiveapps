@@ -14,11 +14,17 @@
    limitations under the License.
 -->
 
+<html>
+<head>
 <link rel="stylesheet" type="text/css" href="quotes.css"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script type="text/javascript" src="quotes.js"></script>
 <script type="text/javascript" src="quotes_canvas.js"></script>
-<div class="wrapper">
+<script type="text/os-template" autoUpdate="true"></script> <!-- Hack to avoid Shindig stripping out template handling -->
+</head>
+<body>
+<div class="wrapper" xmlns:q="http://jivesoftware.com/templates/quotes"
+                    xmlns:os="http://opensocial.org/templates">
 
     <div class="title">My Quotes</div>
 
@@ -34,6 +40,7 @@
         </tr>
         </thead>
         <tbody id="table-body"></tbody>
+<!--        <q:canvasBody/> -->
     </table>
 
     <div class="buttons">
@@ -49,3 +56,5 @@
     </div>
 
 </div>
+</body>
+</html>
