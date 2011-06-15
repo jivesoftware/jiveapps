@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="__MSG_activity.title__" author="Jive Software" author_link="http://www.jivesoftware.com"
+            description="An app suitable for testing functions of Activity Stream, Notifications and Actions.">
+        <Link rel="Icon" href="icons/petting-zoo.16x16.png" />
+        <Link rel="MediumIcon" href="icons/petting-zoo.48x48.png" />
+        <Link rel="LargeIcon" href="icons/petting-zoo.128x128.png" />
+        <Locale lang="en">
+            <msg name="activity.title">Petting Zoo</msg>
+
+            <msg name="activity.verbs.feed.title">Feeding Time</msg>
+            <msg name="activity.verbs.feed.body">${@actor} fed ${@object}</msg>
+            <msg name="activity.verbs.feed.summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+            <msg name="activity.verbs.feed.title.request">Feeding time for ${@object}</msg>
+            <msg name="activity.verbs.feed.body.request">${@actor} has asked you to feed ${object.title} today.</msg>
+            <msg name="activity.verbs.feed.summary.request">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+
+            <msg name="activity.verbs.groom.title">Animal Hygiene - Fun at the Wash Rack</msg>
+            <msg name="activity.verbs.groom.body">${@actor} groomed ${@object}</msg>
+            <msg name="activity.verbs.groom.summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+            <msg name="activity.verbs.groom.title.request">${@object} needs attention</msg>
+            <msg name="activity.verbs.groom.body.request">${@actor} has asked you to groom ${object.title} today.</msg>
+            <msg name="activity.verbs.groom.summary.request">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+
+            <msg name="activity.verbs.buy.title">Barnyard Auction - New Arrivals</msg>
+            <msg name="activity.verbs.buy.body">${@actor} bought ${@object} from ${@target} for ${purchasePrice}.</msg>
+            <msg name="activity.verbs.buy.summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+            <msg name="activity.verbs.buy.title.request">${@actor} wants to buy ${@object} from ${@target} for ${purchasePrice}</msg>
+            <msg name="activity.verbs.buy.body.request">${@actor} has asked you to approve an animal purchase</msg>
+            <msg name="activity.verbs.buy.summary.request">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+
+            <msg name="activity.verbs.sell.title">Barnyard Auction - Farewells</msg>
+            <msg name="activity.verbs.sell.body">${@actor} sold ${@object} to ${@target} for ${purchasePrice}.</msg>
+            <msg name="activity.verbs.sell.summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+            <msg name="activity.verbs.sell.title.request">${@actor} wants to sell ${@object} to ${@target} for ${purchasePrice}</msg>
+            <msg name="activity.verbs.sell.body.request">${@actor} has asked you to approve an animal purchase</msg>
+            <msg name="activity.verbs.sell.summary.request">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at feugiat orci. Nulla facilisi. Suspendisse urna libero, tempor in lobortis ut, tempus at dolor. Suspendisse pretium, nunc sit amet dictum euismod, mi elit cursus ipsum, id iaculis erat dui a sem. Nunc vitae lacus justo, vitae volutpat est. Etiam sed ligula sapien. Praesent tristique imperdiet orci id condimentum. Curabitur sodales nisi sed arcu accumsan a convallis augue sollicitudin. Sed justo ipsum, pulvinar ac vehicula sit.</msg>
+        </Locale>
+        <Locale lang="es">
+            <msg name="activity.title">Petting Zoo</msg>
+        </Locale>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="opensocial-1.0"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v2"/>
+        <Require feature="jive-canvas-v1"/>
+        <Require feature="osapi"/>
+        <Require feature="views" />
+    </ModulePrefs>
+    <Content type="html" view="home,canvas" href="html/main.html"/>
+    <Content type="html" view="canvas.bid.buy" preferred_height="240" href="html/buy.html"/>
+    <Content type="html" view="canvas.bid.sell" preferred_height="240" href="html/sell.html"/>
+</Module>

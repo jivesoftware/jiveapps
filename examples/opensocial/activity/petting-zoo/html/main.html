@@ -1,0 +1,95 @@
+<style type="text/css">
+body {
+    background-color: #f2f4f0;
+    margin: 1em;
+}
+
+body, td, th, p {
+    font-size: 12px;
+    margin: 1em;
+}
+
+#imageBox {
+    float: right;
+    overflow: visible;
+    width: 120px;
+    height: 10px;
+    color: #696;
+    text-align: center;
+    font-size: 5pt;
+    letter-spacing: 0.2em;
+}
+
+#image {
+    width: 120px;
+}
+
+#icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+}
+</style>
+
+<script type="text/javascript" src="js/activitydata.js"></script>
+<script type="text/javascript" src="js/activity.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+
+<div id="imageBox"><img id="image"/><span id="imageCaption"></span></div>
+
+<p>
+    Animal:
+    <select id="object">
+        <option value="bessie">Bessie the cow
+        </option>
+        <option value="lucky">Lucky the goat</option>
+        <option value="molly">Molly the pig</option>
+        <option value="rex">Rex the chicken</option>
+    </select>
+</p>
+<p>
+    Action:
+    <img id="icon"/>
+    <select id="verb">
+        <option value="feed">Feed</option>
+        <option value="groom">Groom</option>
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+    </select>
+</p>
+<p style="display: none; clear:both;">
+    From/To:
+    <select id="target">
+        <option value="neighbor">a neighbor</option>
+        <option value="friend">a friend</option>
+        <option value="flintstone">Fred Flintstone</option>
+    </select>
+    for:
+    <select id="amount">
+        <option value="0">free</option>
+        <option value="10">$10.00</option>
+        <option value="75">$75.00</option>
+        <option value="500">$500.00</option>
+    </select>
+</p>
+
+<p>
+    <button id="btn_publish">Publish Activity</button>
+</p>
+
+<p>
+    <button id="btn_inbox_notification">Send to Inbox of:</button>
+    <select id="deliverTo_notify"></select>
+</p>
+
+<p>
+    <button id="btn_inbox_bid" class="action_item_button">Send Bid Offer To:</button>
+    <button id="btn_inbox_approval" class="action_item_button">Delegate Action To:</button>
+    <select id="deliverTo_approve"></select>
+</p>
+
+<p style="display: none;">
+    Response:
+    <output id="response"></output>
+</p>
+

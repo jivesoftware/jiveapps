@@ -1,0 +1,58 @@
+<style type="text/css">
+body {
+    background-color: #f2f4f0;
+    margin: 1em;
+}
+
+body, td, th, p {
+    font-size: 12px;
+    margin: 1em;
+}
+
+#imageBox {
+    float: right;
+    overflow: visible;
+    width: 120px;
+    height: 10px;
+    color: #696;
+    text-align: center;
+    font-size: 5pt;
+    letter-spacing: 0.2em;
+}
+
+#image {
+    width: 120px;
+}
+
+#icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+}
+</style>
+
+<script type="text/javascript" src="js/activitydata.js"></script>
+<script type="text/javascript" src="js/activity.js"></script>
+<script type="text/javascript" src="js/sell.js"></script>
+
+<div id="no-item" style="display:none;">
+    <p>Unable to find an pending action queue item.</p>
+    <button id="btn_go_to_canvas_view" class="action_item_button">Accept</button>
+</div>
+
+<div id="imageBox"><img id="image"/><span id="imageCaption"></span></div>
+
+<p>
+    <span id="buyer"></span> wants to buy <span id="object"></span> from you, for <span id="amount"></span>.
+</p>
+
+<p>
+    Your counter offer: <input type="text" value="" id="offer"/>
+</p>
+
+<p>
+    <button id="btn_approve" class="action_item_button">Accept</button>
+    <button id="btn_reject" class="action_item_button">Refuse</button>
+    <button id="btn_counter_bid" class="action_item_button">Send counter offer</button>
+</p>
+
