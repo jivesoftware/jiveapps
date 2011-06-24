@@ -15,9 +15,9 @@
     <Require feature="views" />
 
     <!-- Icons - 3 sizes, 16x16, 48x48, 128x128 -->
-    <Link rel="Icon"       href="https://github.com/jivesoftware/jiveapps/raw/master/examples/jive-core/document-crud-rte/images/icon16.png" />
-    <Link rel="MediumIcon" href="https://github.com/jivesoftware/jiveapps/raw/master/examples/jive-core/document-crud-rte/images/icon48.png" />
-    <Link rel="LargeIcon"  href="https://github.com/jivesoftware/jiveapps/raw/master/examples/jive-core/document-crud-rte/images/icon128.png" />
+    <Link rel="Icon"       href="images/icon16.png" />
+    <Link rel="MediumIcon" href="images/icon48.png" />
+    <Link rel="LargeIcon"  href="images/icon128.png" />
 
   </ModulePrefs>
 
