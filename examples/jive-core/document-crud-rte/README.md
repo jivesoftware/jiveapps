@@ -1,8 +1,8 @@
-= Document CRUD RTE Example
+# Document CRUD RTE Example
 
 This example demonstrates full CRUD (Create Read Update Delete) capabilities for documents, with a rich text editor interface (using TinyMCE).
 
-== Components
+## Components
 
 * app.xml - the main gadget xml file
 * canvas.html - the view, used for both the home and canvas view
