@@ -185,7 +185,7 @@ function loadGroups() {
         loadDocuments();
     };
     $('#select-group-button').unbind().bind("click", function() {
-        osapi.jive.core.places.requestPicker({success: callback, placeType: "group"});
+        osapi.jive.core.places.requestPicker({success: callback, placeType: "group", contentType: "document"});
     });
 }
 
