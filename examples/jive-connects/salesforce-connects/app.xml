@@ -20,8 +20,7 @@
            description="Interact with the Salesforce.Com REST API">
         <Require feature="dynamic-height"/>
         <Require feature="jive-connects-v1">
-<!--            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://salesforce.com/api?version=1</Param> -->
-            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://appiriosfdc/api?version=1</Param>
+            <Param name="alias:salesforce|title:Salesforce.Com REST API">jive:service://salesforce.com/api?version=1</Param>
         </Require>
         <Require feature="jive-core-v2"/>
         <Require feature="jquery-1.4.2"/>
