@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Google Maps Hello World Example">
+  </ModulePrefs>
+  <Content type="html" preferred_height="400" view="home,canvas" href="google_map.html"/>
+</Module>
