@@ -1,0 +1,70 @@
+<script type="text/javascript" src="search-content.js"></script>
+
+<h3>Search Criteria</h3>
+
+<table border="0" padding="2px">
+    <tr>
+        <th align="right">Include Comments?</th>
+        <td><input type="checkbox" checked="checked" id="comment"/></td>
+    </tr>
+    <tr>
+        <th align="right">Include Discussions?</th>
+        <td><input type="checkbox" checked="checked" id="discussion"/></td>
+    </tr>
+    <tr>
+        <th align="right">Include Documents?</th>
+        <td><input type="checkbox" checked="checked" id="document"/></td>
+    </tr>
+    <tr>
+        <th align="right">Include Messages?</th>
+        <td><input type="checkbox" checked="checked" id="message"/></td>
+    </tr>
+    <tr>
+        <th align="right">Include Posts?</th>
+        <td><input type="checkbox" checked="checked" id="post"/></td>
+    </tr>
+    <tr>
+        <th align="right">Maximum Results:</th>
+        <td><input type="text" id="limit" value="25"></td>
+    </tr>
+    <tr>
+        <th align="right">Sort Order:</th>
+        <td>
+            <select id="sort-order">
+                <option value="descending">descending</option>
+                <option value="ascending">ascending</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th align="right">Sort Type:</th>
+        <td>
+            <select id="sort-type">
+                <option value="relevance">Relevance</option>
+                <option value="date">Last Modification</option>
+                <option value="subject">Subject</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th align="right">Query String:</th>
+        <td><input type="text" id="query"/></td>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+        <td><button id="search">Search</button></td>
+    </tr>
+</table>
+
+<h3>Search Results</h3>
+
+<table>
+    <thead>
+        <th>Type</th>
+        <th>Reference</th>
+        <th>Last Modified</th>
+        <th>Subject</th>
+    </thead>
+    <tbody id="search-results"></tbody>
+</table>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Search Jive Content"
+                author="Jive Software"
+           description="Exercise content search capabilities of Jive Core API."
+                height="400">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v2"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="search-content.html"/>
+    <Content view="canvas" type="html" href="search-content.html"/>
+</Module>
