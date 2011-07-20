@@ -4,7 +4,7 @@ var currentDoc = null;
 function initEditor() {
   $('textarea.tinymce').tinymce({
     // Location of TinyMCE script
-    script_url : 'https://github.com/jivesoftware/jiveapps/raw/master/examples/jive-core/document-crud-rte/tinymce/jscripts/tiny_mce/tiny_mce.js',
+    script_url : 'https://raw.github.com/jivesoftware/jiveapps/master/examples/jive-core/document-crud-rte/tinymce/jscripts/tiny_mce/tiny_mce.js',
 
     // General options
     theme : "advanced",
