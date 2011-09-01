@@ -28,8 +28,8 @@
         <Require feature="jive-custom-settings-1.0.0"/>
         <Require feature="dynamic-height"/>
         <Require feature="minimessage"/>
-        <Require feature="opensocial-templates">
-            <Param name="requireLibrary">templates.xml</Param>
+        <Require feature="opensocial-templates"> <!-- TODO point at version on GitHub when committed -->
+            <Param name="requireLibrary">http://craig-z800.jiveland.com/jiveapps/examples/jive-connects/quotes-connects/templates.xml</Param>
         </Require>
         <Require feature="setprefs"/>
         <Require feature="views"/>
@@ -47,5 +47,5 @@
     </UserPref>
     <Content view="home" type="html" href="quotes_home.html" preferred_height="400"/>
     <Content view="canvas" type="html" href="quotes_canvas.html"/>
-    <Content view="user-prefs" type="html" href="user_prefs.html" preferred_height="600"/>
+    <Content view="user-prefs" type="html" href="user_prefs.html" preferred_height="200"/>
 </Module>

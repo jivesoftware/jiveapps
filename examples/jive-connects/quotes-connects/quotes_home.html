@@ -14,17 +14,21 @@
    limitations under the License.
 -->
 
+<html>
+<head>
 <link rel="stylesheet" type="text/css" href="quotes.css"/>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script type="text/javascript" src="quotes.js"></script>
 <script type="text/javascript" src="quotes_home.js"></script>
+<script type="text/os-template" autoUpdate="true"></script> <!-- Hack to avoid Shindig stripping out template handling -->
+    <!--
+    <script type="text/os-data">
+        <jive:ConnectsRequest key="custs" alias="quotes" href="/customers?offset=0&limit=5"/>
+    </script>
+    -->
+</head>
 
-<!--
-<script type="text/os-data">
-    <jive:ConnectsRequest key="custs" alias="quotes" href="/customers?offset=0&limit=5"/>
-</script>
--->
-
+<body>
 <div class="wrapper">
 
     <div class="title">My Quotes</div>
@@ -57,3 +61,5 @@
     </div>
 
 </div>
+</body>
+</html>

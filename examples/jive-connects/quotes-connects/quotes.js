@@ -205,6 +205,28 @@ function generateReview(index) {
 
 // On-view-load initialization
 function init() {
+/*
+    var url = "http://craig-z800.jiveland.com/jiveapps/examples/jive-connects/quotes-connects/templates.xml";
+    var params = {};
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] =
+        gadgets.io.ContentType.TEXT;
+    gadgets.io.makeRequest(url, function(obj) {
+        console.log("Load template data " + JSON.stringify(obj.data));
+        debugger;
+        opensocial.template.Loader.loadContent(obj.data, url);
+        for (var name in os.registeredTemplates_) {
+            console.log("Registered template named " + name);
+            var value = os.registeredTemplates_[name];
+            for (subname in value) {
+                console.log("   Subname is " + subname);
+                var subvalue = value[subname];
+                console.log("  Subvalue is " + subvalue);
+            }
+        }
+        var template = opensocial.template.getTemplate("q:canvasBody");
+        console.log("template is " + JSON.stringify(template));
+    }, params);
+*/
     mini = new gadgets.MiniMessage();
     var data = gadgets.views.getParams();
     console.log("Received params " + JSON.stringify(data));
