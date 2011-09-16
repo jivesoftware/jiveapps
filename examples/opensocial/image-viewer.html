@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script>
+
+function init() {
+    $("#view").click(view);
+    gadgets.window.adjustHeight(800);
+}
+
+function view() {
+    var url = $("#url").val();
+    if ($("#proxy").is(":checked")) {
+        url = gadgets.io.getProxyUrl(url);
+    }
+    var html = '<img src="' + url + '"/>';
+    gadgets.log("Image element is " + html);
+    $("#viewer").html("").html(html);
+}
+
+gadgets.util.registerOnLoadHandler(init);
+    </script>
+</head>
+<body>
+
+<table>
+    <tr>
+        <th>Image URL:</th>
+        <td><input id="url" type="text" width="100%"/></td>
+    </tr>
+    <tr>
+        <th>Use Proxy?</th>
+        <td><input id="proxy" type="checkbox"/></td>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+        <td><button id="view">View Image</button></td>
+    </tr>
+</table>
+
+<div id="viewer"></div>
+
+</body>
+</html>

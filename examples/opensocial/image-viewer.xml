@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Image Viewer">
+        <Require feature="osapi"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home,canvas" href="image-viewer.html" height="800"/>
+</Module>
