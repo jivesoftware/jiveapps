@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <title>Jive Connects Admin App</title>
+    <script type="text/javascript">
+
+function init() {
+    loadConfiguration();
+    loadStatistics();
+    loadPooled();
+    $("#refresh").click(refresh);
+    $("#reset").click(reset);
+    $(".updatable").change(update);
+}
+
+function loadConfiguration() {
+    console.log("loadConfiguration() started");
+    osapi.jive.connects.configuration({}).execute(function(response) {
+        console.log("loadConfiguration() response is " + JSON.stringify(response));
+        if (response.error) {
+            alert("Error getting configuration data, code=" + response.error.code + ", message=" + response.error.message);
+        }
+        else {
+            var content = response.content;
+            $("#defaultAllocateTimeout").val(content.defaultAllocateTimeout);
+            $("#defaultConnectTimeout").val(content.defaultConnectTimeout);
+            $("#defaultReadTimeout").val(content.defaultReadTimeout);
+            $("#maxConnectTimeout").val(content.maxConnectTimeout);
+            $("#maxReadTimeout").val(content.maxReadTimeout);
+            $("#maxHostConnections").val(content.maxHostConnections);
+            $("#maxTotalConnections").val(content.maxTotalConnections);
+            gadgets.window.adjustHeight();
+        }
+    })
+}
+
+function loadPooled() {
+    console.log("loadPooled() started");
+    osapi.jive.connects.pooled({}).execute(function(response) {
+        console.log("loadPooled() response is " + JSON.stringify(response));
+        if (response.error) {
+            alert("Error getting pooled data, code=" + response.error.code + ", message=" + response.error.message);
+        }
+        else {
+            var text = "";
+            $.each(response.content, function(index, entry) {
+                if (index > 0) {
+                    text += ", ";
+                }
+                text += entry.host + " (" + entry.count + ")";
+            });
+            $("#pooledConnections").html("").html(text);
+            gadgets.window.adjustHeight();
+        }
+    });
+}
+
+function loadStatistics() {
+    console.log("loadStatistics() started");
+    osapi.jive.connects.statistics({}).execute(function(response) {
+        console.log("loadStatistics() response is " + JSON.stringify(response));
+        if (response.error) {
+            alert("Error getting statistics data, code=" + response.error.code + ", message=" + response.error.message);
+        }
+        else {
+            var content = response.content;
+            $("#connectionsInPool").html("").html(content.connectionsInPool);
+            $("#totalAllocations").html("").html(content.totalAllocations);
+            $("#totalReleases").html("").html(content.totalReleases);
+            gadgets.window.adjustHeight();
+        }
+    });
+}
+
+function refresh() {
+    console.log("refresh() started");
+    loadConfiguration();
+    loadStatistics();
+    loadPooled();
+}
+
+function reset() {
+    console.log("reset() started");
+    osapi.jive.connects.reset({}).execute(function(response) {
+        console.log("reset() response is " + JSON.stringify(response));
+        if (response.error) {
+            alert("Error reseting accumulators, code=" + response.error.code + ", message=" + response.error.message);
+        }
+        else {
+            refresh();
+        }
+    });
+}
+
+function update() {
+    var id = $(this).attr("id");
+    var value = $(this).attr("value");
+    console.log("updating parameter " + id + " to value " + value);
+    var params = {};
+    params[id] = value;
+    osapi.jive.connects.update(params).execute(function(response) {
+        console.log("Response is " + JSON.stringify(response));
+        if (response.status == 400) {
+            $("#message").html("").html(response.error.message);
+            loadConfiguration();
+        }
+        else {
+            $("#message").html("").html("Updated parameter " + id + " to " + value);
+        }
+    })
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+    </script>
+</head>
+
+<body>
+
+    <h3>Jive Connects Administration</h3>
+    <table border="0">
+        <tr>
+            <th colspan="2">Connection Pool Configuration</th>
+        </tr>
+        <tr>
+            <td>Default Allocation Timeout (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="defaultAllocateTimeout"/></td>
+        </tr>
+        <tr>
+            <td>Default Connect Timeout (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="defaultConnectTimeout"/></td>
+        </tr>
+        <tr>
+            <td>Default Read Timeout (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="defaultReadTimeout"/></td>
+        </tr>
+        <tr>
+            <td>Maximum Connect Timeout (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="maxConnectTimeout"/></td>
+        </tr>
+        <tr>
+            <td>Maximum Read Timeout (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="maxReadTimeout"/></td>
+        </tr>
+        <tr>
+            <td>Maximum Connections/Host:</td>
+            <td align="right"><input class="updatable" type="text" id="maxHostConnections"/></td>
+        </tr>
+        <tr>
+            <td>Maximum Total Connections:</td>
+            <td align="right"><input class="updatable" type="text" id="maxTotalConnections"/></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center"><span id="message">&nbsp;</span></td>
+        </tr>
+        <tr>
+            <th colspan="2">Operational Statistics</th>
+        </tr>
+        <tr>
+            <td>Total Connections Allocated:</td>
+            <td align="right" id="totalAllocations"></td>
+        </tr>
+        <tr>
+            <td>Total Connections Released:</td>
+            <td align="right" id="totalReleases"></td>
+        </tr>
+        <tr>
+            <td>Connections In Pool:</td>
+            <td align="right" id="connectionsInPool"></td>
+        </tr>
+        <tr>
+            <th colspan="2">Pooled Connections By Host</th>
+        </tr>
+        <tr>
+            <td colspan="2" id="pooledConnections"></td>
+        </tr>
+    </table>
+
+    <button id="refresh">Refresh</button>
+    &nbsp;
+    <button id="reset"> Reset </button>
+    <br/>
+
+</body>
+
+</html>

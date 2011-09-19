@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Jive Connects Admin App">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-connects-v1"/>
+        <Require feature="jquery-1.4.2"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home,canvas" type="html" href="connects-admin.html"/>
+</Module>
