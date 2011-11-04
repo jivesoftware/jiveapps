@@ -29,6 +29,36 @@ function loadConfiguration() {
             $("#maxReadTimeout").val(content.maxReadTimeout);
             $("#maxHostConnections").val(content.maxHostConnections);
             $("#maxTotalConnections").val(content.maxTotalConnections);
+            if (content.linger) {
+                $("#linger").val(content.linger);
+            }
+            else {
+                $("#linger").val("???");
+            }
+            if (content.receiveBufferSize) {
+                $("#receiveBufferSize").val(content.receiveBufferSize);
+            }
+            else {
+                $("#receiveBufferSize").val("???");
+            }
+            if (content.sendBufferSize) {
+                $("#sendBufferSize").val(content.sendBufferSize);
+            }
+            else {
+                $("#sendBufferSize").val("???");
+            }
+            if (content.staleCheckingEnabled) {
+                $("#staleCheckingEnabled").val(content.staleCheckingEnabled);
+            }
+            else {
+                $("#staleCheckingEnabled").val(false);
+            }
+            if (content.tcpNoDelay) {
+                $("#tcpNoDelay").val(content.tcpNoDelay);
+            }
+            else {
+                $("#tcpNoDelay").val(false);
+            }
             gadgets.window.adjustHeight();
         }
     })
@@ -131,6 +161,10 @@ gadgets.util.registerOnLoadHandler(init);
             <td align="right"><input class="updatable" type="text" id="defaultConnectTimeout"/></td>
         </tr>
         <tr>
+            <td>Default Linger On Close (ms):</td>
+            <td align="right"><input class="updatable" type="text" id="linger"/></td>
+        </tr>
+        <tr>
             <td>Default Read Timeout (ms):</td>
             <td align="right"><input class="updatable" type="text" id="defaultReadTimeout"/></td>
         </tr>
@@ -149,6 +183,22 @@ gadgets.util.registerOnLoadHandler(init);
         <tr>
             <td>Maximum Total Connections:</td>
             <td align="right"><input class="updatable" type="text" id="maxTotalConnections"/></td>
+        </tr>
+        <tr>
+            <td>Receive Buffer Size:</td>
+            <td align="right"><input class="updatable" type="text" id="receiveBufferSize"/></td>
+        </tr>
+        <tr>
+            <td>Stale Checking Enabled:</td>
+            <td align="right"><input class="updatable" type="text" id="staleCheckingEnabled"/></td>
+        </tr>
+        <tr>
+            <td>Send Buffer Size:</td>
+            <td align="right"><input class="updatable" type="text" id="sendBufferSize"/></td>
+        </tr>
+        <tr>
+            <td>TCP NoDelay Enabled:</td>
+            <td align="right"><input class="updatable" type="text" id="tcpNoDelay"/></td>
         </tr>
         <tr>
             <td colspan="2" align="center"><span id="message">&nbsp;</span></td>

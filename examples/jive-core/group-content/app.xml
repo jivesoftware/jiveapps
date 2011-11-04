@@ -22,6 +22,7 @@
         <Require feature="dynamic-height"/>
         <Require feature="jive-core-v2"/>
         <Require feature="jquery-1.4.2"/>
+        <Require feature="minimessage"/>
         <Require feature="osapi"/>
         <Require feature="views"/>
     </ModulePrefs>

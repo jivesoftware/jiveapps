@@ -315,7 +315,7 @@ function loadQuotes() {
         mini.dismissMessage(message);
         if (response.error) {
             if (response.error.code == 401) {
-                console.log("Received a 401 response, triggering reconfiguration before trying again");
+                console.log("Received a 401 response " + JSON.stringify(response) + ", triggering reconfiguration before trying again");
                 osapi.jive.connects.reconfigure(QUOTES, response, function(feedback) {
                     console.log("Received reconfigure feedback " + JSON.stringify(feedback));
                     loadQuotes();
