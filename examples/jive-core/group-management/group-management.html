@@ -20,6 +20,68 @@
     </head>
     <body>
 
+<div id="group-div" class="toplevel">
+
+    <table id="group-table">
+        <!-- Modifiable fields -->
+        <tr>
+            <th>Description:</th>
+            <td><textarea id="group-description" style="width:100%" class="group-detail"/></td>
+        </tr>
+        <tr>
+            <th>Display Name:</th>
+            <td><input id="group-display-name" style="width:100%" class="group-detail"/></td>
+        </tr>
+        <tr>
+            <th>Group Type:</th>
+            <td>
+                <select id="group-group-type" style="width:100%" class="group-detail">
+                    <option value="OPEN">Open</option>
+                    <option value="MEMBER_ONLY">Members Only</option>
+                    <option value="PRIVATE">Private</option>
+                    <option value="SECRET">Secret</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Name:</th>
+            <td><input id="group-name" style="width:100%" class="group-detail"/></td>
+        </tr>
+        <!-- Read-only fields -->
+        <tr>
+            <th>Creator:</th>
+            <td><span id="group-creator"/></td>
+        </tr>
+        <tr>
+            <th>Creation Date:</th>
+            <td><span id="group-creation-date"/></td>
+        </tr>
+        <tr>
+            <th>Group ID:</th>
+            <td><span id="group-id"/></td>
+        </tr>
+        <tr>
+            <th>Modification Date:</th>
+            <td><span id="group-modification-date"/></td>
+        </tr>
+        <tr>
+            <th>View Count:</th>
+            <td><span id="group-view-count"/></td>
+        </tr>
+        <!-- Actions -->
+        <tr>
+            <th>&nbsp;</th>
+            <td>
+                <button id="group-back">Back</button>
+                <button id="group-update" class="group-detail">Update</button>
+                <button id="invites-button">Invites</button>
+                <button id="members-button">Members</button>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
 <div id="groups-div" class="toplevel">
 
     <table id="groups-table">
@@ -87,6 +149,11 @@
         <tbody id="members-tbody"></tbody>
 
         <tfoot>
+            <tr>
+                <td colspan="2">userpicker</td>
+                <td>state dropdown</td>
+                <td>add button</td>
+            </tr>
             <tr>
                 <td colspan="4">
                     <button id="members-back">Back</button>
