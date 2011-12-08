@@ -29,6 +29,9 @@ var index;
 // The invites to the selected group
 var invites;
 
+// Source of invites being shown (group, invited, invites)
+var invitesSource;
+
 // The members of the selected group
 var members;
 
@@ -38,11 +41,14 @@ var limit = 10;
 // Factory for mini messages
 var mini;
 
+// The viewing user
+var viewer;
+
 // On-view-load initialization
 function init() {
     $(".toplevel").hide();
     registerHandlers();
-    loadInitialGroups();
+    loadViewer();
     mini = new gadgets.MiniMessage();
 }
 
@@ -61,6 +67,17 @@ function loadNextGroups() {
 // Load the previous page of groups
 function loadPreviousGroups() {
     // TODO - loadPreviousGroups
+}
+
+// Load the viewing user then the initial groups
+function loadViewer() {
+    osapi.jive.core.users.get({
+        id : '@viewer'
+    }).execute(function(response) {
+        gadgets.log("loadViewer(" + JSON.stringify(response) + ")");
+        viewer = response.data;
+        loadInitialGroups();
+    });
 }
 
 // Set up to create a new social group
@@ -172,9 +189,83 @@ function onGroupSaveResponse(response) {
     }
 }
 
+// Accept the specified invite
+function onInviteAcceptButton() {
+    onInviteUpdate($(this).attr("data-index"), "accepted");
+}
+
+// Send a new invite
+function onInviteAddButton() {
+    group.invites.create({
+        invitees : [ $("#invite-add-username").val() ],
+        body : $("#invite-add-body").val()
+    }).execute(onInviteAddResponse);
+}
+
+// Process results of sending a new invite
+function onInviteAddResponse(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error sending invite: " + response.error.message);
+    }
+    else {
+        mini.createTimerMessage("Sending invitation was successfully completed");
+        onInvitesButton();
+    }
+}
+
+// Resend the specified invite
+function onInviteResendButton() {
+    onInviteUpdate($(this).attr("data-index"), "resent");
+}
+
+// Revoke the specified invite
+function onInviteRevokeButton() {
+    onInviteUpdate($(this).attr("data-index"), "revoked");
+}
+
+// Update the specified invite
+function onInviteUpdate(index, state) {
+    var invite = invites[index];
+    invite.state = state;
+    invite.update().execute(onInviteUpdateResponse);
+}
+
+// Process the response to an invite update
+function onInviteUpdateResponse(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error updating invite: " + response.error.message);
+        // Stay on the invite view
+    }
+    else {
+        mini.createTimerMessage("Invite update was successful", 5);
+        if (invitesSource == "group") {
+            onInvitesButton();
+        }
+        else if (invitesSource == "invited") {
+            onMyInvitedButton();
+        }
+        else if (invitesSource = "invites") {
+            onMyInvitesButton();
+        }
+    }
+}
+
+// Return to the appropriate previous view
+function onInvitesBack() {
+    gadgets.log("onInvitesBack()");
+    if (group != null) {
+        showGroup();
+    }
+    else {
+        showGroups();
+    }
+}
+
 // Select this group and retrieve the corresponding invites
 function onInvitesButton() {
     gadgets.log("onInvitesButton(" + JSON.stringify(group) + ")");
+    $("#invites-title").html("").html("Invitations to Group '" + group.name + "'");
+    invitesSource = "group";
     group.invites.get({
     }).execute(onInvitesList);
 }
@@ -283,6 +374,30 @@ function onMembersList(response) {
     }
 }
 
+// Display a list of invites to me
+function onMyInvitedButton() {
+    gadgets.log("onMyInvitesButton()");
+    group = null;
+    invitesSource = "invited";
+    $("#invites-title").html("").html("Invitations Received By Me");
+    osapi.jive.core.invites.get({
+        userId : '@viewer',
+        groupId : '@invited'
+    }).execute(onInvitesList);
+}
+
+// Display a list of invites from me
+function onMyInvitesButton() {
+    gadgets.log("onMyInvitedButton()");
+    group = null;
+    invitesSource = "invites";
+    $("#invites-title").html("").html("Invitations Sent By Me");
+    osapi.jive.core.invites.get({
+        userId : '@viewer',
+        groupId : '@invites'
+    }).execute(onInvitesList);
+}
+
 // Prettify the canonical group type constant
 function prettifyGroupType(groupType) {
     if (groupType == "OPEN") {
@@ -330,11 +445,14 @@ function registerHandlers() {
     $("#group-create").click(onGroupCreateButton);
     $("#group-delete").click(onGroupDeleteButton);
     $("#group-save").click(onGroupSaveButton);
-    $("#invites-back").click(showGroup);
+    $("#invite-add-button").click(onInviteAddButton);
+    $("#invites-back").click(onInvitesBack);
     $("#invites-button").click(onInvitesButton);
     $("#member-add").click(onMemberAddButton);
     $("#members-back").click(showGroup);
     $("#members-button").click(onMembersButton);
+    $("#my-invited").click(onMyInvitedButton);
+    $("#my-invites").click(onMyInvitesButton);
 }
 
 // Show the selected group
@@ -410,7 +528,6 @@ function showGroups() {
 
 // Show the assembled invites list
 function showInvites() {
-    $("#invites-title").html("").html("Invites for Group '" + group.name + "'");
     var html = "";
     $.each(invites, function(index, invite) {
         html += '<tr>';
@@ -424,11 +541,79 @@ function showInvites() {
         else {
             html += '<td>Unknown</td>';
         }
+        if (invite.group) {
+            html += '<td>' + invite.group.name + '</td>';
+        }
+        else {
+            html += '<td>???</td>'
+        }
         html += '<td>' + invite.state + '</td>';
+        html += '<td>';
+        html += showInvitesAction(index, 'invite-accept-' + index, 'invite-accept', 'Accept', showInvitesDisableAccept(invite));
+        html += showInvitesAction(index, 'invite-resend-' + index, 'invite-resend', 'Resend', showInvitesDisableResend(invite));
+        html += showInvitesAction(index, 'invite-revoke-' + index, 'invite-revoke', 'Revoke', showInvitesDisableRevoke(invite));
+        html += '</td>';
         html += '</tr>';
     });
     $("#invites-tbody").html("").html(html);
+    $(".invite-accept").click(onInviteAcceptButton);
+    $(".invite-resend").click(onInviteResendButton);
+    $(".invite-revoke").click(onInviteRevokeButton);
+    $(".invite-add").attr("disabled", !group);
+    $("#invite-add-body").html("");
+    if (group) {
+        $("#invite-add-body").html("Please join us in the '" + group.name + "' social group.");
+    }
     showOnly("invites-div");
+}
+
+// Return HTML for an action button for invites
+function showInvitesAction(index, id, styleClass, label, disabled) {
+    var html = '<button id="' + id + '" data-index="' + index + '"';
+    if (styleClass) {
+        html += ' class="' + styleClass + '"';
+    }
+    if (disabled) {
+        html += ' disabled="disabled"';
+    }
+    html += '>' + label + '</button>';
+    return html;
+}
+
+// Return true if the accept button should be disabled for this invite
+function showInvitesDisableAccept(invite) {
+    if (!invite.update) {
+        return true;
+    }
+    if (!invite.user) {
+        return true; // Cannot accept an invite sent to an email address
+    }
+    if (invite.user.username != viewer.username) {
+        return true;
+    }
+    return (invite.state != 'processing') && (invite.state != 'sent') && (invite.state != 'fulfilled');
+}
+
+// Return true if the resend button should be disabled for this invite
+function showInvitesDisableResend(invite) {
+    if (!invite.update) {
+        return true;
+    }
+    if (invite.inviter.username != viewer.username) {
+        return true;
+    }
+    return (invite.state != 'processing') && (invite.state != 'sent') && (invite.state != 'fulfilled');
+}
+
+// Return true if the revoke button should be disabled for this invite
+function showInvitesDisableRevoke(invite) {
+    if (!invite.update) {
+        return true;
+    }
+    if (invite.state == 'revoked') {
+        return true;
+    }
+    return (invite.inviter.username != viewer.username);
 }
 
 // Show the assembled members list

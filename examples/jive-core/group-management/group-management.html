@@ -113,12 +113,16 @@
         <tfoot>
             <tr>
                 <td colspan="3">
-                    <button id="group-create">Create</button>
+                    <button id="group-create">Create Group</button>
+                    <button id="my-invites">Invites From Me</button>
+                    <button id="my-invited">Invites To Me</button>
                 </td>
             </tr>
         </tfoot>
 
     </table>
+
+
 
 </div>
 
@@ -128,11 +132,12 @@
 
         <thead>
             <tr>
-                <th colspan="4"><span id="invites-title" align="center"></span></th>
+                <th colspan="5"><span id="invites-title" align="center"></span></th>
             </tr>
             <tr>
                 <th>Inviter</th>
                 <th>Invitee</th>
+                <th>Group</th>
                 <th>State</th>
                 <th>Actions</th>
             </tr>
@@ -142,12 +147,27 @@
 
         <tfoot>
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <button id="invites-back">Back</button>
                 </td>
             </tr>
         </tfoot>
 
+    </table>
+
+    <table id="invites-add-table">
+        <tr>
+            <th>Username:</th>
+            <td><input id="invite-add-username" type="text" class="invite-add"/></td>
+        </tr>
+        <tr>
+            <th>Invite Text:</th>
+            <td><textarea id="invite-add-body" class="invite-add"/></td>
+        </tr>
+        <tr>
+            <th>&nbsp;</th>
+            <td><button id="invite-add-button" class="invite-add">Send Invite</button></td>
+        </tr>
     </table>
 
 </div>
