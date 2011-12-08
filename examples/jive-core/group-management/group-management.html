@@ -23,7 +23,20 @@
 <div id="group-div" class="toplevel">
 
     <table id="group-table">
+        <tr>
+            <th colspan="2"><span id="group-table-title"/></th>
+        </tr>
+
         <!-- Modifiable fields -->
+        <tr>
+            <th>Content Types:</th>
+            <td>
+                <input id="group-content-blog" type="checkbox" class="group-detail"/>Blog<br/>
+                <input id="group-content-discussions" type="checkbox" class="group-detail"/>Discussions<br/>
+                <input id="group-content-documents" type="checkbox" class="group-detail"/>Documents<br/>
+                <input id="group-content-projects" type="checkbox" class="group-detail"/>Projects
+            </td>
+        </tr>
         <tr>
             <th>Description:</th>
             <td><textarea id="group-description" style="width:100%" class="group-detail"/></td>
@@ -73,7 +86,8 @@
             <th>&nbsp;</th>
             <td>
                 <button id="group-back">Back</button>
-                <button id="group-update" class="group-detail">Update</button>
+                <button id="group-save" class="group-detail">Save</button>
+                <button id="group-delete">Delete</button>
                 <button id="invites-button">Invites</button>
                 <button id="members-button">Members</button>
             </td>
@@ -95,6 +109,14 @@
         </thead>
 
         <tbody id="groups-tbody"></tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <button id="group-create">Create</button>
+                </td>
+            </tr>
+        </tfoot>
 
     </table>
 
@@ -150,9 +172,17 @@
 
         <tfoot>
             <tr>
-                <td colspan="2">userpicker</td>
-                <td>state dropdown</td>
-                <td>add button</td>
+                <td><input id="member-add-username" type="text"/></td>
+                <td>&nbsp;</td>
+                <td>
+                    <select id="member-add-state">
+                        <option value="banned">Banned</option>
+                        <option value="member" selected="selected">Member</option>
+                        <option value="owner">Owner</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </td>
+                <td><button id="member-add">Add</button></td>
             </tr>
             <tr>
                 <td colspan="4">

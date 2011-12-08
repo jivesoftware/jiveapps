@@ -14,6 +14,9 @@
  - limitations under the License.
  */
 
+// Flag saying we are creating a new row versus updating
+var creating = false;
+
 // Currently selected group
 var current;
 
@@ -60,43 +63,112 @@ function loadPreviousGroups() {
     // TODO - loadPreviousGroups
 }
 
+// Set up to create a new social group
+function onGroupCreateButton() {
+    creating = true;
+    group = {
+        contentTypes : [ 'blog', 'discussions', 'documents', 'projects' ],
+        creationDate : '',
+        creator : {
+            name : ''
+        },
+        description : '',
+        displayName : '',
+        groupType : 'OPEN',
+        id : '',
+        modificationDate : '',
+        name : '',
+        viewCount : ''
+    };
+    showGroup();
+}
+
+// Trigger deletion of the specified group - // TODO confirmation dialog
+function onGroupDeleteButton() {
+    gadgets.log("onGroupDeleteButton(" + JSON.stringify(group) + ")");
+    group.destroy().execute(onGroupDeleteResponse);
+
+}
+
+// Process results of a group delete
+function onGroupDeleteResponse(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error deleting group: " + response.error.message);
+    }
+    else {
+        mini.createTimerMessage("Group '" + group.name + "' was successfully deleted");
+        loadInitialGroups();
+    }
+}
+
 // Select the specified group and retrieve the entire information
-function onDetailsButton() {
-    gadgets.log("onDetailsButton(data-index=" + $(this).attr("data-index") + ")");
+function onGroupDetailsButton() {
+    gadgets.log("onGroupDetailsButton(data-index=" + $(this).attr("data-index") + ")");
+    creating = false;
     index = $(this).attr("data-index");
     osapi.jive.core.groups.get({
         id : groups[$(this).attr("data-index")].id
-    }).execute(onDetailsData);
+    }).execute(onGroupDetailsData);
 }
 
 // Select the specified group and display its details
-function onDetailsData(response) {
+function onGroupDetailsData(response) {
     gadgets.log("onDetailsData(" + JSON.stringify(response) + ")");
     group = response.data;
     showGroup();
 }
 
-// Trigger an update of this group, then reselect the list
-function onGroupUpdateButton() {
+// Trigger a create or update of this group, then reselect the list
+function onGroupSaveButton() {
+    group.contentTypes = [];
+    if ($("#group-content-blog").is(':checked')) {
+        group.contentTypes.push("blog");
+    }
+    if ($("#group-content-discussions").is(':checked')) {
+        group.contentTypes.push("discussions");
+    }
+    if ($("#group-content-documents").is(':checked')) {
+        group.contentTypes.push("documents");
+    }
+    if ($("#group-content-projects").is(':checked')) {
+        group.contentTypes.push("projects");
+    }
     group.description = $("#group-description").val();
     group.displayName = $("#group-display-name").val();
     group.groupType = $("#group-group-type").val();
     group.name = $("#group-name").val();
-    gadgets.log("onGroupUpdateButton(" + JSON.stringify(group) + ")");
-    group.update().execute(onGroupUpdateResponse);
+    gadgets.log("onGroupSaveButton(creating=" + creating + ",group=" + JSON.stringify(group) + ")");
+    if (creating) {
+        osapi.jive.core.groups.create(
+            group
+        ).execute(onGroupSaveResponse);
+    }
+    else {
+        group.update().execute(onGroupSaveResponse);
+    }
 }
 
-// Verify update completion and reselect
-function onGroupUpdateResponse(response) {
-    gadgets.log("onGroupUpdateResponse(" + JSON.stringify(response) + ")");
+// Verify ceate or update completion and reselect
+function onGroupSaveResponse(response) {
+    gadgets.log("onGroupSaveResponse(" + JSON.stringify(response) + ")");
     if (response.error) {
-        mini.createDismissibleMessage("Error updating group: " + response.error.message);
+        if (creating) {
+            mini.createDismissibleMessage("Error creating group: " + response.error.message);
+        }
+        else {
+            mini.createDismissibleMessage("Error updating group: " + response.error.message);
+        }
         // Stay on the group detail view
     }
     else {
-        mini.createTimerMessage("Group '" + response.data.name + "' successfully updated", 5);
-        groups[index] = response.data;
-        showGroups();
+        mini.createTimerMessage("Group '" + response.data.name + "' successfully saved", 5);
+        if (creating) {
+            loadInitialGroups();
+        }
+        else {
+            groups[index] = response.data;
+            showGroups();
+        }
     }
 }
 
@@ -130,6 +202,28 @@ function onLoadGroups(response) {
         groups = [];
     }
     showGroups();
+}
+
+// Trigger an add of a new member
+function onMemberAddButton() {
+    var member = {
+        username : $("#member-add-username").val(),
+        state : $("#member-add-state").val()
+    }
+    gadgets.log("onMemberAddButton(" + JSON.stringify(member) + ")");
+    group.members.create(member).execute(onMemberAddResponse);
+}
+
+// Process response to a member delete
+function onMemberAddResponse(response) {
+    gadgets.log("onMemberAddResponse(" + JSON.stringify(response) + ")");
+    if (response.error) {
+        mini.createDismissibleMessage("Error adding member: " + response.error.message);
+    }
+    else {
+        mini.createTimerMessage("Member add was successful", 5);
+        onMembersButton();
+    }
 }
 
 // Trigger a delete of the specified member
@@ -233,22 +327,32 @@ function prettifyMemberState(state) {
 // Register UI event handlers
 function registerHandlers() {
     $("#group-back").click(showGroups);
-    $("#group-update").click(onGroupUpdateButton);
+    $("#group-create").click(onGroupCreateButton);
+    $("#group-delete").click(onGroupDeleteButton);
+    $("#group-save").click(onGroupSaveButton);
     $("#invites-back").click(showGroup);
     $("#invites-button").click(onInvitesButton);
+    $("#member-add").click(onMemberAddButton);
     $("#members-back").click(showGroup);
     $("#members-button").click(onMembersButton);
-}
-
-// Set the currently selected group
-function selectGroup(index) {
-    gadgets.log("Selecting group " + index + " = " + JSON.stringify(groups[index]));
-    group = groups[index];
 }
 
 // Show the selected group
 function showGroup() {
     gadgets.log("showGroup(" + JSON.stringify(group) + ")");
+    if (creating) {
+        $("#group-table-title").html("").html("Create New Social Group");
+    }
+    else if (group.update) {
+        $("#group-table-title").html("").html("Update Existing Social Group");
+    }
+    else {
+        $("#group-table-title").html("");
+    }
+    showGroupSetContentType("group-content-blog", showGroupHasContentType("blog"));
+    showGroupSetContentType("group-content-discussions", showGroupHasContentType("discussions"));
+    showGroupSetContentType("group-content-documents", showGroupHasContentType("documents"));
+    showGroupSetContentType("group-content-projects", showGroupHasContentType("projects"));
     $("#group-description").val(group.description);
     $("#group-display-name").val(group.displayName);
     $("#group-group-type").val(group.groupType);
@@ -258,10 +362,32 @@ function showGroup() {
     $("#group-id").html("").html(group.id);
     $("#group-modification-date").html("").html(group.modificationDate);
     $("#group-view-count").html("").html(group.viewCount);
-    $(".group-detail").attr("disabled", !group.update);
-    $("#invites-button").attr("disabled", !group.invites);
+    $(".group-detail").attr("disabled", !(group.update || creating));
+    $("#group-delete").attr("disabled", !group.destroy);
+    $("#invites-button").attr("disabled", !(group.invites && group.invites.get));
     $("#members-button").attr("disabled", !group.members);
     showOnly("group-div");
+}
+
+// Return true if the current group has the specified content type enabled
+function showGroupHasContentType(contentTypeToCheck) {
+    var result = false;
+    group.contentTypes.forEach(function(contentType) {
+        if (contentType == contentTypeToCheck) {
+            result = true;
+        }
+    });
+    return result;
+}
+
+// Set the checkbox "checked" attribute appropriately
+function showGroupSetContentType(id, state) {
+    if (state) {
+        $("#" + id).attr("checked", "checked");
+    }
+    else {
+        $("#" + id).removeAttr("checked");
+    }
 }
 
 // Show the assembled groups list
@@ -273,12 +399,12 @@ function showGroups() {
         html += '<td>' + group.name + '</td>';
         html += '<td>' + prettifyGroupType(group.groupType) + '</td>';
         html += '<td>';
-        html += '<button class="details-button" data-index="' + index + '">Details</button>';
+        html += '<button class="group-details-button" data-index="' + index + '">Details</button>';
         html += '</td>';
         html += '</tr>';
     });
     $("#groups-tbody").html("").html(html);
-    $(".details-button").click(onDetailsButton);
+    $(".group-details-button").click(onGroupDetailsButton);
     showOnly("groups-div");
 }
 
@@ -324,6 +450,7 @@ function showMembers() {
     });
     $(".member-delete").click(onMemberDeleteButton);
     $(".member-update").click(onMemberUpdateButton);
+    $("#member-add").attr("disabled", !group.members.create);
     showOnly("members-div");
 }
 
