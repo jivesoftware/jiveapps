@@ -1,0 +1,114 @@
+<html>
+
+<head>
+    <title>Jive API Explorer</title>
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
+    <link type="text/css" href="css/api-explorer.css"/>
+    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+  	<script type="text/javascript" src="js/jquery.popover.js"></script>
+  	<script type="text/javascript" src="js/next_tick.js"></script>
+    <script type="text/javascript" src="js/api-explorer.js"></script>
+</head>
+
+<body>
+
+<div id="tabs">
+    
+    <ul>
+        <li><a href="#tab-metadata">Metadata</a></li>
+        <li><a href="#tab-people">People</a></li>
+    </ul>
+
+    <div id="tab-metadata" style="height: 90%">
+
+        <div id="metadata-accordion">
+
+            <h3 id="metadata-accordion-objects"><a href="#">Objects</a></h3>
+
+            <div id="metadata-objects">
+
+                <div id="metadata-object-picker" style="display:none">
+                    Select Object Type to Examine:
+                    <select id="metadata-object-select"></select>
+                </div>
+
+                <br/>
+
+                <div id="metadata-object-summary">
+                    <p id="metadata-object-description"></p>
+                </div>
+
+                <br/>
+
+                <table id="metadata-object-fields-table" style="width:100%;display:none">
+                    <thead>
+                        <tr>
+                            <th colspan="7">Object Fields</th>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Editable</th>
+                            <th>Description</th>
+                            <th>Availability</th>
+                            <th>Since</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metadata-object-fields-tbody"/>
+                </table>
+
+                <br/>
+
+                <table id="metadata-object-resources-table" style="width:100%;display:none">
+                    <thead>
+                        <tr>
+                            <th colspan="4">Object Resource Links</th>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Availability</th>
+                            <th>Since</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metadata-object-resources-tbody"/>
+                </table>
+
+            </div>
+
+            <h3 id="metadata-accordion-properties"><a href="#">Properties</a></h3>
+
+            <div id="metadata-properties">
+
+                <table id="metadata-properties-table" style="width:100%;display:none">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metadata-properties-tbody"/>
+                </table>
+
+            </div>
+            
+        </div>
+
+
+    </div>
+
+    <div id="tab-people">
+        <p>The people APIs.</p>
+    </div>
+
+</div>        
+        
+</body>
+        
+</html>

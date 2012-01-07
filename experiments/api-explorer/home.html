@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>Jive API Explorer</title>
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
+    <link type="text/css" href="css/api-explorer.css"/>
+    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+  	<script type="text/javascript" src="js/jquery.popover.js"></script>
+  	<script type="text/javascript" src="js/next_tick.js"></script>
+    <script type="text/javascript">
+
+function init() {
+    osapi.jive.version.getVersionInfo().execute(function(response) {
+        $("#enter-button").click(function() {
+            gadgets.views.requestNavigateTo("canvas");
+        });
+        $("#jive-version").html(response.jiveVersion);
+        var apiVersion;
+        $.each(response.jiveCoreVersions, function(index, jiveCoreVersion) {
+            if (jiveCoreVersion.version == 3) {
+                apiVersion = jiveCoreVersion.version + "." + jiveCoreVersion.revision;
+            }
+        });
+        $("#api-version").html(apiVersion);
+        $("#version-info").show();
+    })
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+    </script>
+</head>
+
+<body>
+
+    <br/>
+    <div align="center">
+        <img src="images/jive-darkgloss-800x400.png" width="290px" height="145px"/>
+    </div>
+    <br/>
+    <div align="center">
+        <button id="enter-button" class="j-btn-global">Enter API Explorer</button>
+    </div>
+    <br/>
+    <div id="version-info" align="center" style="display:none">
+        <p>Jive Version: <span id="jive-version"></span></p>
+        <p>API Version: <span id="api-version"></span></p>
+    </div>
+
+
+</body>
+
+</html>
