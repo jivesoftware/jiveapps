@@ -5,7 +5,7 @@
     <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
     <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
     <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
-    <link type="text/css" href="css/api-explorer.css"/>
+    <link type="text/css" href="css/api-explorer.css" rel="stylesheet"/>
     <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
   	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
   	<script type="text/javascript" src="js/jquery.popover.js"></script>
@@ -37,15 +37,15 @@ gadgets.util.registerOnLoadHandler(init);
 <body>
 
     <br/>
-    <div align="center">
-        <img src="images/jive-darkgloss-800x400.png" width="290px" height="145px"/>
+    <div class="banner-div">
+        <img src="images/jive-darkgloss-800x400.png" class="banner-image"/>
     </div>
     <br/>
-    <div align="center">
+    <div class="banner-div">
         <button id="enter-button" class="j-btn-global">Enter API Explorer</button>
     </div>
     <br/>
-    <div id="version-info" align="center" style="display:none">
+    <div id="version-info" class="banner-div" style="display:none">
         <p>Jive Version: <span id="jive-version"></span></p>
         <p>API Version: <span id="api-version"></span></p>
     </div>
