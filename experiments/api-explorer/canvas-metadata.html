@@ -14,8 +14,112 @@
     <script type="text/javascript" src="js/common.js"></script>
     <script type="text/javascript">
 
+var names;                  // Names of supported object types
+var properties;             // Metadata properties that were returned
+
+function configureTabs() {
+    $("#tabs").tabs({
+        selected : 1
+    });
+}
+
 function init() {
     configureTopLevelNav("Metadata Service", "metadata");
+    configureTabs();
+    loadObjectNames();
+    loadProperties();
+    gadgets.window.adjustHeight(800);
+}
+
+function loadObjectDetails() {
+    osapi.jive.core3.objects.getObjectDetails({
+        objectName : $("#object-select").val()
+    }).execute(onObjectDetails);
+}
+
+function loadObjectNames() {
+    osapi.jive.core3.objects.getObjectNames().execute(onObjectNames);
+}
+
+function loadProperties() {
+    osapi.jive.core3.properties.getProperties().execute(onProperties);
+}
+
+function onObjectDetails(response) {
+    // object type summary
+    var summary = "";
+    if (response.description) {
+        summary += response.description;
+    }
+    if (response.since) {
+        summary += ' (Since: ' + response.since + ')';
+    }
+    $("#object-description").html("").html(summary);
+    // fields table
+    if (response.fields) {
+        var fields = "";
+        $.each(response.fields, function(index, field) {
+            var type = field.type;
+            if (field.array) {
+                type += '[]';
+            }
+            fields += '<tr>';
+            fields += '<td>' + field.name + '</td>';
+            fields += '<td>' + type + '</td>';
+            fields += '<td>' + (field.required ? 'true' : 'false') + '</td>';
+            fields += '<td>' + (field.editable ? 'true' : 'false') + '</td>';
+            fields += '<td>' + (field.description ? field.description : '&nbsp;') + '</td>';
+            fields += '<td>' + (field.availability ? field.availability : '&nbsp;') + '</td>';
+            fields += '<td>' + (field.since ? field.since : '&nbsp;') + '</td>';
+            fields += '</tr>'
+        });
+        $("#object-fields-tbody").html("").html(fields);
+        $("#object-fields-table").show();
+    }
+    else {
+        $("#object-fields-table").hide();
+    }
+    // resources table
+    if (response.resourceLinks) {
+        var resources = "";
+        $.each(response.resourceLinks, function(index, resource) {
+            resources += '<tr>';
+            resources += '<td>' + resource.name + '</td>';
+            resources += '<td>' + (resource.description ? resource.description : '&nbsp;') + '</td>';
+            resources += '<td>' + (resource.availability ? resource.availability : '&nbsp;') + '</td>';
+            resources += '<td>' + (resource.since ? resource.since : '&nbsp;') + '</td>';
+            resources += '</tr>';
+        });
+        $("#object-resources-tbody").html("").html(resources);
+        $("#object-resources-table").show();
+    }
+    else {
+        $("#object-resources-table").hide(); }
+
+}
+
+function onObjectNames(response) {
+    names = response.sort();
+    var html = '<option disabled="disabled">----------</option>';
+    $.each(names, function(index, objectName) {
+        html += '<option value="' + objectName + '">' + objectName + '</option>';
+    });
+    $("#object-select").html("").html(html).change(loadObjectDetails);
+    $("#object-picker").show();
+}
+
+function onProperties(response) {
+    properties = response;
+    var html = "";
+    $.each(properties, function(index, property) {
+        html += '<tr><td>' + property.name + '</td>';
+        html += '<td>' + property.type + '</td>';
+        html += '<th>' + property.value + '</th>';
+        html += '<td>' + property.description + '</td>';
+        html += '</tr>';
+    });
+    $("#properties-tbody").html("").html(html);
+    $("#properties-table").show();
 }
 
 gadgets.util.registerOnLoadHandler(init);
@@ -38,6 +142,86 @@ gadgets.util.registerOnLoadHandler(init);
         </select>
     </span>
     <hr/>
+</div>
+
+<!-- Tab set (one tab per service) -->
+
+<div id="tabs">
+
+    <ul>
+        <li><a href="#tab-objects">Objects</a></li>
+        <li><a href="#tab-properties">Properties</a></li>
+    </ul>
+
+    <div id="tab-objects">
+
+        <br/>
+
+        <div id="object-picker" style="display:none">
+            Select Object Type To Examine:
+            <select id="object-select"></select>
+        </div>
+
+        <br/>
+        
+        <div id="object-summary" style="display:none">
+            <p id="object-description"></p>
+        </div>
+
+        <br/>
+
+        <table id="object-fields-table" class="j-table" style="display:none">
+            <thead>
+                <tr>
+                    <th colspan="7" class="center">Object Fields</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                    <th>Editable</th>
+                    <th>Description</th>
+                    <th>Availability</th>
+                    <th>Since</th>
+                </tr>
+            </thead>
+            <tbody id="object-fields-tbody"/>
+        </table>
+
+        <br/>
+
+        <table id="object-resources-table" class="j-table" style="display:none">
+            <thead>
+                <tr>
+                    <th colspan="4" class="center">Object Resource Links</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Availability</th>
+                    <th>Since</th>
+                </tr>
+            </thead>
+            <tbody id="object-resources-tbody"/>
+        </table>
+
+    </div>
+
+    <div id="tab-properties">
+        <br/>
+        <table id="properties-table" class="j-table" style="display:none">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="properties-tbody"/>
+        </table>
+    </div>
+
 </div>
 
 </body>
