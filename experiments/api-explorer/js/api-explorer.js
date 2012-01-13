@@ -4,10 +4,12 @@ var objectNames;
 function init() {
     $("#tabs").tabs();
     $("#metadata-accordion").accordion({
+        active : 1,
         change : onMetadataAccordionChange,
         fillSpace : true
     });
     loadObjectNames();
+    loadMetadataProperties();
 }
 
 function loadMetadataProperties() {
