@@ -1,0 +1,21 @@
+<Templates xmlns:api="http://jivesoftware.com/templates/api">
+
+    <Namespace prefix="api" url="http://jivesoftware.com/templates/api"/>
+
+    <Template tag="api:topNavigation">
+        <div id="top-level-div">
+            <span class="top-level-title"></span>
+            <span class="top-level-explore">
+                Explore:
+                <select id="top-level-select">
+                    <option value="introduction">Introduction</option>
+                    <option value="metadata">Metadata Service</option>
+                    <option value="people">People Service</option>
+                    <option value="securityGroups">Security Groups Service</option>
+                </select>
+            </span>
+            <hr/>
+        </div>
+    </Template>
+
+</Templates>

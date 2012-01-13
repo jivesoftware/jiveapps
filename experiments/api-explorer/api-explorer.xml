@@ -21,14 +21,24 @@
         <Link rel="Icon" href="jive-desktop-icon-48-glossy.ico"/>
         <Link rel="MediumIcon" href="jive-desktop-icon-48-glossy.png"/>
         <Require feature="content-rewrite">
+            <Param name="include-tags"/>
             <Param name="include-url">*.gif</Param>
             <Param name="include-uri">*.png</Param>
         </Require>
         <Require feature="dynamic-height"/>
         <Require feature="minimessage"/>
+        <Require feature="opensocial-data"/>
+<!--
+        <Require feature="opensocial-templates">
+            <Parameter name="requireLibrary">http://craig-z800.jiveland.com/jiveapps/experiments/api-explorer/templates.xml</Parameter>
+        </Require>
+-->
         <Require feature="osapi"/>
         <Require feature="views"/>
     </ModulePrefs>
     <Content view="home" type="html" href="home.html" preferred_height="400"/>
-    <Content view="canvas" type="html" href="canvas.html" preferred_height="800"/>
+    <Content view="canvas" type="html" href="canvas.html" preferred_height="800"/> <!-- Introduction -->
+    <Content view="canvas.metadata" type="html" href="canvas-metadata.html" preferred_height="800"/>
+    <Content view="canvas.people" type="html" href="canvas-people.html" preferred_height="800"/>
+    <Content view="canvas.securityGroups" type="html" href="canvas-securityGroups.html" preferred_height="800"/>
 </Module>

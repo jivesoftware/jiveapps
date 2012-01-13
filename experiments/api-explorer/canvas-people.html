@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+    <title>Jive API - People Service</title>
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
+    <link type="text/css" href="css/api-explorer.css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+  	<script type="text/javascript" src="js/jquery.popover.js"></script>
+  	<script type="text/javascript" src="js/next_tick.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript">
+
+function init() {
+    configureTopLevelNav("People Service", "people");
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+    </script>
+</head>
+
+<body>
+
+<!-- Top Level Navigation (should be a template) -->
+<div id="top-level-div">
+    <span class="top-level-title"></span>
+    <span class="top-level-explore">
+        Explore:
+        <select id="top-level-select">
+            <option value="introduction">Introduction</option>
+            <option value="metadata">Metadata Service</option>
+            <option value="people">People Service</option>
+            <option value="securityGroups">Security Groups Service</option>
+        </select>
+    </span>
+    <hr/>
+</div>
+
+</body>
+
+</html>

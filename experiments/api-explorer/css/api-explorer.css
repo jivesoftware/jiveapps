@@ -30,3 +30,13 @@
 	padding-right: 0;
 	}
 .j-striped { background: #f8fbfe; }
+
+.top-level-explore {
+    float: right;
+}
+
+.top-level-title {
+    font-size: large;
+    font-weight: bold;
+    padding: 2px;
+}

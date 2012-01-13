@@ -15,7 +15,7 @@
 function init() {
     osapi.jive.version.getVersionInfo().execute(function(response) {
         $("#enter-button").click(function() {
-            gadgets.views.requestNavigateTo("canvas");
+            gadgets.views.requestNavigateTo("canvas.metadata");
         });
         $("#jive-version").html(response.jiveVersion);
         var apiVersion;
