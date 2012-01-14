@@ -12,10 +12,40 @@
   	<script type="text/javascript" src="js/jquery.popover.js"></script>
   	<script type="text/javascript" src="js/next_tick.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
+    <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
+<!--        <os:Var key="category" value="metadata"/> -->
+        <os:DataRequest key="names" method="jive.core3.objects.getObjectNames"/>
+        <os:DataRequest key="properties" method="jive.core3.properties.getProperties"/>
+<!--        <os:Var key="title" value="Metadata Service"/> -->
+    </script>
     <script type="text/javascript">
 
 var names;                  // Names of supported object types
 var properties;             // Metadata properties that were returned
+
+function configureObjectNames() {
+    names = data.getDataSet("names").sort();
+    var html = '<option disabled="disabled">----------</option>';
+    $.each(names, function(index, objectName) {
+        html += '<option value="' + objectName + '">' + objectName + '</option>';
+    });
+    $("#object-select").html("").html(html).change(loadObjectDetails);
+    $("#object-picker").show();
+}
+
+function configureProperties() {
+    properties = data.getDataSet("properties");
+    var html = "";
+    $.each(properties, function(index, property) {
+        html += '<tr><td>' + property.name + '</td>';
+        html += '<td>' + property.type + '</td>';
+        html += '<th>' + property.value + '</th>';
+        html += '<td>' + property.description + '</td>';
+        html += '</tr>';
+    });
+    $("#properties-tbody").html("").html(html);
+    $("#properties-table").show();
+}
 
 function configureTabs() {
     $("#tabs").tabs({
@@ -26,8 +56,8 @@ function configureTabs() {
 function init() {
     configureTopLevelNav("Metadata Service", "metadata");
     configureTabs();
-    loadObjectNames();
-    loadProperties();
+    configureObjectNames();
+    configureProperties();
     gadgets.window.adjustHeight(800);
 }
 
@@ -35,14 +65,6 @@ function loadObjectDetails() {
     osapi.jive.core3.objects.getObjectDetails({
         objectName : $("#object-select").val()
     }).execute(onObjectDetails);
-}
-
-function loadObjectNames() {
-    osapi.jive.core3.objects.getObjectNames().execute(onObjectNames);
-}
-
-function loadProperties() {
-    osapi.jive.core3.properties.getProperties().execute(onProperties);
 }
 
 function onObjectDetails(response) {
@@ -96,30 +118,6 @@ function onObjectDetails(response) {
     else {
         $("#object-resources-table").hide(); }
 
-}
-
-function onObjectNames(response) {
-    names = response.sort();
-    var html = '<option disabled="disabled">----------</option>';
-    $.each(names, function(index, objectName) {
-        html += '<option value="' + objectName + '">' + objectName + '</option>';
-    });
-    $("#object-select").html("").html(html).change(loadObjectDetails);
-    $("#object-picker").show();
-}
-
-function onProperties(response) {
-    properties = response;
-    var html = "";
-    $.each(properties, function(index, property) {
-        html += '<tr><td>' + property.name + '</td>';
-        html += '<td>' + property.type + '</td>';
-        html += '<th>' + property.value + '</th>';
-        html += '<td>' + property.description + '</td>';
-        html += '</tr>';
-    });
-    $("#properties-tbody").html("").html(html);
-    $("#properties-table").show();
 }
 
 gadgets.util.registerOnLoadHandler(init);
@@ -205,10 +203,14 @@ gadgets.util.registerOnLoadHandler(init);
             <tbody id="object-resources-tbody"/>
         </table>
 
+        <div class="filler"></div>
+
     </div>
 
     <div id="tab-properties">
+
         <br/>
+
         <table id="properties-table" class="j-table" style="display:none">
             <thead>
                 <tr>
@@ -220,6 +222,9 @@ gadgets.util.registerOnLoadHandler(init);
             </thead>
             <tbody id="properties-tbody"/>
         </table>
+
+        <div class="filler"></div>
+
     </div>
 
 </div>

@@ -12,11 +12,126 @@
   	<script type="text/javascript" src="js/jquery.popover.js"></script>
   	<script type="text/javascript" src="js/next_tick.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
+    <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
+        <os:DataRequest key="personDetails" method="jive.core3.objects.getObjectDetails"
+                        objectName="person"/>
+        <os:DataRequest key="properties" method="jive.core3.properties.getProperties"/>
+        <os:DataRequest key="securityGroupDetails" method="jive.core3.objects.getObjectDetails"
+                        objectName="securityGroup"/>
+    </script>
     <script type="text/javascript">
+
+var personDetails;              // Object metadata about "person" objects
+var properties;                 // Overall configuration properties for this Jive instance
+var securityGroupDetails;       // Object metadata about "securityGroup" objects
+
+function configureData() {
+    personDetails = data.getDataSet("personDetails");
+    properties = data.getDataSet("properties");
+    securityGroupDetails = data.getDataSet("securityGroupDetails");
+}
+
+function configureSecurityGroupFields() {
+    var html = '<option value="@all" selected="selected">All Fields</option>';
+    $.each(securityGroupDetails.fields, function(index, securityGroupDetail) {
+        html += '<option value="' + securityGroupDetail.name + '">' + securityGroupDetail.name + '</option>';
+    });
+    $(".securityGroup-fields").html("").html(html);
+}
+
+function configureGetSecurityGroupButtons() {
+    $("#getSecurityGroup-show").click(function() {
+        var fields = calculateFields("getSecurityGroup-fields");
+        var securityGroupID = $("#getSecurityGroup-id").val();
+        var http = "GET " + jiveURL() + "/api/core/v3/securityGroups/" + securityGroupID + "?fields=" + fields;
+        var options = {
+            fields : fields,
+            securityGroupID : securityGroupID
+        };
+        $("#getSecurityGroup-http").val(http);
+        var js = "osapi.jive.core3.securityGroups.get(" + JSON.stringify(options) + ").execute(callback);";
+        $("#getSecurityGroup-js").val(js);
+    });
+    $("#getSecurityGroup-get").click(function() {
+        var securityGroupID = $("#getSecurityGroup-id").val();
+        var options = {
+            fields : calculateFields("getSecurityGroup-fields"),
+            securityGroupID : securityGroupID
+        };
+        osapi.jive.core3.securityGroups.getSecurityGroup(options).execute(function(response) {
+            $("#getSecurityGroup-json").val(JSON.stringify(response)); // TODO pretty print?
+        });
+    });
+}
+
+function configureGetSecurityGroupsButtons() {
+    $("#getSecurityGroups-show").click(function() {
+        var fields = calculateFields("getSecurityGroups-fields");
+        var http = "GET " + jiveURL() + "/api/core/v3/securityGroups?fields=" + fields;
+        var options = { fields : fields };
+        var name = $("#getSecurityGroups-name").val();
+        if (name && (name != "")) {
+            http += "&name=" + encodeURIComponent(name);
+            options.name = name;
+        }
+        var startIndex = $("#getSecurityGroups-startIndex").val();
+        if (startIndex && (startIndex != "")) {
+            http += "&startIndex=" + startIndex;
+            options.startIndex = startIndex;
+        }
+        var count = $("#getSecurityGroups-count").val();
+        if (count && (count != "")) {
+            http += "&count=" + count;
+            options.count = count;
+        }
+        $("#getSecurityGroups-http").val(http);
+        var js = "osapi.jive.core3.securityGroups.get(" + JSON.stringify(options) + ").execute(callback);";
+        $("#getSecurityGroups-js").val(js);
+    });
+    $("#getSecurityGroups-get").click(function() {
+        var options = { fields : calculateFields("getSecurityGroups-fields") };
+        var name = $("#getSecurityGroups-name").val();
+        if (name && (name != "")) {
+            options.name = name;
+        }
+        var startIndex = $("#getSecurityGroups-startIndex").val();
+        if (startIndex && (startIndex != "")) {
+            options.startIndex = startIndex;
+        }
+        var count = $("#getSecurityGroups-count").val();
+        if (count && (count != "")) {
+            options.count = count;
+        }
+        osapi.jive.core3.securityGroups.getSecurityGroups(options).execute(function(response) {
+            $("#getSecurityGroups-json").val(JSON.stringify(response)); // TODO pretty print?
+        });
+    });
+}
+
+function configureTabs() {
+    $("#tabs").tabs({
+        selected : 11
+    });
+}
 
 function init() {
     configureTopLevelNav("Security Groups Service", "securityGroups");
+    configureTabs();
+    configureData();
+    configureSecurityGroupFields();
+    configureGetSecurityGroupButtons();
+    configureGetSecurityGroupsButtons();
     gadgets.window.adjustHeight(800);
+}
+
+function jiveURL() {
+    var jiveURL = '{jiveURL}';
+    $.each(properties, function(index, property) {
+        if (property.name == 'instance.url') {
+            jiveURL = property.value;
+        }
+    });
+    return jiveURL;
 }
 
 gadgets.util.registerOnLoadHandler(init);
@@ -39,6 +154,208 @@ gadgets.util.registerOnLoadHandler(init);
         </select>
     </span>
     <hr/>
+</div>
+
+<!-- Tab set (one tab per operation) -->
+
+<div id="tabs">
+
+    <ul>
+        <li><a href="#tab-addAdministrators">Add Administrators</a></li>
+        <li><a href="#tab-addMembers">Add Members</a></li>
+        <li><a href="#tab-createSecurityGroup">Create Security Group</a></li>
+        <li><a href="#tab-deleteAdministrator">Delete Administrator</a></li>
+        <li><a href="#tab-deleteMember">Delete Member</a></li>
+        <li><a href="#tab-deleteSecurityGroup">Delete Security Group</a></li>
+        <li><a href="#tab-getAdministrator">Get Administrator</a></li>
+        <li><a href="#tab-getAdministrators">Get Administrators</a></li>
+        <li><a href="#tab-getMember">Get Member</a></li>
+        <li><a href="#tab-getMembers">Get Members</a></li>
+        <li><a href="#tab-getSecurityGroup">Get Security Group</a></li>
+        <li><a href="#tab-getSecurityGroups">Get Security Groups</a></li>
+        <li><a href="#tab-updateSecurityGroup">Update Security Group</a></li>
+    </ul>
+
+    <div id="tab-addAdministrators">
+        <p>TODO - addAdministrators</p>
+    </div>
+
+    <div id="tab-addMembers">
+        <p>TODO - addMembers</p>
+    </div>
+
+    <div id="tab-createSecurityGroup">
+        <p>TODO - createSecurityGroup</p>
+    </div>
+
+    <div id="tab-deleteAdministrator">
+        <p>TODO - deleteAdministrator</p>
+    </div>
+
+    <div id="tab-deleteMember">
+        <p>TODO - deleteMember</p>
+    </div>
+
+    <div id="tab-deleteSecurityGroup">
+        <p>TODO - deleteSecurityGroup</p>
+    </div>
+
+    <div id="tab-getAdministrator">
+        <p>TODO - getAdministrator</p>
+    </div>
+
+    <div id="tab-getAdministrators">
+        <p>TODO - GetAdministrators</p>
+    </div>
+
+    <div id="tab-getMember">
+        <p>TODO - getMember</p>
+    </div>
+
+    <div id="tab-getMembers">
+        <p>TODO - getMembers</p>
+    </div>
+
+    <div id="tab-getSecurityGroup">
+
+        <h3>Background</h3>
+        
+        <p>A <em>Get Security Group</em> request will return the set of fields you ask for about a particular
+        security group object that has been defined in this Jive instance.</p>
+        
+        <h3>Input Values</h3>
+
+        <table border="0" cellpadding="10">
+            <tr>
+                <td>
+                    <p>Enter input values that will configure the request:</p>
+                    <table class="j-table">
+                        <tr>
+                            <th>Security Group ID:</th>
+                            <td><input id="getSecurityGroup-id" type="text"/></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <p>Select the fields you wish to include, or <em>@all</em> for all fields:</p>
+                    <select id="getSecurityGroup-fields" class="securityGroup-fields" multiple="multiple" size="12">
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+
+        <h3>Request To Jive <button id="getSecurityGroup-show">Show It!</button></h3>
+
+        <table class="j-table">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align:center">Request as an HTTP Call or a JavaScript Call</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>HTTP Call</th>
+                    <td><textarea id="getSecurityGroup-http" rows="5" cols="100" disabled="disabled"></textarea></td>
+                </tr>
+                <tr>
+                    <th>JavaScript Call</th>
+                    <td><textarea id="getSecurityGroup-js" rows="5" cols="100" disabled="disabled"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Response From Jive <button id="getSecurityGroup-get">Get It!</button></h3>
+
+        <table class="j-table">
+            <tr>
+                <th>JSON Response</th>
+                <td><textarea id="getSecurityGroup-json" rows="25" cols="100" disabled="disabled"></textarea></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="tab-getSecurityGroups">
+
+        <h3>Background</h3>
+
+        <p>A <em>Get Security Groups</em> request will return a paginated set of security group objects that have
+        been defined in this Jive instance.  You can optionally specify either the name of the (single) group
+        that you want, or a (zero-relative) starting index and maximum count of objects to be returned.  In
+        addition, you may select which fields are returned, or choose <em>@all</em> to return all fields.</p>
+
+        <h3>Input Values</h3>
+
+        <table border="0" cellpadding="10">
+            <tr>
+                <td>
+                    <p>Enter input values that will configure the request:</p>
+                    <table class="j-table">
+                        <tr>
+                            <th>Name:</th>
+                            <td><input id="getSecurityGroups-name" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <th>Start Index:</th>
+                            <td><input id="getSecurityGroups-startIndex" type="text" value="0"/></td>
+                        </tr>
+                        <tr>
+                            <th>Count:</th>
+                            <td><input id="getSecurityGroups-count" type="text" value="25"/></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td>
+                    <p>Select the fields you wish to include, or <em>@all</em> for all fields:</p>
+                    <select id="getSecurityGroups-fields" class="securityGroup-fields" multiple="multiple" size="12">
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+
+        <h3>Request To Jive <button id="getSecurityGroups-show">Show It!</button></h3>
+
+        <table class="j-table">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align:center">Request as an HTTP Call or a JavaScript Call</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>HTTP Call</th>
+                    <td><textarea id="getSecurityGroups-http" rows="5" cols="100" disabled="disabled"></textarea></td>
+                </tr>
+                <tr>
+                    <th>JavaScript Call</th>
+                    <td><textarea id="getSecurityGroups-js" rows="5" cols="100" disabled="disabled"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Response From Jive <button id="getSecurityGroups-get">Get It!</button></h3>
+
+        <table class="j-table">
+            <tr>
+                <th>JSON Response</th>
+                <td><textarea id="getSecurityGroups-json" rows="25" cols="100" disabled="disabled"></textarea></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="tab-updateSecurityGroup">
+        <p>TODO - updateSecurityGroup</p>
+    </div>
+
 </div>
 
 </body>

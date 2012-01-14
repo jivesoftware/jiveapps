@@ -12,10 +12,21 @@
   	<script type="text/javascript" src="js/jquery.popover.js"></script>
   	<script type="text/javascript" src="js/next_tick.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
+    <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
+        <os:DataRequest key="personDetails" method="jive.core3.objects.getObjectDetails"
+                        objectName="person"/>
+    </script>
     <script type="text/javascript">
+
+var personDetails;              // Object metadata about "person" objects
+
+function configureData() {
+    personDetails = data.getDataSet("personDetails");
+}
 
 function init() {
     configureTopLevelNav("People Service", "people");
+    configureData();
     gadgets.window.adjustHeight(800);
 }
 

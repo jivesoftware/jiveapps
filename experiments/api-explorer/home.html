@@ -16,12 +16,16 @@ function init() {
     osapi.jive.version.getVersionInfo().execute(function(response) {
         $("#enter-button").click(function() {
             gadgets.views.requestNavigateTo("canvas.metadata");
+            return false;
         });
         $("#jive-version").html(response.jiveVersion);
-        var apiVersion;
+        var apiVersion = "";
         $.each(response.jiveCoreVersions, function(index, jiveCoreVersion) {
-            if (jiveCoreVersion.version == 3) {
-                apiVersion = jiveCoreVersion.version + "." + jiveCoreVersion.revision;
+            if (jiveCoreVersion.version >= 2) {
+                if (apiVersion != "") {
+                    apiVersion += ", ";
+                }
+                apiVersion += jiveCoreVersion.version + "." + jiveCoreVersion.revision;
             }
         });
         $("#api-version").html(apiVersion);
@@ -47,7 +51,7 @@ gadgets.util.registerOnLoadHandler(init);
     <br/>
     <div id="version-info" class="banner-div" style="display:none">
         <p>Jive Version: <span id="jive-version"></span></p>
-        <p>API Version: <span id="api-version"></span></p>
+        <p>API Version(s): <span id="api-version"></span></p>
     </div>
 
 

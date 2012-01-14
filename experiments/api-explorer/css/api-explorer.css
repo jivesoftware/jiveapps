@@ -11,6 +11,18 @@
     text-align: center;
 }
 
+.input-fields {
+    float : right;
+}
+
+.input-values {
+    float : left;
+}
+
+.filler {
+    height : auto;
+}
+
 .j-table table { width: 100%; }
 .j-table thead { background-color: #f7f7f7; }
 .j-table thead th {
@@ -30,6 +42,11 @@
 	padding-right: 0;
 	}
 .j-striped { background: #f8fbfe; }
+
+.request-textbox {
+    columns: 5;
+    rows: 100;
+}
 
 .top-level-explore {
     float: right;
