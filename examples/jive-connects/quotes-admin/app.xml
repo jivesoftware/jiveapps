@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2011 Jive Software
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<Module>
+    <ModulePrefs title="Quotes Administration"
+                author="Jive Software"
+           description="Administer server data for the quotes system">
+        <Link rel="Icon" href="wiretransfer_16x16.png"/>
+        <Link rel="MediumIcon" href="wiretransfer_48x48.png"/>
+        <Link rel="LargeIcon" href="wiretransfer_128x128.png"/>
+        <Require feature="jive-connects-v1">
+            <Param name="alias:quotes|title:Quotes Service">jive:service://jivesoftware.com/demo/quotes?version=1</Param>
+        </Require>
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v2"/>
+        <Require feature="minimessage"/>
+        <Require feature="views"/>
+    </ModulePrefs>
+    <Content view="home" type="html" href="home.html" preferred_height="400"/>
+    <Content view="canvas" type="html" href="canvas.html" preferred_height="800"/>
+    <Content view="canvas.customers" type="html" href="canvas-customers.html"/>
+    <Content view="canvas.salesreps" type="html" href="canvas-salesreps.html"/>
+</Module>
+

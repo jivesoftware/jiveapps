@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+    <title>Quotes Administration</title>
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
+    <link type="text/css" href="css/quotes-admin.css" rel="stylesheet"/>
+    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
+  	<script type="text/javascript" src="js/jquery.popover.js"></script>
+  	<script type="text/javascript" src="js/next_tick.js"></script>
+    <script type="text/javascript" src="js/underscore-1.3.1.js"></script>
+    <script type="text/javascript" src="js/backbone-0.9.1.js"></script>
+    <script type="text/javascript" src="js/quotes-models.js"></script>
+    <script type="text/javascript" src="js/quotes-views.js"></script>
+    <script type="text/javascript" src="js/quotes-router.js"></script>
+    <script type="text/javascript" src="js/quotes-admin.js"></script>
+    <script type="text/javascript">
+
+function init() {
+    configureTopLevelNav("Sales Reps", "salesreps");
+    var router = new SalesRepRouter();
+    Backbone.history.start();
+    gadgets.window.adjustHeight(800);
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+    </script>
+</head>
+
+<body>
+
+<!-- Template for Sales Rep List -->
+<script type="text/template" id="sales-rep-list-template">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody id="sales-rep-list-tbody"/>
+</script>
+
+<!-- Template for Sales Rep Row -->
+<script type="text/template" id="sales-rep-row-template">
+    <tr id="sales-rep-<%= id %>">
+        <td><%= firstName %></td>
+        <td><%= lastName %></td>
+        <td><%= username %></td>
+    </tr>
+</script>
+
+<!-- Top Level Navigation (should be a template) -->
+<div id="top-level-div">
+    <span class="top-level-title"></span>
+    <span class="top-level-explore">
+        Administer:
+        <select id="top-level-select">
+            <option value="introduction">Introduction</option>
+            <option value="customers">Customers</option>
+            <option value="salesreps">Sales Reps</option>
+        </select>
+    </span>
+    <hr/>
+</div>
+
+<!-- The sales rep table -->
+<table id="sales-rep-table"/>
+
+
+</body>
+
+</html>

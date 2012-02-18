@@ -1,0 +1,558 @@
+/*
+* $Revision$
+* $Date$
+*
+* Copyright (C) 1999-2010 Jive Software. All rights reserved.
+*
+* This software is the proprietary information of Jive Software. Use is subject to license terms.
+*/
+
+/* Things that might be sprited */
+.jive-icon-plus,
+.jive-icon-minus {
+	/* edit widget layouts, leave before standard sprites */
+	background-repeat: no-repeat;
+	background-position: 0;
+	padding: 2px 0 2px 20px;
+	}
+
+/* ===========
+icons are spaced evenly, so x & y position numbers should almost always be the following:
+16px  80px   144px  208px  272px  336px  400px  464px  528px  592px  656px  720px
+784px  848px  912px  976px 1040px 1104px 1168px 1232px 1296px 1360px 1424px
+============== */
+
+/* START of standard sprite grouping */
+/**
+* some of these icon rules are necessarily duplicated in ui.css.
+* please look there also if changing these rules
+*/
+.jive-icon-sml,
+.jive-icon-med,
+.jive-icon-big,
+.jive-icon-huge {
+	background-color: transparent;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding: 0;
+	}
+.jive-icon-sml {
+	background-image: url( ../custom-theme/images/jive-icon-sprites-sml.png );
+	height: 12px;
+	width: 12px;
+	margin: 1px 5px 0 0;
+	}
+.jive-icon-tiny {
+	height: 10px;
+	width: 10px;
+	}
+.jive-icon-med {
+	background-image: url( ../custom-theme/images/jive-icon-sprites-med.png );
+	height: 16px;
+	width: 17px;
+	margin: -1px 5px 0 0;
+	}
+.jive-icon-med.jive-ext-icon-16 { width: 16px; }
+.jive-icon-big {
+	background-image: url(../custom-theme/images/jive-icon-sprites-big.png);
+	height: 25px;
+	width: 25px;
+	margin: 0 6px 0 0;
+	}
+.jive-icon-huge {
+	background-image: url(../custom-theme/images/jive-icon-sprites-huge.png);
+	height: 48px;
+	width: 48px;
+	margin: 0 8px 0 0;
+	}
+.jive-rendered-content a span.jive-icon-sml,
+.jive-rendered-content a span.jive-icon-med {
+	display: inline-block;
+	float: none;
+	margin-bottom: -2px;
+	}
+
+/* images for inline sprites */
+img.jive-icon-sml,
+img.jive-icon-med,
+img.jive-icon-big {
+	border: 0 none;
+	float: none;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 0;
+	}
+img.jive-icon-sml { /*empty */ }
+img.jive-icon-med { width: 16px; }
+img.jive-icon-big { /*empty */ }
+
+/* inline-block for links containing icons (so we don't have to use the img tag any more) */
+.j-inline-link { display: inline-block; }
+a.j-user-link:hover { text-decoration: none; }
+a.j-user-link { padding-left: 0.5ex; }
+a.j-user-link:hover .j-user-link-txt { text-decoration: underline; }
+
+a.j-user-link .jive-icon-sml { 
+	display: inline-block; 
+	float: none; 
+	position: relative; 
+	top: 1px;
+	}
+
+/* rules for content ratings */
+.jive-content-userrating .jive-icon-med,
+.jive-content-avgrating .jive-icon-med,
+.jive-content-avgrating-score .jive-icon-med,
+.jive-comment-userrating-score .jive-icon-med {
+	width: 16px;
+	margin: 0;
+	}
+
+/* individual sprite positions */
+.jive-icon-acclaim { background-position: -592px -272px; }
+.jive-icon-add { background-position: -976px -80px; }
+.jive-icon-addressbook { background-position: -720px -848px; }
+.jive-icon-admin { background-position: -80px -1040px; }
+.jive-icon-admin-theming { background-position: -144px -1040px; }
+.jive-icon-admin-actions { background-position: -336px -336px; }
+.jive-icon-announcement { background-position: -16px -272px; }
+.jive-icon-appmarket { background-position: -336px -464px; }
+.jive-icon-approvals { background-position: -464px -528px; }
+.jive-icon-arrow-generic-down { background-position: -272px -1104px; }
+.jive-icon-archive, .jive-icon-unarchive { background-position: -208px -400px; }
+.jive-icon-arrow-generic-up { background-position: -208px -1104px; }
+.jive-icon-arrow-select { background-position: -64px -1104px; }
+.jive-icon-arrow-top { background-position: -336px -1104px; }
+.jive-icon-arrow-breadcrumb { background-position: -512px -1104px; }
+.jive-icon-attachment { background-position: -528px -656px; }
+.jive-icon-blog, .jive-icon-blogpost { background-position: -16px -144px; }
+.jive-icon-blog-bookmark { background-position: -336px -144px; }
+.jive-icon-blog-comment { background-position: -272px -144px; }
+.jive-icon-blog-draft { background-position: -464px -144px; }
+.jive-icon-blog-manage { background-position: -400px -144px; }
+.jive-icon-blog-manage-posts { background-position: -528px -144px; }
+.jive-icon-bookmark { background-position: -16px -784px }
+.jive-icon-bookmark-glyph { background-position: -1232px -656px; }
+.jive-icon-bookmark-private { background-position: -1168px -656px; } /* same as content-private */
+.jive-icon-bookmark-ribbon { background-position: -144px -784px }
+.jive-icon-bookmark-ribbon-grey { background-position: -208px -784px }
+.jive-icon-bookmark-ribbonaction { background-position: -272px -784px }
+.jive-icon-bookmark-ribbonaction-grey { background-position: -336px -784px }
+.jive-icon-calendar { background-position: -912px -656px; }
+.jive-icon-camera { background-position: -208px -272px; }
+.jive-icon-chat { background-position: -16px -336px; }
+.jive-icon-check { background-position: -80px -592px;}
+.jive-icon-checkpoint { background-position: -80px -400px; }
+.jive-icon-checkpoint-past { background-position: -144px -400px; }
+.jive-icon-clock { background-position: -784px -656px; }
+.jive-icon-comment { background-position: -80px -144px; }
+.jive-icon-comment-add { background-position: -144px -143px; }
+.jive-icon-comment-bang { background-position: -720px -144px; }
+.jive-icon-comment-blank { background-position: -656px -144px; }
+.jive-icon-comment-user { background-position: -784px -144px; }
+.jive-icon-comment-grey { background-position: -208px -144px; }
+.jive-icon-computer { background-position: -1040px -656px; }
+.jive-icon-content-private { background-position: -1168px -656px; }
+.jive-icon-content-private-shared { background-position: -1232px -656px; }
+.jive-icon-content-attachment { background-position: -1296px -656px; width: 14px;}
+.jive-icon-data-export { background-position: -720px -657px; }
+.jive-icon-delete { background-position: -272px -592px; }
+.jive-icon-direct-message { background-position: -1296px -848px; }
+.jive-icon-direct-message-label {background-position: -1040px -272px; }
+.jive-icon-discussion, .jive-icon-thread { background-position: -16px -16px; }
+.jive-icon-discussion-bookmark { background-position: -272px -16px; }
+.jive-icon-discussion-bookmark-bridged { background-position: -656px -16px; }
+.jive-icon-discussion-branch { background-position: -336px -16px; }
+.jive-icon-discussion-bridged { background-position: -400px -16px; }
+.jive-icon-discussion-correct { background-position: -208px -16px; }
+.jive-icon-discussion-correct-bridged { background-position: -208px -16px; }
+.jive-icon-discussion-helpful { background-position: -144px -16px; }
+.jive-icon-discussion-helpful-bridged { background-position: -144px -16px; }
+.jive-icon-discussion-lock { background-position: -208px -656px; } /* same as group-private */
+.jive-icon-discussion-question { background-position: -80px -16px; }
+.jive-icon-discussion-question-bridged { background-position: -464px -16px; }
+.jive-icon-discussion-unlock { background-position: -336px -656px; } /* same as group-open */
+.jive-icon-document-glyph { background-position: -1168px -656px;}
+.jive-icon-document { background-position: -16px -80px; }
+.jive-icon-document-bookmark { background-position: -1168px -80px; }
+.jive-icon-document-collaboration { background-position: -784px -80px; }
+.jive-icon-document-comment { background-position: -1104px -80px; }
+.jive-icon-document-draft { background-position: -1232px -80px; }
+.jive-icon-document-info { background-position: -656px -80px; }
+.jive-icon-document-manage { background-position: -848px -80px; }
+.jive-icon-document-upload { background-position: -1040px -80px; }
+.jive-icon-doctype-acrobat { background-position: -80px -80px; }
+.jive-icon-doctype-compressed { background-position: -144px -80px; }
+.jive-icon-doctype-document { background-position: -208px -80px; }
+.jive-icon-doctype-generic { background-position: -272px -80px; }
+.jive-icon-doctype-image { background-position: -336px -80px; }
+.jive-icon-doctype-presentation { background-position: -400px -80px; }
+.jive-icon-doctype-spreadsheet { background-position: -464px -80px; }
+.jive-icon-doctype-text { background-position: -528px -80px; }
+.jive-icon-doctype-video { background-position: -592px -80px; }
+.jive-icon-edit { background-position: -720px -80px; }
+.jive-icon-external-site { background-position: -400px -784px; }
+.jive-icon-external-site-bookmark { background-position: -528px -784px }
+.jive-icon-external-site-comment { background-position: -464px -784px }
+.jive-icon-site-go { background-position: -16px -1104px; }
+.jive-icon-eye { background-position: -464px -656px; }
+.jive-icon-flickr { background-position: -144px -720px; }
+.jive-icon-folder { background-position: -848px -848px; }
+.jive-icon-folder-edit { background-position: -1040px -848px; }
+.jive-icon-folder-delete { background-position: -1104px -848px; }
+.jive-icon-folder-sent { background-position: -912px -848px; }
+.jive-icon-folder-stack { background-position: -1168px -848px; }
+.jive-icon-folder-up { background-position: -976px -848px; }
+.jive-icon-follow-stop { background-position: -720px -592px; }
+.jive-icon-follow { background-position: -80px -336px; }
+.jive-icon-following { background-position: -143px -336px; }
+.jive-icon-following-stop { background-position: -208px -336px; }
+.jive-icon-forbidden { background-position: -400px -592px; }
+.jive-icon-formatted-text { background-position: -272px -720px; }
+.jive-icon-friend { background-position: -528px -528px; }
+.jive-icon-friend-add { background-position: -720px -528px; }
+.jive-icon-friend-followers { background-position: -592px -528px; }
+.jive-icon-friend-following { background-position: -656px -528px; }
+.jive-icon-friend-applylabels { background-position: -208px -1168px; }
+.jive-icon-gear { background-position: -976px -656px; }
+.jive-icon-group { background-position: -208px -912px; }
+.jive-icon-group-bookmark { background-position: -720px -912px; }
+.jive-icon-group-edit { background-position: -272px -912px; }
+.jive-icon-group-member_only { background-position: -272px -656px; }
+.jive-icon-group-open { background-position: -336px -656px; }
+.jive-icon-group-private { background-position: -208px -656px; }
+.jive-icon-group-secret { background-position: -400px -656px; }
+.jive-icon-group-secret2 { background-position: -336px -912px; }
+.jive-icon-history { background-position: -656px -656px; }
+.jive-icon-help { background-position: -656px -592px; }
+.jive-icon-home { background-position: -16px -912px; }
+.jive-icon-html { background-position: -336px -720px; }
+.jive-icon-inbox { background-position: -144px -848px; }
+.jive-icon-inbox-new { background-position: -208px -848px; }
+.jive-icon-info { background-position: -592px -592px; }
+.jive-icon-invite { background-position: -400px -912px; }
+.jive-icon-iphone { background-position: -144px -272px; } /* same as jive-icon-mobile */
+.jive-icon-label-frame { background-position: -16px -1168px; }
+.jive-icon-link { background-position: -400px -720px; }
+.jive-icon-link2 { background-position: -144px -656px; }
+.jive-icon-lock { background-position: -208px -656px; } /* same as group-private above */
+.jive-icon-magnifyingglass { background-position: -848px -656px; }
+.jive-icon-members { background-position: -464px -912px; }
+.jive-icon-members-manage { background-position: -528px -912px; }
+.jive-icon-mention { background-position: -656px -272px; }
+.jive-icon-mention-label {background-position: -912px -272px; }
+.jive-icon-message { background-position: -16px -848px; }
+.jive-icon-message-add { background-position: -592px -848px; }
+.jive-icon-message-delete { background-position: -336px -849px; }
+.jive-icon-message-edit { background-position: -400px -849px; }
+.jive-icon-message-forward { background-position: -464px -849px; }
+.jive-icon-message-link { background-position: -272px -849px; }
+.jive-icon-message-new { background-position: -80px -849px; }
+.jive-icon-message-open { background-position: -656px -849px; }
+.jive-icon-message-private { background-position: -784px -848px; }
+.jive-icon-message-reply { background-position: -528px -849px; }
+.jive-icon-minus { background-position: -208px -592px;}
+.jive-icon-mobile { background-position: -144px -272px; } /* same as jive-icon-iphone */
+.jive-icon-modal-close { background-position: -720px -592px; margin: 2px 4px 0 0;}  /* this one is meta blue */
+.jive-icon-moderation { background-position: -16px -1040px;}
+.jive-icon-more { background-position: -144px -272px; }
+.jive-icon-move { background-position: -1296px -80px; }
+.jive-icon-permalink { background-position: -400px -272px;}
+.jive-icon-permalink-active { background-position: -464px -272px; }
+.jive-icon-permalink-hover { background-position: -528px -272px; }
+.jive-icon-new { background-position: -912px -80px; }
+.jive-icon-note { background-position: -208px -1040px; }
+.jive-icon-note-add { background-position: -272px -1040px; }
+.jive-icon-note-delete { background-position: -336px -1040px; }
+.jive-icon-note-edit { background-position: -400px -1040px; }
+.jive-icon-notify { background-position: -656px -849px; } /* same as message-open above */
+.jive-icon-notify-stop { background-position: -656px -849px; } /* same as message-open above */
+.jive-icon-orgchart { background-position: -400px -528px; }
+.jive-icon-orgchart-add { background-position: -848px -528px; }
+.jive-icon-like { background-position: -720px -144px; }
+.jive-icon-like-grey { background-position: -656px -144px; }
+.jive-icon-password { background-position: -400px -656px; } /* same as group-secret above */
+.jive-icon-people { background-position: -16px -528px; }
+.jive-icon-photo { background-position: -16px -720px; }
+.jive-icon-place-unavailable { background-position: -784px -912px; }
+.jive-icon-plugin { background-position: -80px -1168px; }
+.jive-icon-plus { background-position: -144px -592px;}
+.jive-icon-poll { background-position: -16px -208px; }
+.jive-icon-poll-add { background-position: -80px -208px; }
+.jive-icon-poll-bookmark { background-position: -336px -208px; }
+.jive-icon-poll-comment { background-position: -208px -208px; }
+.jive-icon-poll-edit { background-position: -144px -208px; }
+.jive-icon-poll-vote { background-position: -272px -208px; }
+.jive-icon-preferences { background-position: -336px -528px; }
+.jive-icon-print-preview { background-position: -16px -656px; }
+.jive-icon-printer { background-position: -80px -656px; }
+.jive-icon-profile { background-position: -208px -528px; }
+.jive-icon-profile-bookmark { background-position: -912px -528px; }
+.jive-icon-project { background-position: -144px -912px; }
+.jive-icon-project-bookmark { background-position: -656px -912px; }
+.jive-icon-project-move { background-position: -272px -400px; }
+.jive-icon-project-tiny { background-position: -317px -1360px; }
+.jive-icon-project-status-low { background-position: -848px -912px; }
+.jive-icon-project-status-med { background-position: -912px -912px; }
+.jive-icon-project-status-high { background-position: -976px -912px; }
+.jive-icon-project-status-complete { background-position: -1040px -912px; }
+.jive-icon-question { background-position: -528px -592px; }
+.jive-icon-quote { background-position: -208px -720px; }
+.jive-icon-quotes { background-position: -80px -272px; }
+.jive-icon-rate-avg-on { background-position: -208px -1232px; }
+.jive-icon-rate-avg-half { background-position: -144px -1232px; }
+.jive-icon-rate-avg-off { background-position: -80px -1232px; }
+.jive-icon-rate-usr-on { background-position: -16px -1232px; }
+.jive-icon-rate-usr-off { background-position: -80px -1232px; }
+.jive-icon-redalert { background-position: -336px -592px; }
+.jive-icon-replied { background-position: -144px -1104px; }
+.jive-icon-repost { background-position: -272px -336px; }
+.jive-icon-rss { background-position: -16px -592px;}
+.jive-icon-search { background-position: -848px -656px; }
+.jive-icon-share {background-position: -336px -400px; }
+.jive-icon-share-label {background-position: -976px -272px; }
+.jive-icon-social-news { background-position: -848px -272px; }
+.jive-icon-space { background-position: -80px -912px; }
+.jive-icon-space-bookmark { background-position: -592px -912px; }
+.jive-icon-status { background-position: -272px -528px; }
+.jive-icon-tag { background-position: -16px -464px; }
+.jive-icon-taggroup { background-position: -80px -464px; }
+.jive-icon-task { background-position: -16px -400px; }
+.jive-icon-track { background-position: -720px -272px; }
+.jive-icon-stop-tracking { background-position: -784px -272px; }
+.jive-icon-trash { background-position: -1232px -848px; }
+.jive-icon-twitter { background-position: -80px -720px; }
+.jive-icon-userbar-new { background-position: -912px -80px; }
+.jive-icon-userbar-nav { background-position: -80px -912px; }
+.jive-icon-yourstuff { background-position: -80px -528px; }
+.jive-icon-yourstuff-new { background-position: -144px -528px; }
+.jive-icon-versions { background-position: -1360px -656px; }
+.jive-icon-vcard-add { background-position: -784px -528px; }
+.jive-icon-video { background-position: -16px -976px; }
+.jive-icon-video-bookmark { background-position: -208px -976px; }
+.jive-icon-video-collaboration { background-position: -784px -80px; } /* same as document-collaboration */
+.jive-icon-video-comment { background-position: -144px -976px; }
+.jive-icon-video-featured { background-position: -80px -976px; }
+.jive-icon-vote-poll { background-position: -80px -592px;}  /* same as jive-icon-check */
+.jive-icon-warn { background-position: -464px -592px; }
+.jive-icon-web { background-position: -208px -720px; }
+
+.jive-icon-meta-like { background-position: -80px -1424px; }
+.jive-icon-meta-comment { background-position: -16px -1424px; }
+.jive-icon-meta-bookmark { background-position: -144px -1424px; }
+
+.jive-icon-expand { background-position: -912px -592px; }
+.jive-icon-expand-over { background-position: -976px -592px; }
+.jive-icon-minimize { background-position: -784px -592px; }
+.jive-icon-minimize-over { background-position: -848px -592px; }
+
+.j-more {
+	background: url(../custom-theme/images/jive-icon-sprites-big.png) no-repeat -80px -592px;
+	display: inline-block;
+	*display: inline;
+	width: 24px; height: 12px;
+	line-height: 1000px;
+	overflow: hidden;
+	position: relative;
+	top: 3px;
+	margin-left: 2px;
+	zoom: 1;
+	}
+
+/* UI Controls */
+.jive-icon-arrow-down { background-position: -16px -1360px; }
+.jive-icon-arrow-down-focus { background-position: -32px -1360px; }
+.jive-icon-arrow-right { background-position: -48px -1360px; }
+.jive-icon-arrow-right-focus { background-position: -64px -1360px; }
+.jive-icon-arrow-left { background-position: -80px -1360px; }
+.jive-icon-arrow-left-focus { background-position: -96px -1360px; }
+.jive-icon-arrow-up { background-position: -335px -1360px;}
+.jive-icon-arrow-up-focus { background-position: -351px -1360px;}
+.jive-icon-preview-act { background-position: -114px -1360px; }
+.jive-icon-preview-act-focus { background-position: -134px -1360px; }
+.jive-icon-loadmore { background-position: -384px -1360px;}
+.jive-icon-loadmore:hover { background-position: -400px -1360px;}
+.jive-icon-loadmore:focus { background-position: -400px -1360px;}
+.jive-icon-down { background-position: -512px -1360px;}
+.jive-icon-down:hover { background-position: -528px -1360px;}
+.jive-icon-down:focus { background-position: -528px -1360px;}
+.jive-icon-read-marker { background-position: -464px -1360px;}
+.jive-icon-unread-marker { background-position: -480px -1360px;}
+
+/* glyphs for whatevs */
+.jive-glyph-menu-down { background-position: -16px -1360px; }
+.jive-glyph-menu-down-hover { background-position: -32px -1360px; }
+.jive-glyph-menu-down:hover { background-position: -32px -1360px; }
+.jive-glyph-menu-down-active { background-position: -434px -1360px; }
+.jive-glyph-menu-down:active { background-position: -434px -1360px; }
+.jive-glyph-menu-right { background-position: -369px -1360px; }
+.jive-glyph-menu-right-hover { background-position: -385px -1360px; }
+.jive-glyph-menu-right:hover { background-position: -385px -1360px; }
+.jive-glyph-menu-right-active { background-position: -417px -1360px; }
+.jive-glyph-menu-right:active { background-position: -417px -1360px; }
+.jive-glyph-refresh { background-position: -48px -1360px; }
+.jive-glyph-refresh-hover { background-position: -64px -1360px; }
+.jive-glyph-edit { background-position: -80px -1360px; }
+.jive-glyph-edit-hover { background-position: -96px -1360px; }
+.jive-glyph-check { background-position: -607px -1360px; }
+.jive-glyph-check-hover { background-position: -623px -1360px; }
+.jive-glyph-min { background-position: -112px -1360px; }
+.jive-glyph-min-hover { background-position: -128px -1360px; }
+.jive-glyph-add { background-position: -144px -1360px; }
+.jive-glyph-add-hover { background-position: -160px -1360px; }
+.jive-glyph-delete { background-position: -176px -1360px; }
+.jive-glyph-delete-hover { background-position: -192px -1360px; }
+.jive-glyph-gear { background-position: -574px -1360px; }
+.jive-glyph-gear-hover { background-position: -590px -1360px; }
+.jive-glyph-warn { background-position: -208px -1360px; }
+.jive-glyph-warn-hover { background-position: -224px -1360px; }
+.jive-glyph-comment { background-position: -240px -1360px; }
+.jive-glyph-comment-hover { background-position: -256px -1360px; }
+.jive-glyph-like { background-position: -272px -1360px; }
+.jive-glyph-notes { background-position: -402px -1360px; }
+.jive-glyph-act-menu-down { background-position: -330px -1360px; }
+.jive-glyph-act-menu-down-hover { background-position: -336px -1360px; }
+.jive-glyph-admin-down { 
+	background-position: -448px -1360px; 
+	width: 7px; 
+	height: 4px;  
+	}
+.jive-glyph-track { background-position: -1104px -272px; }
+.jive-glyph-help { background-position: -547px -1361px; }
+.jive-glyph-orgchart { background-position: -560px -1360px; }
+.jive-glyph-externalurl { background-position: -560px -1360px; }
+
+/* glyph actions for whatevs */
+a.jive-glyph-menu-down span { background-position: -16px -1360px; }
+a.jive-glyph-menu-down:hover span { background-position: -32px -1360px; }
+a.jive-glyph-refresh span { background-position: -48px -1360px; }
+a.jive-glyph-refresh:hover span { background-position: -64px -1360px; }
+a.jive-glyph-edit span { background-position: -80px -1360px; }
+a.jive-glyph-edit:hover span { background-position: -96px -1360px; }
+a.jive-glyph-min span { background-position: -112px -1360px; }
+a.jive-glyph-min:hover span { background-position: -128px -1360px; }
+a.jive-glyph-add span { background-position: -144px -1360px; }
+a.jive-glyph-add:hover span { background-position: -160px -1360px; }
+a.jive-glyph-delete span { background-position: -176px -1360px; }
+a.jive-glyph-delete:hover span { background-position: -192px -1360px; }
+a.jive-glyph-warn span { background-position: -208px -1360px; }
+a.jive-glyph-warn:hover span { background-position: -224px -1360px; }
+a.jive-glyph-comment span { background-position: -240px -1360px; }
+a.jive-glyph-comment:hover span { background-position: -256px -1360px; }
+a.jive-glyph-like span { background-position: -272px -1360px; }
+a.jive-glyph-like:hover span { background-position: -288px -1360px; }
+.jive-glyph-act-menu-down span { background-position: -330px -1360px; }
+.jive-glyph-act-menu-down:hover span { background-position: -336px -1360px; }
+.jive-glyph-plus { background-position: -357px -1359px; }
+.jive-glyph-pin { background-position: -464px -1360px; }
+.jive-icon-group-secret-glyph, .jive-glyph-key { background-position: -480px -1360px; }
+.jive-icon-group-open-glyph, .jive-glyph-unlock { background-position: -496px -1360px; }
+.jive-icon-group-private-glyph, .jive-glyph-lock { background-position: -512px -1360px; }
+.jive-icon-group-member_only-glyph, .jive-glyph-lockplus { background-position: -528px -1360px; }
+
+
+/* zoomy control things for Microblogging and beyond */
+.j-icon-zoom,
+.jive-icon-play,
+.j-icon-close {
+	background-image: url(../custom-theme/images/jive-icon-sprites-big.png);
+	display: block;
+	}
+.j-icon-zoom { background-position: -400px -272px; width: 40px; height: 40px; }
+.j-icon-play { background-position: -320px -272px; width: 40px; height: 40px; }
+.j-icon-close { background-position: -480px -272px; width: 32px; height: 32px; }
+
+/* talky arrows for comments & popovers */
+.j-top-pointer,
+.jive-comment-arrow { background-image: url(../custom-theme/images/jive-icon-sprites-big.png); }
+.j-top-pointer { background-position: -13px -1360px; width: 23px; height: 12px; }
+.jive-comment-arrow { background-position: -37px -1360px; width: 10px; height: 14px; }
+
+/* END of standard sprite grouping */
+
+
+
+span.proj-status-complete { color: #06c; }
+span.proj-status-low { color: #900; }
+span.proj-status-med { color: #960; }
+span.proj-status-high { color: #060; }
+#jive-project-results .proj-status { white-space: nowrap; }
+#jive-project-results td { text-align: left; }
+
+/* END other sprites */
+
+
+#jive-community-empty-types p { padding-left:32px; }
+.jive-content-block-empty-discussions a,
+.jive-content-block-empty-documents a,
+.jive-content-block-empty-blogposts a,
+.jive-content-block-empty-video a {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: right;
+	}
+.jive-content-block-empty-pm p { padding-left: 0; }
+
+/* misc icons from older versions, converted and added here 'just in case'. Use with jive-icon-big */
+.jive-icon-acct-success-invite,
+.jive-icon-acct-success-tour {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	}
+
+.jive-alert-announcement-label { color: #988f42; }
+
+.jive-link-blog-small,
+.jive-link-bookmark-small,
+.jive-link-community-small,
+.jive-icon-discussion-small,
+.jive-icon-discussion-bridged-small,
+.jive-icon-discussion-correct-small,
+.jive-icon-discussion-question-small,
+.jive-icon-doctype-acrobat-small,
+.jive-icon-doctype-compressed-small,
+.jive-icon-doctype-document-small,
+.jive-icon-doctype-image-small,
+.jive-icon-doctype-presentation-small,
+.jive-icon-doctype-spreadsheet-small,
+.jive-link-email-small,
+.jive-link-external-site-small,
+.jive-link-message-small,
+.jive-link-poll-small,
+.jive-link-profile-small,
+.jive-link-project-small,
+.jive-link-socialgroup-small,
+.jive-link-status-small,
+.jive-link-tag-small,
+.jive-link-thread-small,
+.jive-link-url-small,
+.jive-link-video-small,
+.jive-link-wiki-small {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: left;
+	padding: 1px 0 1px 17px;
+	zoom:1; /* fix "background-break:bounding-box" rendering for the IEs */
+	}
+
+/* END Support for RTE - should upgrade in future */
+
+/*
+	Icons from external activity (app support).
+	Used for activity stream and inbox entries.
+
+	* Note to Professional Services and customization specialists:
+	Since these images are not served by Jive, they must remain 16x16, 48x48,
+	and 128x128 pixels as prescribed by the Jive apps contract.
+*/
+.jive-ext-icon-16 {  width: 16px;  height: 16px; }
+.jive-ext-icon-48 {  width: 48px;  height: 48px; }
+.jive-ext-icon-128 { width: 128px; height: 128px; }
+
+
+/* Some icons in the default Jive SBS icon set are from or have been adapted from the
+Silk icon set from Fam Fam Fam and are used under the Creative Commons Attribution
+3.0 license. http://www.famfamfam.com/lab/icons/silk/ */
