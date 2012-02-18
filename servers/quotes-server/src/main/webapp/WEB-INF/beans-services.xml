@@ -69,6 +69,7 @@
             <ref bean="quotesCustomerServer"/>
             <ref bean="quotesQuoteServer"/>
             <ref bean="quotesResetServer"/>
+            <ref bean="quotesUserServer"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="accessDeniedExceptionMapper"/>

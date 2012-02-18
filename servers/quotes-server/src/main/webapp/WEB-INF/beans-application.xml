@@ -57,4 +57,8 @@
     <bean id="quotesUserDAO" class="com.jivesoftware.rest.quotes.dao.impl.UserDAOImpl">
     </bean>
 
+    <bean id="quotesUserServer" class="com.jivesoftware.rest.quotes.server.UserServer">
+        <property name="userDAO" ref="quotesUserDAO"/>
+    </bean>
+
 </beans>
