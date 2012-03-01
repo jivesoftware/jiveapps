@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="roomfinderservice" default="war">
+    <property name="compiler.debug" value="off"/>
+    <property name="target" value="${basedir}/target"/>
+    <property name="target.compile" value="${target}/compile"/>
+    <property name="target.war" value="${target}/war"/>
+    <property name="target.war_exploded" value="${target}/war_exploded"/>
+    <property name="war.filename" value="RoomFinderService.war"/>
+    <property name="src" value="${basedir}/src"/>
+    <property name="web" value="${basedir}/web"/>
+
+    <patternset id="compiler.resources">
+        <include name="**/?*.properties"/>
+        <include name="**/?*.json"/>
+    </patternset>
+
+    <fileset id="runtime.jars" dir="${basedir}/web/WEB-INF/lib" includes="*.jar"/>
+    <fileset id="compile.jars" dir="${basedir}/lib" includes="*.jar"/>
+
+    <target name="compile" depends="init" description="Compile classes">
+        <javac destdir="${target.compile}"
+               srcdir="${src}"
+               debug="${compiler.debug}"
+               fork="true"
+               includeantruntime="false">
+            <classpath>
+                <fileset refid="runtime.jars"/>
+                <fileset refid="compile.jars"/>
+            </classpath>
+        </javac>
+
+        <copy todir="${target.compile}">
+            <fileset dir="${src}">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean" description="Clean all">
+        <delete dir="${target}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${target}"/>
+        <mkdir dir="${target.compile}"/>
+        <mkdir dir="${target.war}"/>
+        <mkdir dir="${target.war_exploded}"/>
+    </target>
+
+    <target name="war" depends="init, war_exploded" description="Build war">
+        <zip destfile="${target.war}/${war.filename}">
+            <zipfileset dir="${target.war_exploded}"/>
+        </zip>
+    </target>
+
+    <target name="war_exploded" depends="init, compile" description="Build exploded war">
+        <copy todir="${target.war_exploded}">
+            <fileset dir="${basedir}/web"/>
+        </copy>
+
+        <mkdir dir="${target.war_exploded}/WEB-INF/classes"/>
+        <copy todir="${target.war_exploded}/WEB-INF/classes">
+            <fileset dir="${target.compile}"/>
+        </copy>
+    </target>
+
+</project>

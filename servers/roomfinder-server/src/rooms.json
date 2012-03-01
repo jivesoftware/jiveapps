@@ -1,0 +1,20 @@
+[
+    {
+        "name":"Room1",
+        "location":"location1",
+        "email":"room1@xyz.com",
+        "floor":1
+    },
+    {
+        "name":"Room2",
+        "location":"location1",
+        "email":"room2@xyz.com",
+        "floor":1
+    },
+    {
+        "name":"Room3",
+        "location":"location2",
+        "email":"room3@xyz.com",
+        "floor":1
+    }
+]
