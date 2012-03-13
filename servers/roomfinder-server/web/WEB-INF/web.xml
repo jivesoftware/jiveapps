@@ -10,9 +10,19 @@
         <servlet-class>com.jivesoftware.it.RoomFinderServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>LocationServlet</servlet-name>
+        <servlet-class>com.jivesoftware.it.LocationServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>RoomFinderServlet</servlet-name>
         <url-pattern>/room-finder</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LocationServlet</servlet-name>
+        <url-pattern>/locations</url-pattern>
     </servlet-mapping>
 
 </web-app>
