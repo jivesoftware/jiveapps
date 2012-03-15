@@ -13,6 +13,12 @@ Exchange 2010 SP2. There are two servlets:
 - LocationServlet in url "/locations" services GET requests to get room location
   metadata. No authentication is required for this endpoint.
 
+You will find all jar dependencies included in the repository. The "EWSAPI-1.1.5-Jive.jar"
+is a modified version of Exchange web services Java API (http://archive.msdn.microsoft.com/ewsjavaapi).
+The original version of that API will work if you run your server in UTC timezone, but
+our modified version fixes these timezone handling bugs in EwsServiceXmlReader,
+ExchangeServiceBase and EwsUtilities classes to allow any timezone.
+
 To configure the application edit these files:
 - application.properties   Exchange web service and Jive instance URLs
 - rooms.json               Conference room metadata
