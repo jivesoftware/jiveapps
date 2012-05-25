@@ -7,7 +7,7 @@ var options = { };
 // (It is assumed that @all is always first, and overrides any additional selections)
 function calculateFields(id) {
     var values = $("#" + id).val();
-    console.log("calculateFields(" + JSON.stringify(values) + ")");
+    gadgets.log("calculateFields(" + JSON.stringify(values) + ")");
     if (values[0] == '@all') {
         return "@all";
     }
@@ -38,6 +38,6 @@ function onTopLevelNav() {
     if (category == "introduction") {
         view = "canvas";
     }
-    console.log("Navigating to view '" + category + "'");
+    gadgets.log("Navigating to view '" + category + "'");
     gadgets.views.requestNavigateTo(view);
 }

@@ -18,14 +18,15 @@
     <ModulePrefs title="Jive API Explorer"
                 author="Jive Software"
            description="Explore and exercise Jive APIs">
-        <Link rel="Icon" href="jive-desktop-icon-48-glossy.ico"/>
-        <Link rel="MediumIcon" href="jive-desktop-icon-48-glossy.png"/>
+        <Link rel="Icon" href="images/jive-desktop-icon-48-glossy.ico"/>
+        <Link rel="MediumIcon" href="images/jive-desktop-icon-48-glossy.png"/>
         <Require feature="content-rewrite">
             <Param name="include-tags"/>
             <Param name="include-url">*.gif</Param>
             <Param name="include-uri">*.png</Param>
         </Require>
         <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v3"/>
         <Require feature="minimessage"/>
         <Require feature="opensocial-data"/>
 <!--
