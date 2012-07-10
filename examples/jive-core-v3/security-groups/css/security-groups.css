@@ -1,0 +1,59 @@
+.banner-div {
+    text-align: center;
+}
+
+.banner-image {
+    height : 145px;
+    width : 290px;
+}
+
+.center {
+    text-align: center;
+}
+
+.input-fields {
+    float : right;
+}
+
+.input-values {
+    float : left;
+}
+
+.filler {
+    height : auto;
+}
+
+.j-table table { width: 100%; }
+.j-table thead { background-color: #f7f7f7; }
+.j-table thead th {
+	font-weight: bold;
+	padding: 5px;
+	}
+.j-table tbody td {
+    border-bottom: 1px solid #f0f0f0;
+    padding-left: 5px;
+    padding-right: 5px;
+    }
+.j-table tbody tr:hover td { background-color: #fcfcfc; }
+
+.j-table td.j-td-checkbox,
+.j-table td.j-td-icon {
+	width: 1%;
+	padding-right: 0;
+	}
+.j-striped { background: #f8fbfe; }
+
+.request-textbox {
+    columns: 5;
+    rows: 100;
+}
+
+.top-level-explore {
+    float: right;
+}
+
+.top-level-title {
+    font-size: large;
+    font-weight: bold;
+    padding: 2px;
+}
