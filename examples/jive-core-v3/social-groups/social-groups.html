@@ -1,0 +1,461 @@
+<!--
+   - Copyright 2011 Jive Software
+   -
+   - Licensed under the Apache License, Version 2.0 (the "License");
+   - you may not use this file except in compliance with the License.
+   - You may obtain a copy of the License at
+   -
+   -    http://www.apache.org/licenses/LICENSE-2.0
+   -
+   - Unless required by applicable law or agreed to in writing, software
+   - distributed under the License is distributed on an "AS IS" BASIS,
+   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   - See the License for the specific language governing permissions and
+   - limitations under the License.
+-->
+
+<head>
+
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.16.custom.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-elements.css" rel="stylesheet"/>
+    <link type="text/css" href="css/custom-theme/jive-icons.css" rel="stylesheet"/>
+    <link type="text/css" href="css/security-groups.css" rel="stylesheet"/>
+
+    <script type="text/javascript">
+
+// Flag indicating we are in add mode
+var adding = false;
+
+// Currently selected group
+var group;
+
+// All visible groups
+var groups = [ ];
+
+// Currently selected member
+var member;
+
+// All members for the currently selected group
+var members = [ ];
+
+// Factory for mini messages
+var mini;
+
+// Viewer
+var viewer;
+
+// On view load, wire up static actions and retrieve initial data
+function init() {
+    osapi.jive.corev3.people.getViewer({}).execute(function(response) {});
+    $("#group-add-button").click(onGroupAdd);
+    $("#group-back-button").click(onGroupBack);
+    $("#group-save-button").click(onGroupSave);
+    $("#member-back-button").click(onMemberBack);
+    $("#member-pick-button").click(onMemberPick);
+    $("#member-save-button").click(onMemberSave);
+    $("#members-add-button").click(onMemberAdd);
+    $("#members-back-button").click(onMembersBack)
+    mini = new gadgets.MiniMessage();
+    loadGroups();
+}
+
+// Load all of the currently defined groups
+function loadGroups() {
+    osapi.jive.corev3.groups.get({
+        fields : '@all'
+    }).execute(onLoadGroups);
+}
+
+// Load all of the members for the currently selected group
+function loadMembers() {
+    group.getMembers({
+    }).execute(onLoadMembers);
+}
+
+function onGroupAdd() {
+    group = {
+        displayName : "",
+        followerCount : 0,
+        groupType : "",
+        memberCount : 0,
+        name : "",
+        type : "group"
+    };
+    $("#group-header").html("").html("Add Social Group");
+    adding = true;
+    populateGroupDiv();
+    showOnly("group-div");
+}
+
+function onGroupAdded(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error creating new social group: " + response.error.message);
+    }
+    loadGroups();
+}
+
+function onGroupBack() {
+    showOnly("groups-div");
+}
+
+function onGroupDelete() {
+    var index = parseInt($(this).attr("data-index"));
+    group = groups[index];
+    if (confirm("Really delete group '" + group.name + "'?")) {
+        group.destroy().execute(onGroupDeleted);
+    }
+}
+
+function onGroupDeleted(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error destroying old social group: " + response.error.message);
+        return;
+    }
+    loadGroups();
+}
+
+function onGroupEdit() {
+    var index = parseInt($(this).attr("data-index"));
+    group = groups[index];
+    $("#group-header").html("").html("Edit Social Group");
+    adding = false;
+    populateGroupDiv();
+    showOnly("group-div");
+}
+
+function onGroupMembers() {
+    var index = parseInt($(this).attr("data-index"));
+    group = groups[index];
+    loadMembers();
+}
+
+function onGroupSave() {
+    group.description = $("#group-description").val();
+    group.displayName = $("#group-displayName").val();
+    group.groupType = $("#group-groupType").val();
+    group.name = $("#group-name").val();
+    if (adding) {
+        osapi.jive.corev3.groups.create(group).execute(onGroupAdded);
+    }
+    else {
+        group.update().execute(onGroupUpdated);
+    }
+}
+
+function onGroupUpdated(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error updating old social group: " + response.error.message);
+    }
+    loadGroups();
+}
+
+function onLoadGroups(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error loading groups: " + response.error.message);
+        return;
+    }
+    groups = response.list;
+    var html = "";
+    $.each(groups, function(index, group) {
+        html += '<tr>';
+        html += '<td>' + group.name + '</td>';
+        html += '<td>' + toExternalGroupType(group.groupType) + '</td>'
+        html += '<td>' + group.memberCount + '</td>';
+        html += '<td>' + group.followerCount + '</td>';
+        html += '<td>' + '<button id="group-delete-' + index + '" data-index="' + index + '" class="group-delete">Delete</button>' + '</td>'
+        html += '<td>' + '<button id="group-edit-' + index + '" data-index="' + index + '" class="group-edit">Edit</button>' + '</td>'
+        html += '<td>' + '<button id="group-members-' + index + '" data-index="' + index + '" class="group-members">Members</button>' + '</td>'
+        html += '</tr>';
+    });
+    $("#groups-tbody").html("").html(html);
+    $(".group-delete").click(onGroupDelete);
+    $(".group-edit").click(onGroupEdit);
+    $(".group-members").click(onGroupMembers);
+    showOnly("groups-div");
+}
+
+function onLoadMembers(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error loading members: " + response.error.message);
+        return;
+    }
+    members = response.list;
+    var html = "";
+    $.each(members, function(index, member) {
+        html += '<tr>';
+        html += '<td>' + member.person.displayName + '</td>';
+        html += '<td>' + member.state + '</td>';
+        html += '<td>' + '<button id="member-delete-' + index + '" data-index="' + index + '" class="member-delete">Delete</button>' + '</td>'
+        html += '<td>' + '<button id="member-edit-' + index + '" data-index="' + index + '" class="member-edit">Edit</button>' + '</td>'
+        html += '</tr>';
+    });
+    $("#members-header").html("").html("Members for Group '" + group.name + "'");
+    $("#members-tbody").html("").html(html);
+    $(".member-delete").click(onMemberDelete);
+    $(".member-edit").click(onMemberEdit);
+    showOnly("members-div");
+}
+
+function onMemberAdd() {
+    member = {
+        person : {
+            displayName : "",
+            resources : {
+                self : {
+                    ref : '/people/####'
+                }
+            }
+        },
+        state : 'member',
+        type : 'member'
+    };
+    $("#member-header").html("").html("Add Social Group Member");
+    adding = true;
+    populateMemberDiv();
+    showOnly("member-div");
+}
+
+function onMemberAdded(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error creating new social group member: " + response.error.message);
+    }
+    loadMembers();
+}
+
+function onMemberBack() {
+    showOnly("members-div");
+}
+
+function onMemberDelete() {
+    var index = parseInt($(this).attr("data-index"));
+    member = members[index];
+    if (confirm("Really delete member '" + member.person.displayName + "'?")) {
+        member.destroy().execute(onMemberDeleted);
+    }
+}
+
+function onMemberDeleted(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error destroying old member: " + response.error.message);
+        return;
+    }
+    loadMembers();
+}
+
+function onMemberEdit() {
+    var index = parseInt($(this).attr("data-index"));
+    member = members[index];
+    $("#member-header").html("").html("Edit Social Group Member");
+    adding = false;
+    populateMemberDiv();
+    showOnly("member-div");
+}
+
+function onMemberPick() {
+    osapi.jive.corev3.people.requestPicker({
+        multiple : false,
+        success : onMemberPicked
+    });
+}
+
+function onMemberPicked(response) {
+    $("#member-person-name").val(response.displayName);
+    $("#member-person-uri").val(response.resources.self.ref);
+}
+
+function onMemberSave() {
+    if (adding) {
+        var options = {
+            person : $("#member-person-uri").val(),
+            state : $("#member-state").val()
+        };
+        group.createMember(options).execute(onMemberAdded);
+    }
+    else {
+        member.state = $("#member-state").val();
+        member.update().execute(onMemberUpdated);
+    }
+}
+
+function onMemberUpdated(response) {
+    if (response.error) {
+        mini.createDismissibleMessage("Error updating old social group member: " + response.error.message);
+    }
+    loadMembers();
+}
+
+function onMembersBack() {
+    showOnly("groups-div");
+}
+
+function populateGroupDiv() {
+    $("#group-name").val(group.name);
+    $("#group-description").val(group.description);
+    $("#group-displayName").val(group.displayName);
+    $("#group-members").html("").html("" + group.memberCount);
+    $("#group-followers").html("").html("" + group.followerCount);
+}
+
+function populateMemberDiv() {
+    $("#member-person-name").val(member.person.displayName);
+    $("#member-person-uri").val(member.person.resources.self.ref);
+    $("#member-state").val(member.state);
+}
+
+// Show only the specified top level div
+function showOnly(id) {
+    $(".top-level-div").hide();
+    $("#" + id).show();
+    gadgets.window.adjustHeight();
+}
+
+function toExternalGroupType(groupType) {
+    if (groupType == 'MEMBER_ONLY') {
+        return 'Member Only';
+    }
+    else if (groupType == 'PRIVATE') {
+        return 'Private';
+    }
+    else if (groupType == 'SECRET') {
+        return 'Secret';
+    }
+    else {
+        return 'Open';
+    }
+}
+
+// Register our on-view-load handler
+gadgets.util.registerOnLoadHandler(init);
+
+
+    </script>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+    <div id="groups-div" class="top-level-div" style="display:none">
+        <h3>Social Groups</h3>
+        <table class="j-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Group Type</th>
+                    <th>Members</th>
+                    <th>Followers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="groups-tbody"></tbody>
+        </table>
+        <button id="group-add-button">Add</button>
+    </div>
+
+    <div id="group-div" class="top-level-div" style="display:none">
+        <h3 id="group-header"></h3>
+        <table class="j-table">
+            <tr>
+                <th>Name:</th>
+                <td>
+                    <input id="group-name" class="group-input" type="text" size=50/>
+                </td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>
+                    <textarea id="group-description" class="group-input" cols=50 rows=5></textarea>
+                </td>
+            </tr>
+            <tr>
+                <th>Display Name:</th>
+                <td>
+                    <input id="group-displayName" class="group-input" type="text" size=50/>
+                </td>
+            </tr>
+            <tr>
+                <th>Group Type:</th>
+                <td>
+                    <select id="group-groupType" class="group-input">
+                        <option value="OPEN">Open</option>
+                        <option value="MEMBER_ONLY">Member Only</option>
+                        <option value="PRIVATE">Private</option>
+                        <option value="SECRET">Secret</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Members:</th>
+                <td id="group-members"></td>
+            </tr>
+            <tr>
+                <th>Followers:</th>
+                <td id="group-followers"></td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>
+                    <button id="group-back-button">Back</button>
+                    <button id="group-save-button">Save</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="members-div" class="top-level-div" style="display:none">
+        <h3 id="members-header"></h3>
+        <table class="j-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>State</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="members-tbody"></tbody>
+        </table>
+        <button id="members-back-button">Back</button>
+        <button id="members-add-button">Add</button>
+    </div>
+
+    <div id="member-div" class="top-level-div" style="display: none">
+        <h3 id="member-header"></h3>
+        <table class="j-table">
+            <tr>
+                <th>Person Name:</th>
+                <td>
+                    <input id="member-person-name" disabled="disabled" type="text" size="50" class="member-input"/>
+                    <button id="member-pick-button">Pick</button>
+                </td>
+            </tr>
+            <tr>
+                <th>Person URI:</th>
+                <td>
+                    <input id="member-person-uri" disabled="disabled" type="text" size="50" class="member-input"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Member State:</th>
+                <td>
+                    <select id="member-state" class="member-input">
+                        <option value="member">member</option>
+                        <option value="owner">owner</option>
+                        <option value="banned">banned</option>
+                        <option value="invited">invited</option>
+                        <option value="pending">pending</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>
+                    <button id="member-back-button">Back</button>
+                    <button id="member-save-button">Save</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
