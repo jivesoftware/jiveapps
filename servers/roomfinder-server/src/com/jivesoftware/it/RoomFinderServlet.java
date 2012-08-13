@@ -348,10 +348,27 @@ public class RoomFinderServlet extends HttpServlet {
             Date meetingEnd = getDateRequestParameter(req, "end");
             validateRequestTimewindow(meetingStart, meetingEnd);
 
-            // Create a new meeting as the requesting user and add the room as an attendee
-            // todo Check for availability for this specific room before creating appointment
-
+            // Check for availability for this specific room before creating appointment
             ExchangeService service = createExchangeService(req.getHeader("Authorization"));
+            Date apiWindowEnd = new Date(meetingStart.getTime() + 1000*60*60*24); // 24hrs required by EWS
+            GetUserAvailabilityResults results = service.getUserAvailability(
+                    Arrays.asList(new AttendeeInfo(roomEmail)),
+                    new TimeWindow(meetingStart, apiWindowEnd),
+                    AvailabilityData.FreeBusy);
+            AttendeeAvailability availability = results.getAttendeesAvailability().getResponseAtIndex(0);
+            if (availability.getErrorCode() == ServiceError.NoError) {
+                MergedCalendarEventMapper eventMapper = new MergedCalendarEventMapper();
+                List<MergedCalendarEvent> mergedEvents = eventMapper.map(availability.getCalendarEvents());
+                AvailabilityInfo info = getAvailability(meetingStart, meetingEnd, mergedEvents);
+                if (info == null || info.getAvailableFrom() != null || info.getAvailableTo() != null) {
+                    // room is not available or only partially available, someone must have booked it
+                    logger.info("Booking request for " + roomEmail + " failed because room no longer available");
+                    resp.sendError(HttpServletResponse.SC_CONFLICT, "Room is no longer available for the requested time");
+                    return;
+                }
+            }
+
+            // Create a new meeting as the requesting user and add the room as an attendee
             Appointment appointment = new Appointment(service);
             appointment.setSubject("My meeting");
             String body = "Created from <a href='" + appUrl + "'>Room Finder</a>";
@@ -396,10 +413,16 @@ public class RoomFinderServlet extends HttpServlet {
         int prefixCount = "Basic ".length();
         if (authHeader != null && authHeader.length() > prefixCount) {
             authHeader = authHeader.substring(prefixCount);
-            String[] values = new String(org.apache.commons.codec.binary.Base64.decodeBase64(authHeader)).split(":");
-            if (values != null && values.length == 2) {
-                username = values[0];
-                password = values[1];
+
+            String decodedAuth = new String(org.apache.commons.codec.binary.Base64.decodeBase64(authHeader));
+            int firstColon = decodedAuth.indexOf(':');
+            if (firstColon < 0 || decodedAuth.length() <= firstColon+1) {
+                // header did not match the expected format of username:password
+                logger.error("Could not parse username and password from basic auth header");
+            }
+            else {
+                username = decodedAuth.substring(0, firstColon);
+                password = decodedAuth.substring(firstColon+1);
             }
         }
         if (username == null || password == null) {
