@@ -14,17 +14,24 @@
     <script type="text/javascript" src="js/common.js"></script>
     <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
 <!--        <os:Var key="category" value="metadata"/> -->
-        <os:DataRequest key="names" method="jive.core3.objects.getObjectNames"/>
-        <os:DataRequest key="properties" method="jive.core3.properties.getProperties"/>
+        <os:DataRequest key="properties" method="jive.core.get" v="v3" href="/metadata/properties"/>
+        <os:DataRequest key="types" method="jive.core.get" v="v3" href="/metadata/objects"/>
 <!--        <os:Var key="title" value="Metadata Service"/> -->
     </script>
     <script type="text/javascript">
 
-var names;                  // Names of supported object types
+var names = [ ];            // Names of supported object types
 var properties;             // Metadata properties that were returned
+var types;                  // Key=object type name, value=URI
 
 function configureObjectNames() {
-    names = data.getDataSet("names").sort();
+    types = data.getDataSet("types").content;
+    for (var name in types) {
+        if (types.hasOwnProperty(name)) {
+            names.push(name);
+        }
+    }
+    names = names.sort();
     var html = '<option disabled="disabled">----------</option>';
     $.each(names, function(index, objectName) {
         html += '<option value="' + objectName + '">' + objectName + '</option>';
@@ -34,7 +41,7 @@ function configureObjectNames() {
 }
 
 function configureProperties() {
-    properties = data.getDataSet("properties");
+    properties = data.getDataSet("properties").content;
     var html = "";
     $.each(properties, function(index, property) {
         html += '<tr><td>' + property.name + '</td>';
@@ -62,12 +69,16 @@ function init() {
 }
 
 function loadObjectDetails() {
-    osapi.jive.core3.objects.getObjectDetails({
-        objectName : $("#object-select").val()
+    var type = $("#object-select").val();
+    gadgets.log("loadObjectDetails(" + type + ")");
+    osapi.jive.corev3.getObjectMetadata({
+        name : type
     }).execute(onObjectDetails);
 }
 
 function onObjectDetails(response) {
+    var type = $("#object-select").val();
+    gadgets.log("onObjectDetails(" + type + "," + JSON.stringify(response) + ")");
     // object type summary
     var summary = "";
     if (response.description) {
@@ -82,19 +93,21 @@ function onObjectDetails(response) {
     if (response.fields) {
         var fields = "";
         $.each(response.fields, function(index, field) {
-            var type = field.type;
-            if (field.array) {
-                type += '[]';
+            if (!field.unpublished) {
+                var type = field.type;
+                if (field.array) {
+                    type += '[]';
+                }
+                fields += '<tr>';
+                fields += '<td>' + field.name + '</td>';
+                fields += '<td>' + type + '</td>';
+                fields += '<td>' + (field.required ? 'true' : 'false') + '</td>';
+                fields += '<td>' + (field.editable ? 'true' : 'false') + '</td>';
+                fields += '<td>' + (field.description ? field.description : '&nbsp;') + '</td>';
+                fields += '<td>' + (field.availability ? field.availability : '&nbsp;') + '</td>';
+                fields += '<td>' + (field.since ? field.since : '&nbsp;') + '</td>';
+                fields += '</tr>';
             }
-            fields += '<tr>';
-            fields += '<td>' + field.name + '</td>';
-            fields += '<td>' + type + '</td>';
-            fields += '<td>' + (field.required ? 'true' : 'false') + '</td>';
-            fields += '<td>' + (field.editable ? 'true' : 'false') + '</td>';
-            fields += '<td>' + (field.description ? field.description : '&nbsp;') + '</td>';
-            fields += '<td>' + (field.availability ? field.availability : '&nbsp;') + '</td>';
-            fields += '<td>' + (field.since ? field.since : '&nbsp;') + '</td>';
-            fields += '</tr>'
         });
         $("#object-fields-tbody").html("").html(fields);
         $("#object-fields-table").show();
@@ -103,22 +116,27 @@ function onObjectDetails(response) {
         $("#object-fields-table").hide();
     }
     // resources table
-    if (response.resourceLinks) {
+    if (response.resourceLinks && (response.resourceLinks.length > 0)) {
         var resources = "";
         $.each(response.resourceLinks, function(index, resource) {
-            resources += '<tr>';
-            resources += '<td>' + resource.name + '</td>';
-            resources += '<td>' + (resource.description ? resource.description : '&nbsp;') + '</td>';
-            resources += '<td>' + (resource.availability ? resource.availability : '&nbsp;') + '</td>';
-            resources += '<td>' + (resource.since ? resource.since : '&nbsp;') + '</td>';
-            resources += '</tr>';
+            if (!resource.unpublished) {
+                resources += '<tr>';
+                resources += '<td>' + resource.verb + '</td>';
+                resources += '<td>' + resource.name + '</td>';
+                resources += '<td>' + (resource.jsMethod ? resource.jsMethod : '&nbsp;')+ '</td>';
+                resources += '<td>' + (resource.description ? resource.description : '&nbsp;') + '</td>';
+                resources += '<td>' + (resource.availability ? resource.availability : '&nbsp;') + '</td>';
+                resources += '<td>' + (resource.since ? resource.since : '&nbsp;') + '</td>';
+                resources += '</tr>';
+            }
         });
         $("#object-resources-tbody").html("").html(resources);
         $("#object-resources-table").show();
     }
     else {
-        $("#object-resources-table").hide(); }
-
+        $("#object-resources-table").hide();
+    }
+    gadgets.window.adjustHeight();
 }
 
 gadgets.util.registerOnLoadHandler(init);
@@ -192,10 +210,12 @@ gadgets.util.registerOnLoadHandler(init);
         <table id="object-resources-table" class="j-table" style="display:none">
             <thead>
                 <tr>
-                    <th colspan="4" class="center">Object Resource Links</th>
+                    <th colspan="6" class="center">Object Resource Links</th>
                 </tr>
                 <tr>
+                    <th>Verb</th>
                     <th>Name</th>
+                    <th>JS Method</th>
                     <th>Description</th>
                     <th>Availability</th>
                     <th>Since</th>

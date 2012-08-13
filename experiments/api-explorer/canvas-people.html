@@ -13,15 +13,14 @@
   	<script type="text/javascript" src="js/next_tick.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
     <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
-        <os:DataRequest key="personDetails" method="jive.core3.objects.getObjectDetails"
-                        objectName="person"/>
+        <os:DataRequest key="personDetails" method="jive.core.get" version="v3" href="/metadata/objects/person"/>
     </script>
     <script type="text/javascript">
 
 var personDetails;              // Object metadata about "person" objects
 
 function configureData() {
-    personDetails = data.getDataSet("personDetails");
+    personDetails = data.getDataSet("personDetails").content;
 }
 
 function init() {

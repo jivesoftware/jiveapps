@@ -13,11 +13,9 @@
   	<script type="text/javascript" src="js/next_tick.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
     <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
-        <os:DataRequest key="personDetails" method="jive.core3.objects.getObjectDetails"
-                        objectName="person"/>
-        <os:DataRequest key="properties" method="jive.core3.properties.getProperties"/>
-        <os:DataRequest key="securityGroupDetails" method="jive.core3.objects.getObjectDetails"
-                        objectName="securityGroup"/>
+        <os:DataRequest key="personDetails" method="jive.core.get" version="v3" href="/metadata/objects/person"/>
+        <os:DataRequest key="properties" method="jive.core.get" v="v3" href="/metadata/properties"/>
+        <os:DataRequest key="securityGroupDetails" method="jive.core.get" version="v3" href="/metadata/objects/securityGroup"/>
     </script>
     <script type="text/javascript">
 
@@ -26,9 +24,9 @@ var properties;                 // Overall configuration properties for this Jiv
 var securityGroupDetails;       // Object metadata about "securityGroup" objects
 
 function configureData() {
-    personDetails = data.getDataSet("personDetails");
-    properties = data.getDataSet("properties");
-    securityGroupDetails = data.getDataSet("securityGroupDetails");
+    personDetails = data.getDataSet("personDetails").content;
+    properties = data.getDataSet("properties").content;
+    securityGroupDetails = data.getDataSet("securityGroupDetails").content;
 }
 
 function configureSecurityGroupFields() {
@@ -49,7 +47,7 @@ function configureGetSecurityGroupButtons() {
             securityGroupID : securityGroupID
         };
         $("#getSecurityGroup-http").val(http);
-        var js = "osapi.jive.core3.securityGroups.get(" + JSON.stringify(options) + ").execute(callback);";
+        var js = "osapi.jive.corev3.getSecurityGroups(" + JSON.stringify(options) + ").execute(callback);";
         $("#getSecurityGroup-js").val(js);
     });
     $("#getSecurityGroup-get").click(function() {
@@ -58,7 +56,7 @@ function configureGetSecurityGroupButtons() {
             fields : calculateFields("getSecurityGroup-fields"),
             securityGroupID : securityGroupID
         };
-        osapi.jive.core3.securityGroups.getSecurityGroup(options).execute(function(response) {
+        osapi.jive.corev3.getSecurityGroup(options).execute(function(response) {
             $("#getSecurityGroup-json").val(JSON.stringify(response)); // TODO pretty print?
         });
     });
@@ -85,7 +83,7 @@ function configureGetSecurityGroupsButtons() {
             options.count = count;
         }
         $("#getSecurityGroups-http").val(http);
-        var js = "osapi.jive.core3.securityGroups.get(" + JSON.stringify(options) + ").execute(callback);";
+        var js = "osapi.jive.corev3.getSecurityGroups(" + JSON.stringify(options) + ").execute(callback);";
         $("#getSecurityGroups-js").val(js);
     });
     $("#getSecurityGroups-get").click(function() {
@@ -102,7 +100,7 @@ function configureGetSecurityGroupsButtons() {
         if (count && (count != "")) {
             options.count = count;
         }
-        osapi.jive.core3.securityGroups.getSecurityGroups(options).execute(function(response) {
+        osapi.jive.corev3.getSecurityGroups(options).execute(function(response) {
             $("#getSecurityGroups-json").val(JSON.stringify(response)); // TODO pretty print?
         });
     });
