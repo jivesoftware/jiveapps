@@ -1,0 +1,29 @@
+<html>
+
+<head>
+
+    <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
+        <os:DataRequest key="me" method="osapi.jive.core.get" v="3" href="/people/@me"/>
+    </script>
+
+    <script type="text/javascript">
+
+function init() {
+    var me = opensocial.data.getContext().getDataSet('me');
+    $("#json").val(JSON.stringify("me"));
+    gadgets.window.adjustHeight();
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+    </script>
+
+</head>
+
+<body>
+
+    <textarea id="json" rows="60" cols="80" disabled="disabled"/>
+
+</body>
+
+</html>
