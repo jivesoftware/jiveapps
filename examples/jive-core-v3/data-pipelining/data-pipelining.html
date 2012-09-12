@@ -3,14 +3,14 @@
 <head>
 
     <script xmlns:os="http://ns.opensocial.org/2008/markup" type="text/os-data">
-        <os:DataRequest key="me" method="osapi.jive.core.get" v="3" href="/people/@me"/>
+        <os:DataRequest key="me" method="jive.core.get" v="v3" href="/people/@me?fields=displayName,id,resources,type"/>
     </script>
 
     <script type="text/javascript">
 
 function init() {
-    var me = opensocial.data.getContext().getDataSet('me');
-    $("#json").val(JSON.stringify("me"));
+    var me = opensocial.data.getDataContext().getDataSet('me');
+    $("#json").val(JSON.stringify(me));
     gadgets.window.adjustHeight();
 }
 
