@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link href="css/style.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+	<!--[if lt IE 8]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a>. <br/>
+	Not all the features of this widget will work with IE7 and below.</p><![endif]-->
+	
+		<div id="calloutContainer">
+			<div id="searchContainer">
+				<input type="text" id="txtSearch" /> 
+				<input type="button" id="btnSearch" value="Go" />
+			</div>
+			<div class="locContainer">
+				Enter a location. 
+			</div>
+		</div>
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+		
+		<script src="js/libs/plugins.js" type="text/javascript"></script>
+		<script src="js/script.js" type="text/javascript"></script>
+		
+		<script id="locationTemplate" type="text/x-mustache-template">
+			{{#locations}}
+			<div class="location">
+
+				<div class="locTitle">
+					<div class="locCity">{{city}}</div>
+					<div class="locShare" id="{{id}}">insert</div>
+					<div style="clear:both;"></div>
+				</div>
+			
+				<div class="time">
+					<div class="locDate" id="locDate_{{id}}">{{timeZone.displayDate}}</div>
+					<div class="locTime" id="locTime_{{id}}">{{timeZone.displayTime}}</div>
+				</div>
+				
+				<div class="weather">
+					<div class="locWeatherIcon">
+						<img src="{{weather.iconURL}}" />
+					</div>
+					<div class="locWeatherConditions">
+						{{weather.conditions}}<br />
+						<span class="locTemperature">{{weather.tempDescription}}</span>	
+					</div>
+                    <div class="wundergroundAttr">
+	                	<a href="{{weather.url}}" target="_blank">
+	                    	<img src="http://icons.wxug.com/logos/PNG/wundergroundLogo_blue.png" alt="Weather Underground" />	                    
+	                	</a>
+                    </div>
+					<div style="clear:both"></div>
+				</div>		
+			</div>
+			{{/locations}}
+		</script>
+		
+	</body>
+</html>
