@@ -1,0 +1,82 @@
+<!--
+  ~ $Revision$
+  ~ $Date$
+  ~
+  ~ Copyright (C) 1999-2012 Jive Software. All rights reserved.
+  ~
+  ~ This software is the proprietary information of Jive Software. Use is subject to license terms.
+  -->
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+    <style type="text/css">
+        .title { width: 500px; text-align: center; vertical-align: middle; height: 40px; }
+        .slideshow { height: 600px; width: 600; margin: auto }
+        .slideshow img { padding: 15px; border: 1px solid #ccc; background-color: #eee; }
+        #controls { width: 400px; height: 40px; text-align: center; vertical-align: middle; }
+        #pager a { border: 1px solid #ccc; background: #fc0; text-decoration: none; margin: 0 5px; padding: 3px 5px; }
+        #pager a.activeSlide { background: #ea0 }
+        #pager a:focus { outline: none; }
+        #dropGallery { margin-top:20px; }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-cycle-all.js"></script>
+    <script type="text/javascript" charset="utf-8" src="javascripts/persistence.js"></script>
+    <script type="text/javascript" charset="utf-8" src="javascripts/show-main.js"></script>
+</head>
+
+<body>
+
+<!-- TODO - materialize title from stored metadata of the selected gallery -->
+<div class="title">
+    <span>My Vacation</span>
+</div>
+
+<!-- TODO - materialize the images from the stored metadata of the selected gallery -->
+<div class="j-loading">
+    <img src="images/ajax_loader_large.gif"/>
+</div>
+
+
+<!-- TODO - show controls only if selected -->
+<div id="controls">
+    <span id="previous">&lt; Prev</span>
+    &nbsp;
+    <span id="next">Next &gt;</span>
+</div>
+
+<div class="slideshow">
+</div>
+
+<br/>
+
+<!-- TODO - show pager only if selected -->
+<div id="pager"></div>
+</body>
+
+<button id="dropGallery">Drop</button>
+
+</html>

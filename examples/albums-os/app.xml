@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+<Module specificationVersion="1">
+  <ModulePrefs title="Jive Albums"
+               description="Description of Albums"
+               author="Aron Racho"
+               author_affiliation="Jive Software"
+               author_email="aron.racho@jivesoftware.com">
+
+    <!-- Commonly used features -->
+      <Require feature="swfobject"/>
+      <Require feature="dynamic-height"/>
+      <Require feature="dynamic-width"/>
+      <Require feature="jive-core-v3"/>
+      <Require feature="minimessage"/>
+      <Require feature="opensocial-data"/>
+      <Require feature="osapi"/>
+      <Require feature="views"/>
+      <Require feature="actions">
+        <Param name="action-contributions">
+
+              <![CDATA[
+                <action id="com.jivesoftware.inline.gallery.drop"
+                        path="jive/actions/rte"
+                        label="Add a photo album to illustrate your content."
+                        view="insert" />
+              ]]>
+        </Param>
+      </Require>
+
+    <!-- Icons: 3 sizes, 16x16, 48x48, 128x128 -->
+    <Link rel="Icon"       href="images/icon16.png" />
+    <Link rel="MediumIcon" href="images/icon48.png" />
+    <Link rel="LargeIcon"  href="images/icon128.png" />
+
+
+    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
+    <Link rel="Screenshot1" href="images/create-album-1.png" />
+    <Link rel="Screenshot2" href="images/create-album-2.png" />
+    <Link rel="Screenshot3" href="images/create-album-3.png" />
+    <Link rel="Screenshot4" href="images/album-in-content.png" />
+    <Link rel="Screenshot5" href="images/album-in-stream.png" />
+
+  </ModulePrefs>
+
+  <Content type="html" view="canvas" href="index.html" preferred_height="640"/>
+  <Content type="html" view="insert" href="insert.html" preferred_height="600" preferred_width="920"/>
+  <Content type="html" view="create" href="create.html" preferred_height="600" preferred_width="860"/>
+  <Content type="html" view="show" href="viewer.html" preferred_height="600" preferred_width="700"/>
+
+</Module>
