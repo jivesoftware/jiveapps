@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+<Module specificationVersion="1">
+  <ModulePrefs title="Jive Slides App"
+               description="Simple app that shows how to leverage some of the Jive and OpenSocial APIs to create a slide show viewer."
+               author="Mark Weitzel"
+               author_affiliation="Jive Software"
+               author_email="mark.weitzel@jivesoftware.com">
+
+    <!-- Commonly used features -->
+    <Require feature="dynamic-height" />
+       <Require feature="dynamic-height" />
+          <Require feature="jive-core-v3" />
+          <Require feature="osapi"/>
+          <Require feature="settitle"/>
+          <Require feature="views" />
+          <Require feature="opensocial" />
+          <Require feature="opensocial-data" />
+          <Require feature="setprefs" />
+          <Require feature="content-rewrite">
+              <Param name="exclude-url">bootstrap.js</Param>
+              <Param name="exclude-url">bootstrap.css</Param>
+          </Require>
+          <Optioanl feature="minimessage" />
+          <Optional feature="locked-domain"/>
+          <Optional feature="oauthpopup"/>
+          <Optional feature="dynamic-width" />
+          <Optional feature="embedded-experiences"/>
+          <Optional feature="selection"/>
+          <Optional feature="open-views"/>
+          <Optional feature="actions">
+              <Param name="action-contributions">
+                  <![CDATA[
+                  <action id="jiveapps.jw12apps101.content" path="jive/actions/content/*" label="JW Slide Viewer" view="embedded" icon="http://apphosting.jivesoftware.com/apps/dev/actest/images/icon16.png" />
+                  ]]>
+              </Param>
+          </Optional>
+
+    <!-- Icons: 3 sizes, 16x16, 48x48, 128x128 -->
+    <!-- “Presentation” symbol by Joris Hoogendoorn, from thenounproject.com collection. -->
+    <Link rel="Icon"       href="images/presentation16.png" />
+    <Link rel="MediumIcon" href="images/presentation48.png" />
+    <Link rel="LargeIcon"  href="images/presentation128.png" />
+
+    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
+
+    <Link rel="Screenshot1" href="images/screenshot1.jpg" />
+    <!--
+    <Link rel="Screenshot2" href="images/screenshot2.png" />
+    <Link rel="Screenshot3" href="images/screenshot3.png" />
+    <Link rel="Screenshot4" href="images/screenshot4.png" />
+    <Link rel="Screenshot5" href="images/screenshot5.png" />
+    -->
+
+
+
+  </ModulePrefs>
+
+  <!-- User Preferences: http://code.google.com/apis/gadgets/docs/reference.html#Userprefs_Ref -->
+
+  <UserPref name="presentationIndex"  display_name="Presentation Index" datatype="string" default_value="https://apphosting.jivesoftware.com/apps/dev/jiveslidessources/JW12Apps101FINAL/slideshow.json" required="false" />
+  <Content type="html" view="embedded, home, canvas" href="canvas.html" preferred_height="800"/>
+</Module>
