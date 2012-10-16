@@ -1,4 +1,7 @@
-(function(){
+if (typeof (osapi &&
+            osapi.jive &&
+            osapi.jive.corev3 &&
+            osapi.jive.corev3.resolveContext) === "undefined") (function(){
     osapi = osapi || {};
     osapi.jive = osapi.jive || {};
     osapi.jive.corev3 = osapi.jive.corev3 || {};
@@ -102,7 +105,7 @@
                 "osapi.jive.core.Mention": getLoader(osapi.jive.corev3.mentions),
                 "osapi.jive.core.Share": getLoader(osapi.jive.corev3.shares),
                 "*": function (type, id, key, batch) { // the Unknown type
-                    var match = /osapi\.jive\.core\.Unknown\[(\d+)]/.exec(type);
+                    var match = /osapi\.jive\.core\.Unknown\[(-?\d+)]/.exec(type);
                     var objectType = match && match[1];
                     if (objectType) {
                         var filter = byTypeAndId(objectType, id);
