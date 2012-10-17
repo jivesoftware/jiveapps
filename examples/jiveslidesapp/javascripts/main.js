@@ -94,18 +94,29 @@ SSC.updateCurrentSlide = function(slideInfo) {
 };
 
 SSC.updateLikeDislikeQuestion = function(event){
-    //refactor to be constants
-    //could get fancy and factor out the case statement to take a function
+    //ok, this is barf. i need to use the state of the buttons to reflect if i've previously liked something
+    //barf. barf. barf. i should refactor this to have a real model present.
+    //This is when I wish I could check in code anonymously.
+
     var aLikeAction;
     switch (event.target.id) {
         case "likeButton" :
-            aLikeAction = "like";
+            if ($("#likeButton").hasClass("btn-success")) {
+                aLikeAction = undefined;
+            }
+            else{aLikeAction = "like"};
             break;
         case "dislikeButton" :
-            aLikeAction = "dislike";
+             if ($("#dislikeButton").hasClass("btn-danger")) {
+                aLikeAction = undefined;
+            }
+            else{aLikeAction = "dislike"};
             break;
         case "questionButton" :
-            aLikeAction = "question";
+            if ($("#questionButton").hasClass("btn-info")) {
+                aLikeAction = undefined;
+            }
+            else{aLikeAction = "question"};
             break;
     };
     var slideInfo = {"slideNumber" : SSC.getCurrentSlide(), "likeAction": aLikeAction };
@@ -215,27 +226,12 @@ SSC.toggleLikeButtonsFromHistory = function(slideInfo) {
                 $("#questionButton").addClass("active btn-info");
             };
             break;
+        default :
+             $("#likeButton").removeClass("btn-success");
+             $("#dislikeButton").removeClass("btn-danger");
+             $("#questionButton").removeClass("btn-info");
     };
 
-    /*
-     if (slideInfo.likeAction == "like") {
-     $("#likeButton").addClass("active btn-success");
-     } else {
-     $("#likeButton").removeClass("active btn-success")
-     };
-
-     if (slideInfo.likeAction == "dislike") {
-     $("#dislikeButton").addClass("active btn-danger");
-     } else {
-     $("#dislikeButton").removeClass("active btn-danger")
-     };
-
-     if (slideInfo.likeAction == "question") {
-     $("#questionButton").addClass("active btn-info");
-     } else {
-     $("#questionButton").removeClass("active btn-info")
-     };
-     */
 };
 
 
