@@ -23,7 +23,7 @@
 	    {
 	        city:'Prague', 
 	        state:null, 
-	        country:'Czech Republic'
+	        country:'CZ'
 	    },
 	    {
 	        city:'Buenos Aires', 

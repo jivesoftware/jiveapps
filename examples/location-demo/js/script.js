@@ -1,7 +1,7 @@
 (function() {
 	
     var Util = {},
-        locURL = "http://shoe.io/location/json",  // URL to retrieve location data.
+        locURL = "http://api.shoe.io/location",  // URL to retrieve location data.
         peopleData,  // Cache from last time people details were received. 
         locData,  // Cache from last time location details were received. 
         lastDataCheck,  // Date/Time of last time data was retrieved. 
@@ -34,7 +34,7 @@
         // http://docs.opensocial.org/display/OSD/Osapi.http+%28v0.9%29#Osapi.http%28v0.9%29-osapi.http.get
 		// https://developers.jivesoftware.com/community/docs/DOC-1094
 		osapi.http.get({
-			href: locURL + '?q=' + encodeURIComponent(location),
+			href: locURL + '?q=' + encodeURI(location),
 		    format: 'json'
 		}).execute(function(response) {
 		    locationSearchCallback(response.content);
@@ -76,7 +76,7 @@
     // Handler once location data is retrieved. 
     function locationSearchCallback(data) {
 		// Save the data so it's available later. 
-	    locData = data; 
+	    locData = data.data; 
 		
 	    // Loop through the locations, set the offset date
 	    for (var ii in locData.locations) {
