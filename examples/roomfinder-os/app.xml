@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+  <ModulePrefs title="Room Finder"
+               description="Find an available conference room based on location and one-click book it."
+               author="Jussi Heikkola"
+               author_affiliation="Jive Software IT"
+               author_email="jussi.heikkola@jivesoftware.com">
+
+    <Require feature="dynamic-height" />
+    <Require feature="jive-core-v2" />
+    <Require feature="jquery-1.6" />
+    <Require feature="osapi"/>
+    <Require feature="settitle"/>
+    <Require feature="setprefs"/>
+    <Require feature="views" />
+    <Require feature="minimessage"/>
+
+    <Require feature="jive-connects-v1">
+      <Param name="alias:roomfinder|title:Room Finder Service">jive:service://jivesoftware.com/it/roomfinder?version=1</Param>
+    </Require>
+
+    <Link rel="Icon"       href="images/RoomFinder_16x16.gif" />
+    <Link rel="MediumIcon" href="images/RoomFinder_48x48.gif" />
+    <Link rel="LargeIcon"  href="images/RoomFinder_128x128.gif" />
+
+    <Link rel="Screenshot1" href="images/room-finder-home.png" />
+
+  </ModulePrefs>
+
+  <Content type="html" view="home" href="home.html" preferred_height="400" />
+  <Content type="html" view="canvas" href="home.html" preferred_height="800" />
+
+</Module>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
