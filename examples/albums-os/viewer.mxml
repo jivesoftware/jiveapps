@@ -1,0 +1,87 @@
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+   width="600" height="550" initialize="initApp()">
+  <mx:Script>
+   <![CDATA[
+     import mx.controls.Alert;
+     import flash.external.*;
+
+     import flash.external.ExternalInterface;
+
+	import mx.utils.Base64Decoder;
+	private var base64Dec:Base64Decoder;
+
+     private function fooFaaFaa(val:String):void
+     {
+	var byteArr:ByteArray;
+
+	base64Dec = new Base64Decoder();
+
+	base64Dec.decode( val );
+
+	byteArr = base64Dec.toByteArray();
+
+	img.load(byteArr);
+
+     }
+
+     public function initApp():void
+     {
+        ExternalInterface.addCallback("setImage", fooFaaFaa);
+    }
+
+
+     // Maximum  width
+     private var mxw:Number = 400;
+     // Maximum height
+     private var mxh:Number = 400;
+
+     public function onImageComplete(e:Event):void
+     {
+         var wthMaxRatio:Number = mxw / mxh;
+
+         // no resize needed
+         if (e.target.contentWidth <= mxw && e.target.contentHeight <= mxh)
+         {
+             e.target.x = (mxw - e.target.contentWidth) / 2;
+             e.target.y = (mxh - e.target.contentHeight) / 2;
+         }
+         else
+         {
+             var wthImgRatio:Number = e.target.contentWidth / e.target.contentHeight;
+
+             if (wthImgRatio > wthMaxRatio)
+             {
+                 // will max out the width
+                 e.target.width = mxw;
+                 var imgHeight:Number = Math.round( (mxw / e.target.contentWidth) * e.target.contentHeight );
+                 var newY:Number = Math.round( (mxh - imgHeight) / 2 );
+                 e.target.x = 0;
+                 e.target.y = newY;
+             }
+             else
+             {
+                 // will max out the height
+                 e.target.height = mxh;
+                 var imgWidth:Number = Math.round( (mxh / e.target.contentHeight) * e.target.contentWidth );
+                 var newX:Number = Math.round( (mxw - imgWidth) / 2 );
+                 e.target.x = newX;
+                 e.target.y = 0;
+             }
+         }
+     }
+
+   ]]>
+
+
+ </mx:Script>
+
+<mx:Canvas width="600" height="550"
+    verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+    <mx:Image id="img" width="500" height="550"
+    maintainAspectRatio="true"
+    scaleContent="true"
+    complete="onImageComplete(event)" />
+</mx:Canvas>
+
+</mx:Application>

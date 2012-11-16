@@ -1,0 +1,54 @@
+{
+	locations: [
+	    {
+	        city:'Minneapolis', 
+	        state:'MN', 
+	        country:'United States'
+	    }, 
+	    {
+	        city:'Las Vegas', 
+	        state:'NV', 
+	        country:'United States'
+	    },
+	    {
+	        city:'New York', 
+	        state:'NY', 
+	        country:'United States'
+	    },
+	    {
+	        city:'London', 
+	        state:null, 
+	        country:'UK'
+	    },
+	    {
+	        city:'Prague', 
+	        state:null, 
+	        country:'CZ'
+	    },
+	    {
+	        city:'Buenos Aires', 
+	        state:null, 
+	        country:'Argentina'
+	    },
+	    {
+	        city:'Sydney', 
+	        state:null, 
+	        country:'Australia'
+	    },
+	    {
+	        city:'Shanghai', 
+	        state:null, 
+	        country:'China'
+	    },
+	    {
+	        city:'Cairo', 
+	        state:null, 
+	        country:'Egypt'
+	    },
+	    {
+	        city:'Warsaw', 
+	        state:null, 
+	        country:'Poland'
+	    }
+	]
+}

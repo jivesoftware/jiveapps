@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--
+  ~ $Revision$
+  ~ $Date$
+  ~
+  ~ Copyright (C) 1999-2012 Jive Software. All rights reserved.
+  ~
+  ~ This software is the proprietary information of Jive Software. Use is subject to license terms.
+  -->
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>view prototype</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<style type="text/css">
+		/*
+		.j-album { position: static; }
+		*/
+	</style>
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+
+
+			// on load, calculate container width.
+			var thumbNum = $('#thumbs li').length,
+				thumbW = $('#thumbs li:first').outerWidth(),
+				paddingOff = parseInt($('#thumbs li:last').css('padding-right')), // the last element doesn't have right padding, so subtract it.
+				$thumbParent = $('#thumbs ul'); // the container that needs to be teh hueg
+
+
+			// make said container teh hueg
+			$thumbParent.width(thumbNum * thumbW-paddingOff);
+
+			// let's see if the arrows need to light up.
+			updateArrows();
+
+			// also when the window resizes we'll check if the arrows need to light up.
+			$(window).resize(function() {
+				updateArrows();
+			});
+
+			// on click, page forward. THE CLASS NAMES ARE CONFUSING OKAY?
+			$('.js-page-back').click(function(e) {
+
+				var containWidth = $('#thumbs').innerWidth(),	// visible container width, changes on window resize
+					currentOffset = parseInt($thumbParent.css('left')),	// existing offset, if any
+					n = Math.floor((-currentOffset + containWidth) / thumbW), // the first ele we need to scroll to
+					newOffset = (n*thumbW);
+
+
+				// check for overflow, we want to pin them to the right, no blank area at all.
+				if (newOffset > ($thumbParent.width() - containWidth)) {
+					newOffset = ($thumbParent.width() - containWidth);
+				}
+
+				// animate to the new offset. Aw yiss.
+				$thumbParent.animate({
+					left: -newOffset
+					}, 300, function() {
+						updateArrows();
+					});
+
+
+
+				e.preventDefault();
+			});
+
+
+			// on click, page back. WHY IS THIS CALLED FORWARD? WHO KNOWS.
+			$('.js-page-fwd').click(function(e) {
+
+				var containWidth = $('#thumbs').innerWidth(), // visible container width
+					currentOffset = parseInt($thumbParent.css('left')), // existing offset, if any
+					n = Math.ceil(-currentOffset / thumbW), // the first ele we want to scroll to
+					newOffset = (n*thumbW)-containWidth;
+
+				// check for overflow, we don't want to go any further left than 0
+				if (newOffset < 0) {
+					newOffset = 0;
+				}
+
+				// aand ANIMATE.
+				$thumbParent.animate({
+					left: -newOffset
+				},300, function() {updateArrows();} );
+
+
+				e.preventDefault();
+
+			});
+
+
+			// update the enabled-ness of the arrows. Visual only, does not affect
+			function updateArrows() {
+				var currentOffset = parseInt($thumbParent.css('left'));
+				var containWidth = $('#thumbs').innerWidth();
+
+
+				// check for back
+				if (currentOffset >= 0) {
+					$('.js-page-fwd').addClass('disabled');
+				} else {
+					$('.js-page-fwd').removeClass('disabled');
+				}
+
+				// check for forward
+				if (containWidth - parseInt($thumbParent.width()) >= currentOffset) {
+					$('.js-page-back').addClass('disabled');
+				} else {
+					$('.js-page-back').removeClass('disabled');
+				}
+			}
+
+		});
+	</script>
+</head>
+<body class="body-view-gallery">
+	<div class="view-gallery j-album" >
+		<div id="photo-row" class="photo-row">
+			<div id="main-photo" class="main-photo">
+				<img src="images/proto/glare.jpg" alt="" />
+			</div>
+			<div id="photo-turner" class="paginator photo-turner">
+				<a href="#" class="disabled js-page-back" ><span class="page-back sprite" >Previous</span></a>
+				<a href="#" class="js-page-fwd" ><span class="page-fwd sprite">Next</span></a>
+			</div>
+		</div>
+		<div id="thumb-row" class="thumb-row">
+			<div id="thumbs" class="thumbs">
+				<ul class="clearfix">
+					<li class="active clearfix" ><a href="#"><img src="images/proto/thumb1.png" alt="" /></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb2.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb3.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb4.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb2.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb1.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb2.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb3.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb2.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb1.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb2.png);"></a></li>
+					<li><a href="#" class="clearfix" style="background-image:url(images/proto/thumb3.png);"></a></li>
+
+				</ul>
+			</div>
+			<div id="thumb-turner" class="paginator thumb-turner">
+				<a href="#" class="disabled js-page-fwd"><span class="page-back sprite" >Previous</span></a>
+				<a href="#" class="js-page-back"><span class="page-fwd sprite">Next</span></a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

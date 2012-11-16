@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $( "#devlinks" ).accordion({
+          autoHeight: false,
+          navigation: true
+        });
+      });
+    </script>
+    <style type="text/css" media="screen">
+      body {background: #fff; font-size:80%;color:#333;font-family: arial, helvetica, sans-serif;}
+      #wrapper {width:350px;}
+      #wrapper div {padding:0;margin:0;}
+      #wrapper p {padding:0;margin:0;}
+      ol {padding:0px; margin:0px 0px 0px 20px;}
+      ol li {font-weight:bold;margin-bottom:7px;}
+      ol li span {font-size:90%;font-weight:normal;}
+      a {color:#333;}
+      h1 {font-size:150%;margin-bottom:2px;}
+      h2 {font-size:110%;margin-bottom:5px;}
+      h3 {background-color:#e5e5e5;padding:3px;font-size:105%;}
+      h5 {font-size:105%;margin:0;}
+      #devlinks h3 {margin:2px;}
+      #devlinks div.community {padding:0;margin:0;background: url('images/icon48.png') no-repeat; background-position: 10px 2px ; height:70px;}
+      #devlinks div.documentation {padding:0;margin:0;background: url('images/icon48.png') no-repeat; background-position: 10px 2px ; height:70px;}
+      #devlinks div.login {padding:0;margin:0;background: url('images/icon48.png') no-repeat; background-position: 10px 2px ; height:70px;}
+      #devlinks div.market {padding:0;margin:0;background: url('images/icon48.png') no-repeat; background-position: 10px 2px ; height:70px;}
+      #devlinks div p {margin:0px 0px 0px 80px;}
+      #devlinks h3 a,a:hover {text-decoration:none;}
+      #devlinks ul {margin:5px 0px 0px 50px;}
+      #devlinks li a {font-size:95%;}
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <h1>Congratulations!</h1>
+      <h5>Your Jive App "albums" has been created.</h5>
+      <hr />
+      <ol>
+        <li>Update your app code.<br /><span>by replacing the sample app with your own app code</span></li>
+        <li>Require the features you need.<br /><span>by adding them to the &#60;ModulePrefs&#62; &#60;/ModulePrefs&#62;</span></li>
+        <li>Modify javascripts/main.js<br /><span>by incorporating scripts that complete your app</span></li>
+      </ol>
+      <hr />
+      <h2>Developer Resources</h2>
+      <div class="content">
+
+      <div id="devlinks">
+        <h3><a href="#">Community</a></h3>
+        <div class="community">
+          <ul>
+            <li><a href="https://developers.jivesoftware.com/community">Developer Community</a></li>
+            <li><a href="https://developers.jivesoftware.com/community/blogs">Developer Blog</a></li>
+            <li><a href="http://www.jivesoftware.com/">Jive Software</a></li>
+          </ul>
+        </div>
+        <h3><a href="#">Documentation</a></h3>
+        <div class="documentation">
+          <ul>
+            <li><a href="https://developers.jivesoftware.com/community/docs/DOC-1113">Jive Apps SDK</a></li>
+            <li><a href="https://developers.jivesoftware.com/community/docs/DOC-1131">Jive Core API</a></li>
+            <li><a href="https://developers.jivesoftware.com/community/docs/DOC-1118">Jive Connects</a></li>
+            <li><a href="https://developers.jivesoftware.com/community/docs/DOC-1119">Jive App Gateway</a></li>
+            <li><a href="https://developers.jivesoftware.com/community/docs/DOC-1116">OpenSocial API</a></li>
+          </ul>
+        </div>
+        <h3><a href="#">Developer Login</a></h3>
+        <div class="login">
+          <p><a  href="https://developers.jivesoftware.com/devcenter/">Log in</a> to your Jive Apps Developer Account.</p>
+        </div>
+        <h3><a href="#">Apps Market</a></h3>
+        <div class="market">
+          <p>Browse the <a href="#">Apps Market</a> to learn about new apps.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </body>
+</html>

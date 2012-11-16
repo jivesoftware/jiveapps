@@ -1,0 +1,228 @@
+<!--
+  ~ $Revision$
+  ~ $Date$
+  ~
+  ~ Copyright (C) 1999-2012 Jive Software. All rights reserved.
+  ~
+  ~ This software is the proprietary information of Jive Software. Use is subject to license terms.
+  -->
+
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+<script type="text/template" id="GalleryEdit">
+    <div class="j-album-gallery create_form">
+        <div class="j-form-row">
+            <input id="gallery_title" type="text" maxlength="75" value="Album Name"/>
+        </div>
+
+        <div class="j-form-instructions clearfix">
+            <label class="font-face-deco font-color-white nameyourAlbum" for="albumTitle">
+                <span class="arrow-upLeft sprite"></span>
+                1. Give your album a name
+            </label>
+            <span class="font-face-deco font-color-white addyourPhotos">
+                 2. Add your photos
+                <span class="arrow-downRight sprite"></span>
+            </span>
+        </div>
+        <div class="photo-list j-rc4">
+            <!--here's a little loader for ya-->
+            <div class="j-loading-images" style="display: none;">
+                <img src="<%= spinnerSource %>" border="0" alt="" class="gif">
+            </div>
+            <div class="j-form-row">
+                <div id="result"></div>
+                <div id="upload-files" class="j-draganddrop">
+                    <span id="dnd-blurb" class="noImgYet">
+                        <input id="uploadbtn" class="uploadbtn j-btn-callout" type="button" value="Add Photos"/><br>
+                        <input id="upload" type="file" multiple style="display: none;" />
+                        <p class="font-color-white">Or, drag & drop images here </p>
+                        <p class="font-color-meta-light">Hint: you can add multiple images at once</p>
+                    </span>
+                </div>
+                <div id="dnd-blurb">
+                    <div id="ieUpload" class="j-draganddrop" style="overflow: hidden;">
+                        <div class="noImgYet">
+                            <button class="j-btn-callout">Add Photos</button>
+                            <p class="font-color-white">Or, drag & drop images here</p>
+                            <p class="font-color-meta-light">Hint: you can add multiple images at once</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="j-form-row album-actions j-rc4 j-rc-none-top" id="util_bar">
+            <button id="link_save" class="j-btn-global j-btn-callout savebtn" disabled="disabled">Save album</button>
+            <button id="link_cancel" class="j-btn-global">Cancel</button>
+        </div>
+        <div class="j-form-instructions create_actions clearfix">
+            <span class="font-face-deco font-color-white saveWhenDone">
+                <span class="arrow-upLeft sprite"></span>
+                3. Save when done
+            </span>
+        </div>
+        <div class="imagesAdded-addmore" style="">
+            <button class="j-btn-global j-btn-callout green addmore">
+                <span class="j-icon-photo sprite"></span>
+                Add more images
+            </button>
+        </div>
+        <div id="secret" style="display:none"></div>
+    </div>
+</script>
+
+<script type="text/template" id="GalleryEdit-saved">
+    <p><input id="gallery_title" type="text" maxlength="75" value="Changeme"/></p>
+
+    <!--[if IE]>
+        <form id="upload_form" action="<%= action_url %>" method="post">
+            <input class="uploadbtn" type="submit" value="Add an image to this gallery"/>
+        </form>
+        <span style="display: none'">
+            <![endif]-->
+    <p><input id="uploadbtn" class="uploadbtn" type="button" value="Select Files"/></p>
+    <input id="upload" type="file" multiple />
+    <!--[if IE]></span><![endif]-->
+
+    <div id="result"></div>
+
+    <div>
+        <span id="link_save"><b>Save</b></span>
+        <span id="link_cancel"><b>Cancel</b></span>
+    </div>
+
+
+    <div id="secret" style="display:none"></div>
+
+</script>
+
+<script type="text/template" id="GalleryEntry">
+    <div class="result_img">
+        <img src="<%= thumbSrc %>"
+             alt="<%= fileName %>"
+             data-fullsrc="<%= fullSrc %>"
+             data-id="<%= imageId %>"
+             data-width="<%= imageWidth %>"
+             data-height="<%= imageHeight %>" />
+        <a id="image-<%= imageId %>-delete" href="#" class="j-img-delete sprite">Delete</a>
+    </div>
+</script>
+
+<script type="text/template" id="GalleryList">
+    <div class="j-album-gallery">
+        <div class="j-howtouse font-color-meta-light j-rc5" style="display: none;">
+            <h3 class="font-face-deco font-color-white">How to use</h3>
+            <p>
+                1. When authoring, type <strong class="font-color-white">!</strong> (exclamation point)
+            </p>
+            <p>
+                2. Select <strong class="font-color-white">Jive Albums</strong>
+            </p>
+            <p>
+                3. Select the album you wish to include
+            </p>
+            <p class="thatsIt">
+                <strong class="font-face-deco font-color-white">That's it!</strong>
+            </p>
+        </div>
+        <div id="listcontent" class="j-album-list">
+            <div class="j-album-create-img">
+                <p>
+                    <button id="btn_create_an_album" class="j-btn-callout">Create an album</button>
+                </p>
+            </div>
+        </div>
+        <a href="#" id="helpToggle" class="j-album-help font-color-meta-light font-face-deco">How to use</a>
+    </div>
+</script>
+
+<script type="text/template" id="GalleryListItem">
+    <a alt="<%= title %>"  href="#gallery-select/<%= galleryID %>" class="<%= context %>">
+        <%= title %>
+        <img src="<%= listSrc %>" alt="<%= title %>" />
+    </a>
+    <% if(context == "insert") { %>
+    <a href="#gallery-select/<%= galleryID %>" class="j-btn-global j-btn-callout j-album-insert">Select this album</a>
+    <% } %>
+    <a href="#gallery-edit/<%= galleryID %>" class="j-img-edit sprite">Edit</a>
+    <a href="#gallery-delete/<%= galleryID %>" class="j-img-delete sprite">Delete</a>
+</script>
+
+<script type="text/template" id="GalleryListNone">
+    <div class="j-album-gallery init">
+        <div class="noAlbums">
+            <h1 class="font-face-deco font-color-white">
+                Add a photo album to illustrate your content
+            </h1>
+            <div class="album_thumb_example"></div>
+            <p>
+                Share slideshows of your photos with your colleagues by inserting albums directly into your blogs, documents, and discussions
+            </p>
+
+            <button id="btn_create_an_album" class="j-btn-callout">Create an album</button>
+
+
+
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="GalleryViewer">
+    <div class="view-gallery j-album">
+		<!--here's a little loader for ya-->
+        <div class="j-loading-images" style="display: none;">
+            <img src="<%= spinnerSource %>" border="0" alt="" class="gif">
+        </div>
+        <div id="flashviewer">
+            Please install the Flash plugin to view content, or
+            upgrade your browser.
+        </div>
+
+        <div id="photo-row" class="photo-row">
+            <div id="main-photo" class="main-photo">
+            </div>
+            <div id="photo-turner" class="paginator photo-turner">
+                <a href="#" class="js-photo-back" ><span class="page-back sprite" >Previous</span></a>
+                <a href="#" class="js-photo-fwd" ><span class="page-fwd sprite">Next</span></a>
+
+            </div>
+        </div>
+
+        <div id="thumb-row" class="thumb-row">
+            <div id="thumbs" class="thumbs">
+                <ul>
+                </ul>
+            </div>
+            <div id="thumb-turner" class="paginator thumb-turner">
+                <a href="#" class= "js-page-back"><span class="page-back sprite" >Previous</span></a>
+                <a href="#" class="js-page-fwd"><span class="page-fwd sprite">Next</span></a>
+            </div>
+        </div>
+    </div>
+    <div class="view-gallery-empty" style="display: none">
+        The album you are trying to view no longer exists.
+    </div>
+</script>
+
+<script type="text/template" id="GalleryViewerThumnail">
+    <li><a href="#" data-id="<%= id %>" class="clearfix" style="background-image:url(<%= src %>);"></a></li>
+</script>

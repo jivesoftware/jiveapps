@@ -1,0 +1,269 @@
+html, body {
+    background-color:#E7F3FA;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    font-size: 1.1em;
+    margin:0;
+    padding:0;
+}
+
+#homeContainer {
+    overflow-x:hidden; 
+    overflow-y:auto;
+    margin: 0;
+    padding: 0;
+}
+
+#calloutContainer{
+    width: 100%;     
+    overflow-x:hidden; 
+    overflow-y:auto;
+    margin: 0;
+    padding: 0;
+    height: 300px; /* this needs to match to widget height set in the app.xml */
+}
+
+
+/* 
+BEGIN LOCATION
+*/
+
+#scrollableArea {	
+    margin-top: 10px;
+    margin: 0;	
+    padding:0px;
+}
+
+#canvasContainer .locContainer {
+    width: 68%;
+}
+
+#homeContainer .locContainer {
+    float: none;
+}
+
+#homeContainer .peopleContainer{
+    float: none;
+}
+
+#calloutContainer .locContainer {
+    width: 98%;
+}
+
+.locContainer {
+    font-size: 100%;
+    font-weight: 300;
+    position: relative;
+    float: left;
+    margin: 0;
+    padding: 5px;
+}
+
+#homeContainer #back {
+    font-size: 80%;
+    font-weight: 300;
+    text-transform: lowercase;
+    cursor: pointer;
+}
+
+.location {
+    background-color:#FFFFFF;
+    border: 1px solid #425C68;
+    margin: 5px 0 10px 0;
+    padding: 5px;}
+
+.locCity {
+    float: left;
+    text-transform: uppercase;
+    font-weight: 100;
+    font-size: 100%;
+    color: #444444;
+}
+
+
+.locShare {
+    background-color: #666666;
+    font-size: 70%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    color: #FFFFFF !important;
+    cursor: pointer;
+    display: inline-block;
+    overflow: visible;
+    padding: 3px 3px 1px 3px;
+    position: relative;
+    text-decoration: none;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.25);
+    width: auto;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;	
+    float: right;
+}
+
+.locDate {
+    font-weight: 300;
+    font-size: 70%;
+}
+
+.locTime {
+    font-weight: 200;
+    font-size: 220%;
+    color: #444444;
+}
+
+.weather {
+    height: 50px;
+    margin-top: -8px;
+}
+
+.locWeatherIcon {
+    float: left;
+}
+
+.locWeatherConditions {
+    vertical-align: 100%;
+    font-weight: 300;
+    font-size: 100%; 
+    float: left;
+    height: 100%;
+    padding-top: 10px;
+    line-height: 18px;
+    margin-left: 5px;
+}
+
+.locWeatherMore {
+    vertical-align: 100%;
+    font-weight: 300;
+    font-size: 80%; 
+    float: left;
+    height: 100%;
+    padding-top: 10px;
+    line-height: 18px;
+    margin-left: 20px;
+}
+
+.locTemperature {
+    font-weight: 300;
+    font-size: 90%;
+}
+
+/*
+END LOCATION
+*/
+
+/*
+BEGIN PEOPLE
+*/
+
+
+#canvasContainer .peopleContainer {
+    width: 28%;
+    height: 400px; /* this needs to match to widget height set in the app.xml */
+    overflow-x: hidden; 
+    overflow-y: auto;
+}
+
+.peopleContainer {
+    position: relative;
+    float: left;
+    margin:0;
+    padding: 5px;
+}
+
+#canvasContainer #viewAll {
+    display:none;
+}
+
+#homeContainer #viewAll {
+    /*display: none;*/
+    font-size: 80%;
+    font-weight: 300;
+    text-transform: lowercase;
+    text-align: right;
+    cursor: pointer;
+}
+
+
+.person .personAvatar {
+    float:left;
+}
+
+.personAvatar img {
+    height: 30px;
+    width: 30px;
+}
+
+.personName .firstName {
+    text-transform: uppercase;
+    font-weight: 100;
+    color: #444444;
+}
+
+.personName .lastName {
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #444444;
+}
+
+.person {
+    font-size: 80%;
+    line-height: 15px;
+    margin: 0;
+    border-top: 1px solid #425C68;
+    padding: 5px 3px 3px 3px;
+    cursor: pointer;
+}
+
+.personName .locale {
+    font-weight: 300;
+    font-size: 80%;
+}
+
+.person .personName {
+    vertical-align: 100%;
+    float: left;
+    height: 100%;
+    margin-left: 5px;
+}
+
+/*
+END PEOPLE
+*/
+
+#txtSearch {
+    width: 100%;
+}
+
+#btnSearch {
+
+}
+
+.wundergroundAttr {
+	padding-top: 10px;
+	float: right;
+}
+
+.wundergroundAttr img {
+	height: 33px;
+	width: 55px;
+	border: 0;
+}
+
+/** Columns layout **/
+#homeContainer {
+    overflow-x: hidden;
+}
+
+.box {
+    width:200%;
+    -moz-transition: all 0.5s ease; 
+    -webkit-transition: all 0.5s ease; 
+    -o-transition: all 0.5s ease;
+}
+
+.column {
+    float: left; 
+    height: 350px; /* this needs to match to widget height set in the app.xml */
+    overflow-x: hidden; 
+    overflow-y: auto;
+    width: 50%; 
+}

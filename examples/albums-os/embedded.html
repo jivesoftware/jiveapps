@@ -1,0 +1,57 @@
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
+
+<!--
+  ~ $Revision$
+  ~ $Date$
+  ~
+  ~ Copyright (C) 1999-2012 Jive Software. All rights reserved.
+  ~
+  ~ This software is the proprietary information of Jive Software. Use is subject to license terms.
+  -->
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/persistence.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+
+<script id="imageTemplate" type="text/x-jquery-tmpl">
+    <img src="${filePath}"
+         alt="${fileName}"
+         data-fullsrc="${fullSrc}"
+         data-id="${imageId}"
+         data-width="${imageWidth}"
+         data-height="${imageHeight}"/>
+</script>
+
+<h2>HTML5 <span>Drag and Drop</span> File Upload</h2>
+<h3>Showcase for HTML5 drag and drop file upload through canvas, or use the upload button.</h3>
+<p><input id="uploadbtn" class="uploadbtn" type="button" value="Select Files"/></p>
+<input id="upload" type="file" multiple />
+
+<div id="result"></div>
+
+<div>
+    <span id="link_save"><b>Save</b></span>
+    <span id="link_load"><b>Load</b></span>
+    <span id="link_clear"><b>Clear</b></span>
+</div>
