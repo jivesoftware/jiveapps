@@ -1,7 +1,7 @@
 ROOM FINDER SERVER
 
 This application is a standalone Java web application that can be deployed in
-a local Tomcat (or other servlet container) instance.  It provides an example
+a Tomcat (or other servlet container) instance.  It provides an example
 implementation of the back end services for the "Room Finder" Jive app.
 
 The application uses Microsoft Exchange web services, and has been tested with
@@ -30,7 +30,7 @@ servlet container instructions.
 To use this server from the Room Finder app, you need to configure a Jive Connects 
 service in your Jive instance. Log in as administrator and go to Admin Console, System,
 Settings, App Services page. Add a new service with the following parameters:
-- Authentication: Basic (could be different if you modified the server code)
+- Authentication: Basic
 - Tags: jive:service://jivesoftware.com/it/roomfinder?version=1
 - URI: https://yourserver.com/RoomFinderService
 

@@ -146,6 +146,7 @@ public class RoomFinderServlet extends HttpServlet {
             // Request availability for all rooms in a location, and then process data to find the rooms available
             // for requested time window.
             ExchangeService service = createExchangeService(req.getHeader("Authorization"));
+
             List<AttendeeInfo> attendees = populateAttendees(location);
             GetUserAvailabilityResults results = service.getUserAvailability(attendees, new TimeWindow(reqStart, apiWindowEnd), AvailabilityData.FreeBusy);
 
@@ -184,6 +185,7 @@ public class RoomFinderServlet extends HttpServlet {
             // Write response object in json
             ObjectMapper mapper = new ObjectMapper();
             resp.setContentType("application/json");
+            resp.setCharacterEncoding("utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
             mapper.writeValue(resp.getWriter(), availability);
         }
@@ -215,12 +217,13 @@ public class RoomFinderServlet extends HttpServlet {
      * @param location
      */
     private void validateLocation(String location) throws RequestParameterException {
-        if (!location.equals("portland") &&
-            !location.equals("paloalto") &&
-            !location.equals("boulder")) {
-            logger.warn("Unknown location: " + location);
-            throw new RequestParameterException("Unknown location.");
+        for (ConferenceRoom room : allRooms) {
+            if (room.getLocation().equals(location)) {
+                return; // found the location name
+            }
         }
+        logger.warn("Unknown location: " + location);
+        throw new RequestParameterException("Unknown location.");
     }
 
     /**
