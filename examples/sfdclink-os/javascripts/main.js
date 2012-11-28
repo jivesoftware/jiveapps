@@ -17,7 +17,6 @@
  */
 
 var sfdcSearch = {
-    baseUrl: "https://apphosting.jivesoftware.com/apps/dev/sfdc-search",   // app base url for creating image elements
     serviceAlias: "sfdc",      // jive connects service alias from app.xml
     version: null,             // salesforce versioned service endpoint
     resources: null,           // salesforce resource endpoints
@@ -182,17 +181,17 @@ var sfdcSearch = {
             }
             else if (item.isMore) {
                 var moreSelector = "li." + item.category + ".list-more";
-                var moreIcon = $("<img>").attr("src", appObj.baseUrl + "/images/triangle-down-blue.png");
+                var moreIcon = $("<img>").attr("src", appObj.getAbsoluteUrl("/images/triangle-down-blue.png"));
                 var moreText = $("<span>").html("show more");
                 var moreElement = $("<span>").append(moreText).append(moreIcon).click(function(event) {
                     event.preventDefault();
                     if (moreText.html() == "show more") {
                         moreText.html("show less");
-                        moreIcon.attr("src", appObj.baseUrl + "/images/triangle-up-blue.png")
+                        moreIcon.attr("src", appObj.getAbsoluteUrl("/images/triangle-up-blue.png"));
                     }
                     else {
                         moreText.html("show more");
-                        moreIcon.attr("src", appObj.baseUrl + "/images/triangle-down-blue.png")
+                        moreIcon.attr("src", appObj.getAbsoluteUrl("/images/triangle-down-blue.png"));
                     }
                     $(moreSelector).slideToggle(); // show more of this category
                 });
@@ -313,24 +312,24 @@ var sfdcSearch = {
 
                         // Using instanceof since obj.type is wrong
                         if (obj instanceof osapi.jive.core.Document) {
-                            icon.attr('src', appObj.baseUrl + "/images/jive-icon-document-sml.png");
+                            icon.attr('src', appObj.getAbsoluteUrl("/images/jive-icon-document-sml.png"));
                             link.append(obj.subject);
                         }
                         else if (obj instanceof osapi.jive.core.Discussion) {
-                            icon.attr('src', appObj.baseUrl + "/images/jive-icon-discussion-sml.png");
+                            icon.attr('src', appObj.getAbsoluteUrl("/images/jive-icon-discussion-sml.png"));
                             link.append(obj.subject);
                         }
                         else if (obj instanceof osapi.jive.core.Post) {
-                            icon.attr('src', appObj.baseUrl + "/images/jive-icon-post-sml.png");
+                            icon.attr('src', appObj.getAbsoluteUrl("/images/jive-icon-post-sml.png"));
                             link.append(obj.subject);
                         }
                         else if (obj instanceof osapi.jive.core.Update) {
-                            icon.attr('src', appObj.baseUrl + "/images/jive-icon-update-sml.png");
+                            icon.attr('src', appObj.getAbsoluteUrl("/images/jive-icon-update-sml.png"));
                             link.append(obj.contentSummary);
                         }
                         else if (obj instanceof osapi.jive.core.Comment) {
                             // todo check icon
-                            icon.attr('src', appObj.baseUrl + "/images/jive-icon-discussion-sml.png");
+                            icon.attr('src', appObj.getAbsoluteUrl("/images/jive-icon-discussion-sml.png"));
                             link.append(obj.contentSummary);
                         }
                         else {
@@ -834,7 +833,7 @@ var sfdcSearch = {
      * Create an element with activity indicator
      */
     insertActivityIndicator: function(element) {
-        var activityIndicator = $("<img>", {src: this.baseUrl + "/images/activity-16.gif", width:"16", height:"16"});
+        var activityIndicator = $("<img>", {src: this.getAbsoluteUrl("/images/activity-16.gif"), width:"16", height:"16"});
         activityIndicator.addClass("activity-action").insertAfter(element);
         return activityIndicator;
     },
@@ -917,20 +916,15 @@ var sfdcSearch = {
 
                 // loop through list items and add an extra category item when detect
                 // a change in category
-
                 $.each(items, function(index, item) {
                     if (item.category != currentCategory) {
-                        //var iconSrc = appObj.baseUrl + "images/link-16.png";
-                        //var iconElement = $("<img>", {alt:"icon", src:iconSrc, width:16, height:16}).addClass("category");
                         var itemElement = $("<li>").addClass("ui-menu-item ui-autocomplete-category");
 
-                        //itemElement.append(iconElement).append(item.category);
                         itemElement.append(item.category);
                         ul.append(itemElement);
 
                         currentCategory = item.category;
                     }
-
                     self._renderItem(ul, item);
                 });
             }
@@ -1323,6 +1317,10 @@ var sfdcSearch = {
         $("img.activity-load").hide();
         $("img.activity-action").remove();
         $("#messages").addClass("error").html(str).show();
+    },
+
+    getAbsoluteUrl: function(path) {
+        return gadgets.util.getUrlParameters()['url'].replace(/(\/app.xml)|(\/gadget.xml)/, path);
     }
 };
 
