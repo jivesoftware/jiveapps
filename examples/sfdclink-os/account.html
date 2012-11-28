@@ -1,0 +1,112 @@
+<link rel="stylesheet" href="stylesheets/jquery-ui-1.8.22.custom.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+
+<script type="text/javascript" charset="utf-8" src="javascripts/accounting.min.js"></script>
+<script type="text/javascript" src="javascripts/jquery-ui-1.8.22.custom.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+
+<div>
+    <img class="activity-load" width="48" height="48" src="images/activity-48.gif" alt="loading..."/>
+</div>
+
+<div id="container" style="display:none;">
+    <div class="title">
+        <span id="category-name"></span><span>: </span>
+        <span class="sobject-field" id="Name"></span>
+    </div>
+
+    <div id="link-section">
+        <a href="#" id="sfdc-view" target="_blank">View in Salesforce</a><br>
+    </div>
+
+    <table>
+        <tr>
+            <td width="40" valign="top">
+                <img id="owner-avatar" alt="avatar" width="40" height="40"/>
+            </td>
+            <td>
+                <div>
+                    <span>Owner: </span>
+                    <span id="account-owner"></span>
+                </div>
+
+                <div>
+                    <span>Type: </span>
+                    <span class="sobject-field" id="Type"></span>
+                </div>
+
+                <div>
+                    <span>Industry: </span>
+                    <span class="sobject-field" id="Industry"></span>
+                </div>
+
+                <div>
+                    <span>Address: </span>
+                    <span class="sobject-field" id="BillingStreet"></span>,
+                    <span class="sobject-field" id="BillingCity"></span>
+                    <span class="sobject-field" id="BillingState"></span>
+                    <span class="sobject-field" id="BillingPostalCode"></span>
+                </div>
+
+                <div>
+                    <span>Phone: </span>
+                    <span class="sobject-field" id="Phone"></span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+
+    <div id="chartdiv" style="display:none;">
+        <img width="570" height="70" alt="chart"/>
+    </div>
+
+    <div id="opp-section">
+        <div id="no-opps-message" style="display:none;">
+            No opportunities found
+        </div>
+        <table id="opportunities" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Opportunity</th>
+                    <th>Amount</th>
+                    <th>Stage</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="minimessage">
+    </div>
+
+    <div id="button-div">
+        <input type="button" id="close-button" value="Close"/>
+        <input type="button" id="add-link-note" value="Create link note" style="display:none;"/>
+    </div>
+</div>
+
+<div id="messages" style="display:none;">
+</div>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->

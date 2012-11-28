@@ -1,0 +1,406 @@
+
+#container {
+    margin: 15px;
+    position: relative;
+}
+
+div.title {
+    border-bottom: 1px solid #F0F0F0;
+    margin-bottom: 5px;
+}
+
+div.title span {
+    color: #2989C5;
+    font-size: 12pt;
+}
+
+#embedded-search {
+    width: 430px;
+    height: 30px;
+    margin-left: 15px;
+    font-size: 1em;
+    color: #464646;
+    border: 1px solid #CCC;
+}
+
+#search, #recent, #options {
+    margin: 10px;
+}
+
+#search {
+    padding: 5px;
+}
+
+#search img {
+    vertical-align: middle;
+}
+
+input, div {
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #575757;
+}
+
+.ui-widget {
+    font-size: 1em;
+}
+
+/* fix the height of autocomplete results in embedded search so that user can see all results */
+.ui-autocomplete {
+    max-height: 560px;
+    /*max-width: 300px;*/
+    width: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ui-autocomplete-category {
+    font-weight: bold;
+    color: #8B8B8B;
+    /*height: 30px;*/
+    line-height: 25px;
+    padding:0 5px;;
+    /*border-bottom: 1px solid #F0F0F0;*/
+}
+
+.ui-menu .ui-menu-item a {
+    line-height: 1;
+    padding:0.2em .4em;
+}
+
+.custom-item-label {
+    font-size: 0.9em;
+    color: #2989C5;
+}
+
+.custom-item-metadata {
+    font-size: 0.7em;
+    color: #575757;
+    line-height: 1;
+}
+
+
+img.category {
+    float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 7px;  /* this is for vertical align with text */
+}
+
+img.activity-load {
+    display: block;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img.activity-action {
+    margin: 5px;
+    vertical-align: middle;
+}
+
+#link-section {
+    float: right;
+    text-align: right;
+}
+
+#link-section a {
+    font-size: 0.8em;
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: #2989C5;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+#messages {
+    margin: 50px 30px;
+    font-style: italic;
+    color: #8B8B8B;
+    text-align: center;
+}
+
+#messages.error {
+    color: red;
+    font-style: normal;
+}
+
+#options label {
+    display: block;
+    float: left;
+	width: 90px;
+    text-align: right;
+    margin-right: 10px;
+    color: #464646;
+}
+
+#options .input-label {
+    margin-top: 7px;
+}
+
+#options .checkbox-label {
+    float: none;
+    text-align: left;
+    width: 150px;
+    margin-left: 100px;
+    font-size: 1em;
+}
+
+#type-options {
+    margin: 10px 0px;
+}
+
+.expandable {
+    border: 1px solid #A6A6A6;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+
+    margin-bottom: 5px;
+
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+}
+
+.expand-header {
+    padding: 5px 5px;
+    background: whiteSmoke;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.expand-indicator {
+    display: inline-block;
+    margin-right: 3px;
+    width: 11px;
+    height: 11px;
+    background-image: url("../images/triangle-right.png");
+    background-repeat: no-repeat;
+}
+
+.expanded .expand-indicator {
+    width: 11px;
+    height: 11px;
+    background-image: url("../images/triangle-down.png");
+}
+
+#opportunities {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#opportunities tr.odd {
+    background:#f3f3f3;
+}
+
+#opportunities td {
+    font-size: 9pt;
+    color: #575757;
+}
+
+#opportunities th {
+    font-size: 8pt;
+    border-bottom:1px solid #CCC;
+    color: #575757;
+}
+
+.ui-menu-item {
+    font-size: 0.9em;
+}
+
+.ui-menu-item a {
+    line-height: 1.1em;
+}
+
+.list-item-details {
+    font-size: 0.7em;
+    line-height: 1em;
+    visibility: hidden;
+}
+
+.ui-menu-item:hover .list-item-details {
+    visibility: visible;
+}
+
+#detail-popup {
+    position: absolute;
+    left: 390px;
+    top: 0px;
+    width: 230px;
+    height: 130px;
+    padding: 5px;
+
+    border: 1px solid #79b7e7;
+    background: #d0e5f5 url(images/ui-bg_glass_75_d0e5f5_1x400.png) 50% 50% repeat-x;
+}
+
+#detail-popup div {
+    margin-bottom: 5px;
+    color: #1d5987;
+}
+
+#opp-section {
+    height: 230px;
+    overflow: auto;
+    font-size: 0.8em;
+}
+
+img.result-icon {
+    float: left;
+    margin-top: 2px;
+    margin-right: 5px;
+}
+
+#search-results {
+    margin-top: 15px;
+}
+
+#search-result-list {
+    margin-top: 5px;
+    height: 270px;
+    overflow: auto;
+}
+
+#search-results ul {
+    list-style: none;
+    margin-top: 5px;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+#search-results ul > li {
+    margin-bottom: 10px;
+}
+
+input[type="submit"], input[type="button"] {
+    background: white;
+    background: -moz-linear-gradient(top,white 0%,#EFEFEF 100%);
+    background: -webkit-gradient(linear,left top,left bottom,color-stop(0,white),color-stop(100%,#EFEFEF));
+    background: -o-linear-gradient(top,white 0%,#EFEFEF 100%);
+    border: 1px solid #A6A6A6;
+    color: #3778C7;
+
+    text-shadow: 0 1px 0 white;
+    padding: 4px 10px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+div.metadata {
+    font-size: 0.8em;
+    color: #AAAAAA;
+    /*margin-left: 12px;*/
+}
+
+/*
+.metadata-label {
+    color: #AAAAAA;
+}
+*/
+
+span.no-content-message {
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+#limited-message {
+    font-size: 0.8em;
+    font-style: italic;
+    color: #AAAAAA;
+}
+
+#button-div {
+    width: 300px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+#button-div.opportunity {
+    margin-top: 50px;
+}
+
+#no-opps-message {
+    margin: 20px 0;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+#minimessage {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+}
+
+.mmlib_table {
+    width: 100%;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.mmlib_table a {
+    color: white;
+    text-decoration: underline;
+}
+
+li.more-toggle {
+    line-height: 25px;
+}
+
+li.more-toggle > span {
+    margin-left: 6px;
+    font-size: 0.7em;
+    /*
+    font-style: italic;
+    */
+    color:#8CA9CD;
+}
+
+li.more-toggle:hover span {
+    color: #2989C5;
+}
+
+li.more-toggle img {
+    vertical-align: middle;
+}
+
+/* hide the JQuery UI dialog title bar close button since
+   the dialog is closed automatically */
+.ui-dialog-titlebar-close{
+    display: none;
+}
+
+/* App icons by Benjamin Humphrey http://www.jigsoaricons.com/ */
+
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+

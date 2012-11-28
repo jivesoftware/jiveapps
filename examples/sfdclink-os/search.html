@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="stylesheets/jquery-ui-1.8.22.custom.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+
+<script type="text/javascript" charset="utf-8" src="javascripts/accounting.min.js"></script>
+<script type="text/javascript" src="javascripts/jquery-ui-1.8.22.custom.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+
+<div id="search">
+	<img src="images/link-32.png" width="32" height="32"/>
+	<input type="text" disabled="disabled" id="embedded-search"/>
+</div>
+
+<div id="recent" class="expandable">
+    <div class="expand-header expanded"><span class="expand-indicator"></span>Recent Items</div>
+    <div>
+        <ul>
+        </ul>
+    </div>
+</div>
+
+<div id="options" class="expandable">
+    <div class="expand-header"><span class="expand-indicator"></span>Options</div>
+    <div style="display:none;">
+        <div id="type-options">
+            <label>Search for</label>
+            <div>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="account-checkbox" name="account" class="search-object-type"/>Account
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="opportunity-checkbox" name="opportunity" class="search-object-type"/>Opportunity
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="contact-checkbox" name="contact" class="search-object-type"/>Contact
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="lead-checkbox" name="lead" class="search-object-type"/>Lead
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="messages">
+    Start typing the name of an item in Salesforce, and then choose it from the result list to insert into the content you're editing.
+</div>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->

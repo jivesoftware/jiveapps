@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+    <ModulePrefs title="Salesforce Link"
+                 description="Create embedded links to Salesforce accounts, opportunities, leads and contacts."
+                 author="Jussi Heikkola"
+                 author_affiliation="Jive Software"
+                 author_email="jussi.heikkola@jivesoftware.com">
+
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v2"/>
+        <Require feature="jquery-1.6"/>
+        <Require feature="osapi"/>
+        <Require feature="settitle"/>
+        <Require feature="views"/>
+        <Require feature="embedded-experiences"/>
+        <Require feature="minimessage"/>
+
+        <Require feature="jive-connects-v1">
+            <Param name="alias:sfdc|title:Salesforce">jive:service://salesforce.com/api?version=1</Param>
+        </Require>
+        <Require feature="actions">
+            <Param name="action-contributions">
+                <![CDATA[
+                  <action id="com.jivesoftware.linkSObject"
+                  path="jive/actions/rte"
+                  label="Create a link"
+                  view="embedded.search"
+                  icon="images/link-16.png" />  ]]>
+            </Param>
+        </Require>
+
+        <!-- Icons by Benjamin Humphrey http://www.jigsoaricons.com/ -->
+        <Link rel="Icon" href="images/link-16.png"/>
+        <Link rel="MediumIcon" href="images/link-48.png"/>
+        <Link rel="LargeIcon" href="images/link-128.png"/>
+
+        <Link rel="Screenshot1" href="images/salesforce-link-account.png" />
+        <Link rel="Screenshot2" href="images/salesforce-link-opportunity.png" />
+        <Link rel="Screenshot3" href="images/salesforce-link-contact.png" />
+        <Link rel="Screenshot4" href="images/salesforce-link-search-list3.png" />
+        <Link rel="Screenshot5" href="images/salesforce-link-search.png" />
+
+    </ModulePrefs>
+
+    <UserPref name="show-all-opps" display_name="Show both open and closed opportunities for an account" datatype="bool" default_value="false" required="false" />
+
+    <Content type="html" view="home,canvas" href="canvas.html" preferred_height="500"/>
+    <Content type="html" view="embedded.search" href="search.html" preferred_height="640" preferred_width="550"/>
+    <Content type="html" view="embedded.account" href="account.html" preferred_height="520" preferred_width="600"/>
+    <Content type="html" view="embedded.opportunity" href="opportunity.html" preferred_height="250" preferred_width="600"/>
+    <Content type="html" view="embedded.contact" href="contact.html" preferred_height="520" preferred_width="600"/>
+    <Content type="html" view="embedded.lead" href="lead.html" preferred_height="520" preferred_width="600"/>
+</Module>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->

@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+
+<div>
+    <img class="activity-load" width="48" height="48" src="images/activity-48.gif" alt="loading..."/>
+</div>
+
+<div id="container" style="display:none;">
+    <div class="title">
+        <span id="category-name"></span><span>: </span>
+        <span class="sobject-field" id="Name"></span>
+    </div>
+
+    <div id="link-section">
+        <a href="#" id="sfdc-view" target="_blank">View in Salesforce</a><br>
+    </div>
+
+    <div>
+        <span>Title: </span>
+        <span class="sobject-field" id="Title"></span>
+    </div>
+
+    <div>
+        <span>Company: </span>
+        <span class="sobject-field" id="Company"></span>
+    </div>
+
+    <div>
+        <span>Industry: </span>
+        <span class="sobject-field" id="Industry"></span>
+    </div>
+
+    <div>
+        <span>Email: </span>
+        <a href="#" class="sobject-field" id="Email"></a>
+    </div>
+
+    <div>
+        <span>Address: </span>
+        <span class="sobject-field" id="Street"></span>,
+        <span class="sobject-field" id="City"></span>
+        <span class="sobject-field" id="State"></span>
+        <span class="sobject-field" id="PostalCode"></span>
+    </div>
+
+    <div>
+        <span>Phone: </span>
+        <span class="sobject-field" id="Phone"></span>
+    </div>
+
+    <div id="search-results">
+        <span>Jive content for this lead:</span><br>
+        <div id="search-result-list">
+            <input type="button" id="search-jive-button" value="Search"/>
+            <ul>
+            </ul>
+            <div id="limited-message" style="display:none;">
+                <span>Showing a limited list of search results. Please use Jive search for full results.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="minimessage">
+    </div>
+
+    <div id="button-div">
+        <input type="button" id="close-button" value="Close"/>
+        <input type="button" id="add-link-note" value="Create link note" style="display:none;"/>
+    </div>
+</div>
+
+<div id="messages" style="display:none;">
+</div>
+
+<!--
+/*
+ * Copyright 2012, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
