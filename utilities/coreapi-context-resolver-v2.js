@@ -16,8 +16,10 @@
             }
         }
         function queueContextFetch(key, context) {
-            if (typeof(context) === "object" && context.type && context.id) {
-                ctx.push({ key: key, type: context.type, id: context.id });
+            if (typeof(context) === "object" && context.type && context.id != null) {
+                if (context.id) {
+                    ctx.push({ key:key, type:context.type, id:context.id });
+                }
                 return true;
             }
             return false;
