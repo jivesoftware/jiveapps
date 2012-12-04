@@ -68,6 +68,14 @@ if (typeof (osapi &&
                             data[out] = data[key];
                         }
                         delete data[key];
+                        key = out;
+                    }
+                    var value = data[key];
+                    if (value) {
+                        if (value.list && value.list.length && !value.type) {
+                            value = value.list[0];
+                        }
+                        data[key] = value;
                     }
                 }
                 callback.apply(this, arguments);
