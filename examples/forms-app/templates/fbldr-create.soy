@@ -1,0 +1,74 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+{namespace jive.fbldr.create.soy}
+
+
+/**
+ * Create add field button
+ *
+ */
+{template .addField}
+    <div class="fbldr-field">
+        <label class="fbldr-label">Add Field</label>
+        <span class="fbldr-glyph fbldr-reqd">&nbsp;</span>
+        <button type="button" id="fbldr-field-add">Add Field</button>
+    </div>
+    <div id="fbldr-create-error-box" class="fbldr-error-box" style="display: none">
+        <span class="jive-icon-med jive-icon-redalert"></span>
+        <span class="message"></span>
+    </div>
+{/template}
+
+
+/**
+ * Create field display
+ *
+ * @param field
+ * @param json
+ *
+ */
+{template .field}
+    <li>
+    <div class="fbldr-create-field">
+        <input type="hidden" value="{$json}"/>
+        <span class="fbldr-create-field-id">{$field.id}</span>
+        <span class="fbldr-create-field-label" {if $field.desc}title="{$field.desc}"{/if}>{$field.label}</span>
+        <a class="fbldr-field-link fbldr-field-del" href="#" title="Remove Field"><span class="jive-icon-med jive-icon-delete"></span></a>
+        <a class="fbldr-field-link fbldr-field-down" href="#" title="Move Field Down"><span class="jive-icon-med jive-icon-arrow-down"></a>
+        <a class="fbldr-field-link fbldr-field-up" href="#" title="Move Field Up"><span class="jive-icon-med jive-icon-arrow-up"></a>
+    </div>
+    </li>
+{/template}
+
+
+/**
+ * Create preview info
+ *
+ */
+{template .headingText}
+    <div class="fbldr-create-preview-text">
+        <p>Use the panels on the right to enter the template and field information,
+           which will automatically render the form preview below.</p>
+        <p>&nbsp;</p>
+        <p>Once the form has been successfully created, you may either fill out the 
+           form and preview the content in the Content Preview tab, or copy the generated
+           form template from the Form Source tab and store in a Jive document to be used
+           by the Forms App.</p>
+    </div>
+{/template}

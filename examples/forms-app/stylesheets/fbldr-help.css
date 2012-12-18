@@ -1,0 +1,80 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+#fbldr-help {
+    height: 598px;
+    overflow: auto;
+    padding: 5px;
+}
+
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content {
+    width: 90%;
+}
+
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content p,
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content li {
+    font-size: 1.2em;
+}
+
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content ul {
+    margin: 0 18px;
+    padding: 0; 
+}
+
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content ul li {
+    margin: 8px 0;
+}
+
+#fbldr-help div.fbldr-help-topic div.fbldr-help-content .fbldr-resource {
+    font-size: 1.5em;
+}
+
+#fbldr-help div.fbldr-help-topic a {
+    color: #3778C7;
+}
+
+#fbldr-help div.fbldr-help-topic .jive-icon-sml,
+#fbldr-help div.fbldr-help-topic .jive-icon-med {
+    display: inline-block;
+    float: none;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#fbldr-start {
+    margin: 10px 20px;
+}
+
+#fbldr-start .fbldr-text {
+    margin: 10px;
+}
+
+#fbldr-start .fbldr-text .jive-icon-med {
+    display:inline-block;
+    float: none;
+    margin: 0 4px;
+}
+
+#fbldr-start ul {
+    list-style: none;
+    margin: 15px;
+}
+
+#fbldr-start ul li {
+    margin: 5px 0;
+}

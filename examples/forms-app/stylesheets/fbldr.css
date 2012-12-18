@@ -1,0 +1,342 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
+body.fbldr-body {
+    background-color: #F5F5F5;
+    margin: 0;
+    padding: 0;
+}
+
+#fbldr-load {
+    display: none;
+    margin: 5px 10px;
+    max-width: 480px;
+    padding: 20px 30px;
+}
+
+#fbldr-load-progress {
+    margin-top: 10px;
+}
+
+.fbldr-progress-text {
+    color: #303030;
+    display: inline-block;
+    float: left;
+    font-weight: bold;
+    padding-top: 6px;
+    text-align: center;
+    width: 100%;
+}
+
+.fbldr-load-img {
+    background-image: url(../../images/loading.gif);
+    background-repeat: none;
+    display: inline-block;
+    margin: 0 10px;
+    height: 32px;
+    width: 32px;
+}
+
+.fbldr-load-msg {
+    font-size: 1.6em;
+    position: relative;
+    top: -8px;   
+}
+
+#fbldr-menu {
+    float: right;
+    font-size: 0.9em;
+    margin: 10px 10px 5px 10px;
+}
+
+#fbldr-menu .fbldr-menu-item {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+#fbldr-menu .jive-icon-med {
+    margin-right: 3px;
+    position: relative;
+    top: -1px;
+}
+
+.fbldr-header {
+    margin: 10px;
+}
+
+.fbldr-heading {
+    border-bottom: 2px solid #505050;
+    margin: 0 10px 15px 10px;
+}
+
+#fbldr-container .fbldr-heading {
+    margin-top: 15px;
+}
+
+.fbldr-heading .fbldr-heading-index,
+.fbldr-heading .fbldr-heading-text {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.fbldr-heading .fbldr-heading-index {
+    background-color: #505050;
+    color: #FFFFFF;
+    display: inline-block;
+    margin: 0 5px 0 0;
+    padding: 2px 5px;
+}
+
+.fbldr-desc {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.fbldr-divider {
+    border-bottom: 1px solid #A0A0A0;
+    margin: 0 10px 15px 10px; 
+}
+
+#fbldr-main {
+    max-height: 598px;
+    overflow: auto;
+    min-width: 480px;
+}
+
+.fbldr-main textarea {
+    font: 0.85em 'Helvetica Neue',Helvetica,Arial,'Lucida Grande',sans-serif;
+    padding: 2px;
+}
+
+.fbldr-field {
+    clear: both;
+    margin: 5px;
+}
+
+ul.fbldr-field-list {
+    float: left;
+    list-style: none;
+    margin-bottom: 5px;
+    width: 240px;
+}
+
+.fbldr-input {
+    margin-right: 5px;
+    min-width: 240px;
+}
+
+select.fbldr-input {
+    padding: 3px 0;
+    min-width: 245px;
+}
+
+.fbldr-label {
+    float: left;
+    padding-top: 2px;
+    text-align: right;
+    width: 140px;
+}
+
+.fbldr-checkbox {
+    margin: 0;
+}
+
+.fbldr-radio {
+    margin: 2px;
+}
+
+.fbldr-none {
+    color: #A0A0A0;
+}
+
+.fbldr-opt {
+    color: #444444;
+}
+
+.fbldr-opt-error,
+.fbldr-reqd {
+    color: #C00000;
+}
+
+.fbldr-glyph {
+    float: left;
+    margin: 0 3px;
+    position: relative;
+    text-align: center;
+    top: 3px;
+    width: 6px;
+}
+
+.fbldr-glyph.fbldr-glyph-tall {
+    top: -1px;
+}
+
+.fbldr-notes {
+    margin: 10px 5px 5px 5px;
+    font-size: 0.9em;
+}
+
+.fbldr-note {
+    margin-bottom: 3px;
+}
+
+.fbldr-desc,
+.fbldr-note {
+    margin-left: 10px;
+}
+
+.fbldr-error {
+    margin-right: 3px;
+}
+
+.fbldr-title {
+    color: #5050FF;
+}
+
+.jive-icon-sml.fbldr-error, .jive-icon-sml.fbldr-title {
+    cursor: pointer;
+    display: inline-block;
+    float: none;
+    margin-right: 3px;
+}
+
+.fbldr-input-error {
+    background-color: #FFEFEF;
+    border: 2px solid #C00000;
+    padding: 2px 1px;
+}
+
+#fbldr-submit {
+    padding: 0 10px 10px 20px;
+}
+
+#fbldr-submit-btn {
+    float: left;
+    margin-right: 10px;
+}
+
+#fbldr-submit-status {
+    border: 1px solid #A6A6A6;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    display: none;
+    float: left;
+    min-width: 175px;
+    padding: 5px;
+    position: relative;
+    top: -2px;
+}
+
+#fbldr-submit-status.fbldr-submit-error,
+#fbldr-submit-status.fbldr-submit-error span {
+    border-color: #C00000;
+    color: #C00000;
+}
+
+#fbldr-submit-status span.fbldr-submit-text {
+    position: relative;
+    top: -3px;
+}
+
+img.fbldr-submit-load {
+    margin-right: 5px;
+    height: 16px;
+    width: 16px;
+}
+
+a.fbldr-userpicker-link {
+    display: inline-block;
+    margin-bottom: 3px;
+}
+
+ul.fbldr-userpicker-list {
+    margin: 0 100px 0 155px;
+    list-style: none;
+}
+
+ul.fbldr-userpicker-list li {
+    padding-bottom: 3px;
+}
+
+ul.fbldr-userpicker-list li:hover {
+    text-decoration: underline;
+    color: #505050;
+    cursor: pointer;
+}
+
+.fbldr-userpicker-remove {
+    color: #3778C7;
+    font-size: 0.8em;
+}
+
+.fbldr-valid-errors {
+    padding-left: 15px;
+}
+
+.fbldr-valid-error {
+    margin: 5px 0;
+}
+
+div.fbldr-error-box {
+    background-color: #FFEFEF;
+    border: 1px solid;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    color: #CC4444;
+    margin: 10px 20px 5px 20px;
+    padding: 4px;   
+}
+
+div.fbldr-error-box span.message {
+    position: relative;
+    top: -3px;
+}
+
+div.fbldr-attach-head {
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.8em;
+}
+
+div.fbldr-attach-head p {
+    margin-bottom: 5px;
+}
+
+div.fbldr-attach-field {
+    margin: 5px;
+    padding: 5px;
+}
+
+#fbldr-attach-files {
+    list-style: none;
+    margin: 5px 5px 0 10px;
+}
+
+#fbldr-attach-files li {
+    margin: 3px;
+}
+
+#fbldr-attach-link {
+    padding: 5px;
+}
+
+span.fbldr-attach-link-to {
+    font-color: #C0C0C0;
+    font-size: 0.8em;
+}

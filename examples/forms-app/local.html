@@ -1,0 +1,339 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+ -->
+
+<html lang="en">
+<head>
+    <title>Forms: Local Test</title>
+
+    <link rel="stylesheet" href="stylesheets/jquery/smoothness/jquery-ui-1.8.21.custom.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/min/ps-formbuilder-0.0.1.min.css" type="text/css" media="screen" />
+    
+    <!-- TODO: This faked up gadget is ONLY for local testing.  Get rid of it. -->
+    <script type="text/javascript">
+        var gadgets = {
+            Prefs : function() {
+                return {
+                    getInt : function() {
+                        return null;  
+                    },
+                    getString : function() {
+                        return null;
+                    }
+                }; 
+            },
+            util : {
+                registerOnLoadHandler : function() {
+                    return {};
+                }
+            },
+            views : {
+                getParams : function() {
+                    return {
+                        display : 'create'
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <script type="text/javascript" src="javascripts/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery/jquery-ui-1.8.21.custom.min.js"></script>
+    <script type="text/javascript" src="javascripts/min/ps-formbuilder-0.0.1.min.js"></script>
+    
+    <!-- <script type="text/javascript" charset="utf-8" src="http://localhost:9810/compile?id=fbldr"></script>  -->
+</head>
+<body id="fbldr-body-home" class="fbldr-body">
+
+    <div id="fbldr-info" class="clearfix">
+        <div id="fbldr-menu" style="display:none;">
+            <div id="fbldr-menu-create" class="fbldr-menu-item"><span class="jive-icon-med jive-icon-new"></span><a href="#">Create New Form</a></div>
+            <div id="fbldr-menu-forms" class="fbldr-menu-item" style="display:none;"><span class="jive-icon-med jive-icon-move"></span><a href="#">Return to Forms</a></div>
+            <div id="fbldr-menu-help" class="fbldr-menu-item"><span class="jive-icon-med jive-icon-question"></span><a href="#">Forms App Help</a></div>
+        </div>
+    </div>
+    
+    <div id="fbldr-main"></div>
+    
+    <!-- Hidden resources to be able to dynamically grab -->
+    <div id="fbldr-hidden" style="display:none;">
+        <img id="fbldr-cal-icon" src="images/calendar.gif"/>
+        <img id="fbldr-load-icon" src="images/loading.gif"/>
+    </div>
+
+<!--
+    Everything from here down is strictly for the form create view,
+    and has nothing to do with the functionality of the app itself
+ -->
+
+    <div id="fbldr-create" style="display:none;">
+        <div id="fbldr-create-views">
+            <ul>
+                <li><a href="#fbldr-create-preview"><span>Form Preview</span></a></li>
+                <li><a href="#fbldr-create-source"><span>Form Source</span></a></li>
+                <li><a href="#fbldr-content-preview"><span>Content Preview</span></a></li>
+            </ul>
+            <div id="fbldr-create-preview">
+                <h1>Form Preview</h1>
+                <div id="fbldr-create-preview-head"></div>
+                <div id="fbldr-container"></div>
+            </div>
+            <div id="fbldr-create-source">
+                <h1>Form Source</h1>
+                <textarea id="fbldr-create-text" rows="35" cols="105" readonly="readonly"></textarea>
+            </div>
+            <div id="fbldr-content-preview">
+                <h1>Content Preview</h1>
+                <div class="fbldr-divider">&nbsp;</div>
+                <div id="fbldr-content-preview-head"></div>
+                <div class="fbldr-divider">&nbsp;</div>
+                <div id="fbldr-content-preview-container"></div>
+            </div>
+        </div>
+        <div id="fbldr-create-controls">
+            <ul>
+                <li><a href="#fbldr-create-template"><span>1. Form Template</span></a></li>
+                <li><a href="#fbldr-create-fields"><span>2. Form Fields</span></a></li>
+            </ul>
+            <div id="fbldr-create-template">
+                <h1>Form Template</h1>
+                <form id="fbldr-create-form"></form>
+            </div>
+            <div id="fbldr-create-fields">
+                <h1>Form Fields</h1>
+                <form id="fbldr-field-form"></form>
+                <ul id="fbldr-fields">
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+<!--
+    Everything from here down is strictly for the form help view,
+    and has nothing to do with the functionality of the app itself
+    
+    See: https://community.jivesoftware.com/docs/DOC-59709
+ -->
+ 
+    <div id="fbldr-help" style="display:none;">
+        <ul>
+            <li><a href="#help-topic1"><span>Overview</span></a></li>
+            <li><a href="#help-topic2"><span>Getting Started</span></a></li>
+            <li><a href="#help-topic3"><span>Configuring the App</span></a></li>
+            <li><a href="#help-topic4"><span>Initializing the App</span></a></li>
+            <li><a href="#help-topic5"><span>Using the App</span></a></li>
+            <li><a href="#help-topic6"><span>Handling Errors</span></a></li>
+            <li><a href="#help-topic7"><span>Notable Input Types</span></a></li>
+            <li><a href="#help-topic8"><span>Additional Resources</span></a></li>
+        </ul>
+        <div id="help-topic1" class="fbldr-help-topic"><div class="fbldr-help-content">
+
+<h2>Overview</h2>
+<p>&nbsp;</p>
+<p>The purpose of this document is to describe the use of the <span class="jive-icon-sml jive-icon-group"></span><a href="https://community.jivesoftware.com/groups/form-builder-app">Forms App</a>.</p>
+<p>&nbsp;</p>
+<p>The Forms app is designed to simplify the process of creating form-based, templated content within Jive.  The same type of content, with a consistent structure and style, can easily be created time and time again in a consistent, reproducable way.</p>
+<p>&nbsp;</p>
+<p>The app requires no custom content types and no other plugins, it simply leverages existing Jive content types (Documents, Discussions, Questions), and provides a semi-structured body for the content, based on form data input by the user.</p>
+<p>&nbsp;</p>
+<p>Any number of templates can be created in any number of categories, and a single app can now be the place to generate just about any kind of content you can think of.  Anything that can be created, manually, in Jive can also be created using the Forms app.</p>
+<p>&nbsp;</p>
+<p>Select a help topic above for further information.</p>
+<p>&nbsp;</p>
+
+        </div></div>
+        <div id="help-topic2" class="fbldr-help-topic"><div class="fbldr-help-content">
+
+<h2>Getting Started</h2>
+<p>&nbsp;</p>
+<ul>
+<li>Install the <span class="jive-icon-sml jive-icon-group"></span><a href="https://community.jivesoftware.com/groups/form-builder-app">Forms App</a> from the Jive Apps Market</li>
+<li>Configure the App</li>
+<ul>
+<li>Note: The app does not come loaded with any default form templates, these must be created by either you or your community manager before you can properly utilize the app.</li>
+<li>See <span class="jive-icon-sml jive-icon-document"></span><a href="https://community.jivesoftware.com/docs/DOC-59708">Forms App: Template Specification</a> to see how templates are created.</li>
+<li>See <span class="jive-icon-sml jive-icon-document"></span><a href="https://community.jivesoftware.com/docs/DOC-59698">Forms App: Sample Templates</a> to see a few example templates.</li>
+</ul>
+<li>Select, Fill Out, and Submit a Form</li>
+<li>Ask Question, Submit Issues, and Provide Feedback here: <span class="jive-icon-sml jive-icon-group"></span><a href="https://community.jivesoftware.com/groups/form-builder-app">Forms App Group</a></li>
+</ul>
+<p>&nbsp;</p>
+
+        </div></div>
+        <div id="help-topic3" class="fbldr-help-topic"><div class="fbldr-help-content">
+        
+<h2>Configuring the App</h2>
+<p>&nbsp;</p>
+<p>There are 5 options that can be configured for the app:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Template tags - which tags to search for when locating documents containing templates</li>
+<ul>
+<li>Default value - "fbldr_templates,fbldr_template"</li>
+<li>This is set in the app for each user so that each user can control which templates will be in their view of the app</li>
+</ul>
+<li>Default template category - the template category to select by default after templates are first loaded</li>
+<li>Default template name - the template to select by default after templates are first loaded</li>
+<li>Default container type - which container type to use to create new content when not specified in the template itself</li>
+<ul>
+<li>Default value - "space"</li>
+</ul>
+<li>Default container ID - which container ID to use to create new content when not specified in the template itself</li>
+</ul>
+<p>&nbsp;</p>
+<p>Here is how to configure the app preferences:</p>
+<p>&nbsp;</p>
+<p><strong>Step 1:  Open the app menu and select "Your Settings"</strong></p>
+<p>&nbsp;</p>
+<p><img alt="settings02.png" class="jive-image" src="images/help/settings02.png" /></p>
+<p>&nbsp;</p>
+<p><strong>Step 2:  Enter the appropriate values and select "Save Settings"</strong></p>
+<p>&nbsp;</p>
+<p><img alt="settings01.png" class="jive-image" src="images/help/settings01.png" style="width: 422px; height: 380px;" height="380" width="422" /></p>
+<p>&nbsp;</p>
+        
+        </div></div>
+        <div id="help-topic4" class="fbldr-help-topic"><div class="fbldr-help-content">
+        
+<h2>Initializing the App</h2>
+<p>&nbsp;</p>
+<p>Nothing needs to be done here, once the app is configured with the appropriate preferences (the default values for the preference may often suffice), it will automatically load and categorize all templates that are located by the search.  The following loading screen will appear as the app is initializing and loading the templates:</p>
+<p>&nbsp;</p>
+<p><img alt="loading01.png" class="jive-image" src="images/help/loading01.png" /></p>
+<p>&nbsp;</p>
+        
+        </div></div>
+        <div id="help-topic5" class="fbldr-help-topic"><div class="fbldr-help-content">
+        
+<h2>Using the App</h2>
+<p>&nbsp;</p>
+<p>Creating Jive content can now be created in 3 easy steps:</p>
+<ul>
+<li>Select a template</li>
+<li>Fill out the form</li>
+<li>Submit the form</li>
+</ul>
+<p>&nbsp;</p>
+<p>That's it.  That's all you need to do in order to create customized content within Jive.</p>
+<p>&nbsp;</p>
+<p><strong>Step 1: Select a Template</strong></p>
+<p>&nbsp;</p>
+<p>The first step is to select a category and a template.  Choose a category from the drop down list, which will then populate the list of templates for that category.  Following the category selection, select one of the available templates from the Template drop down list.</p>
+<p>&nbsp;</p>
+<p><strong>Note: </strong>If only one single template is found when initially loading the templates, or if a default category and template is set in the app preferences, then that will already be selected here and the template form will be auto-generated when the app is loaded.</p>
+<p>&nbsp;</p>
+<p><img alt="fbldr01.png" class="jive-image" src="images/help/fbldr01.png" /></p>
+<p>&nbsp;</p>
+<p><strong>Step 2:  Fill Out the Form</strong></p>
+<p>&nbsp;</p>
+<p>Once a template has been selected, a form will be created, dynamically, based on the template definition.  For more information on how these templates are defined, see <span class="jive-icon-sml jive-icon-document"></span><a href="https://community.jivesoftware.com/docs/DOC-59708">Forms App: Template Specification</a>.</p>
+<p>&nbsp;</p>
+<p>Note that if an item as a <img class="jive_macro jive_emote" src="images/help/info.gif" /> next to it, you may mouse over the <img class="jive_macro jive_emote" src="images/help/info.gif" /> to display a helpful tooltip describing the purpose and/or validation rules for the field.</p>
+<p>&nbsp;</p>
+<p><img alt="form-sample02.png" class="jive-image" src="images/help/form-sample02.png" /></p>
+<p>&nbsp;</p>
+<p><strong>Step 3:  Submit the Form</strong></p>
+<p>&nbsp;</p>
+<p>Once the form has been successfully filled out (no validation errors - see below), then the following confirmation dialog will be display, and the form status at the bottom will be updated to reflect the same.</p>
+<p>&nbsp;</p>
+<table border="0px" class="jiveBorder" height="629" style="border-image: initial; height: 629px; width: 965px; border-width: 0px; border-color: #000000; border-style: solid;" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;baseline&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;center&quot;,&quot;padding&quot;:&quot;2&quot;}">
+<tbody>
+<tr>
+<td style="color: #575757; text-align: left; background-color: transparent; font-family: arial, helvetica, sans-serif; vertical-align: baseline;"><strong>Confirmation Dialog</strong></td>
+<td style="color: #575757; text-align: left; background-color: transparent; font-family: arial, helvetica, sans-serif; vertical-align: baseline;"><strong>Confirmation in Form<br /></strong></td>
+</tr>
+<tr>
+<td style="color: #575757; text-align: left; background-color: transparent; font-family: arial, helvetica, sans-serif; vertical-align: baseline; padding: 2px;"><img alt="success01.png" class="jive-image" src="images/help/success01.png" /></td>
+<td style="color: #575757; text-align: left; background-color: transparent; font-family: arial, helvetica, sans-serif; vertical-align: baseline; padding: 2px;"><img alt="success02.png" class="jive-image" src="images/help/success02.png" /></td>
+</tr>
+</tbody>
+</table>
+<h2></h2>
+<p><strong>Step 4:  Success</strong></p>
+<p>&nbsp;</p>
+<p>If all goes well, you will now have a new piece of content created in Jive, based upon the provided template and the form values you have provided.  Which may look something like the following:</p>
+<p>&nbsp;</p>
+<p><img alt="content01.png" class="jive-image-thumbnail jive-image" src="images/help/content01.png" width="620" /></p>
+<p>&nbsp;</p>
+        
+        </div></div>
+        <div id="help-topic6" class="fbldr-help-topic"><div class="fbldr-help-content">
+
+<h2>Handling Template Errors</h2>
+<p>&nbsp;</p>
+<p>When there is an error in a template definition, a form will not be displayed when the template is selected.  Also note that the template will be listed in red with a <img class="jive_macro jive_emote" src="images/help/alert.gif" /> warning in the template drop down box.  Rather than render the input form, a list of template validation errors will be displayed on the screen.  Editing the template to fix the listed errors, re-saving the updated attachment on the appropriate document, and reloading the app should address the problem.  Here is an example of a problematic template:</p>
+<p>&nbsp;</p>
+<p><img alt="template-error01.png" class="jive-image" src="images/help/template-error01.png" /></p>
+<p>&nbsp;</p>
+<h2>Handling Form Errors</h2>
+<p>&nbsp;</p>
+<p>When there is an error in an input form (required field is missing, does not match validation rules, etc.) then individual form errors will be displayed.  The field will become highlighted with a red border and a <img class="jive_macro jive_emote" src="images/help/alert.gif" /> indicator will show next to each problematic field.  Simply update each problematic field with an appropriate value and re-submit the form.  The form will automatically refresh to show which, if any errors are resolved.  If all errors have been resolved, then the form will submit and the content will be created.</p>
+<p>&nbsp;</p>
+<p>Note:  Hovering your mouse over the <img class="jive_macro jive_emote" src="images/help/alert.gif" /> indicator will show a helpful tooltip describing the problem with the field's value.</p>
+<p>&nbsp;</p>
+<p><img alt="form-error01.png" class="jive-image" src="images/help/form-error01.png" /></p>
+<p>&nbsp;</p>
+
+        </div></div>
+        <div id="help-topic7" class="fbldr-help-topic"><div class="fbldr-help-content">
+
+<h2>Notable Input Type:  Date Picker</h2>
+<p>&nbsp;</p>
+<p>One of the allowable data types for a field is a date.  When a date is the defined type, a date picker will be displayed with the field, see the following example:</p>
+<p>&nbsp;</p>
+<p><img alt="datepicker01.png" class="jive-image" src="images/help/datepicker01.png" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2>Notable Input Type:  User Picker</h2>
+<p>&nbsp;</p>
+<p>Another allowable data type for a field is a user.  When a user is the defined type, a user picker (Jive-provided) will be displayed, see the following example:</p>
+<p>&nbsp;</p>
+<table border="0px" class="jiveBorder" height="730" style="border-image: initial; height: 709px; width: 897px; border-width: 0px; border-color: #000000; border-style: solid;" jive-data-cell="{&quot;color&quot;:&quot;#575757&quot;,&quot;textAlign&quot;:&quot;left&quot;,&quot;padding&quot;:&quot;2&quot;,&quot;backgroundColor&quot;:&quot;transparent&quot;,&quot;fontFamily&quot;:&quot;arial,helvetica,sans-serif&quot;,&quot;verticalAlign&quot;:&quot;top&quot;}" jive-data-header="{&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;backgroundColor&quot;:&quot;#6690BC&quot;,&quot;textAlign&quot;:&quot;center&quot;,&quot;padding&quot;:&quot;2&quot;}">
+<tbody>
+<tr>
+<td style="color: #575757; background-color: transparent; font-family: arial, helvetica, sans-serif; text-align: left; vertical-align: top;"><strong>User Picker Before User Selection<br /></strong></td>
+<td style="color: #575757; background-color: transparent; font-family: arial, helvetica, sans-serif; text-align: left; vertical-align: top;"><strong>User Picker After User Selection<br /></strong></td>
+</tr>
+<tr>
+<td style="color: #575757; background-color: transparent; font-family: arial, helvetica, sans-serif; text-align: left; vertical-align: top; padding: 2px;"><img alt="form-sample01.png" class="jive-image" src="images/help/form-sample01.png" /></td>
+<td style="color: #575757; background-color: transparent; font-family: arial, helvetica, sans-serif; text-align: left; vertical-align: top; padding: 2px;"><img alt="userpicker01.png" class="jive-image" src="images/help/userpicker01.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+        </div></div>
+        <div id="help-topic8" class="fbldr-help-topic"><div class="fbldr-help-content">
+
+<h2>Additional App Resources</h2>
+<p>&nbsp;</p>
+<p class="fbldr-resource">&#8227; Ask Question, Submit Issues, and Provide Feedback here: <span class="jive-icon-sml jive-icon-group"></span><a href="https://community.jivesoftware.com/groups/form-builder-app">Forms App Group</a></p>
+<p>&nbsp;</p>
+<p class="fbldr-resource">&#8227; See <span class="jive-icon-sml jive-icon-document"></span><a href="https://community.jivesoftware.com/docs/DOC-59708">Forms App: Template Specification</a> to see how templates are created.</p>
+<p>&nbsp;</p>
+<p class="fbldr-resource">&#8227; See <span class="jive-icon-sml jive-icon-document"></span><a href="https://community.jivesoftware.com/docs/DOC-59698">Forms App: Sample Templates</a> to see a few example templates.</p>
+<p>&nbsp;</p>
+
+        </div></div>      
+    </div>
+
+</body>
+</html>

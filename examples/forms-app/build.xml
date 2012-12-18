@@ -1,0 +1,131 @@
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+ -->
+
+<project default="build-all">
+	<property name="ps.version" value="0.0.1" />
+	<property name="ps.finalname.js" value="ps-formbuilder-${ps.version}.js" />
+	<property name="ps.finalname.js.min" value="ps-formbuilder-${ps.version}.min.js" />
+	<property name="ps.finalname.css" value="ps-formbuilder-${ps.version}.css" />
+	<property name="ps.finalname.css.min" value="ps-formbuilder-${ps.version}.min.css" />
+
+	<property name="ps.srcDirectory.js" location="javascripts" />
+	<property name="ps.srcDirectory.css" location="stylesheets" />
+	<property name="ps.srcDirectory.soy" location="templates" />
+
+	<property name="ps.minDirectory.js" location="${ps.srcDirectory.js}/min" />
+	<property name="ps.minDirectory.css" location="${ps.srcDirectory.css}/min" />
+
+	<property name="ps.buildDirectory" location="target" />
+	
+	<property name="ps.soy.compiler" location="lib/SoyToJsSrcCompiler.jar" />
+	<property name="ps.yui.compressor" location="lib/yuicompressor-2.4.7.jar" />
+	
+	<target name="build-all" >
+		<antcall target="clean" />
+		<antcall target="compile-soy" />
+		<antcall target="combine-js" />
+		<antcall target="compile-js" />
+		<antcall target="combine-css" />
+		<antcall target="compile-css" />
+	</target>
+	
+	<!--
+		Deletes build directory and the resulting file.
+		
+		javascripts/min
+		stylesheets/min
+	-->
+	<target name="clean">
+		<!-- Delete Build Directory -->
+		<delete dir="${ps.buildDirectory}" />
+		<!-- Delete CSS Min Directory -->
+		<delete dir="${ps.minDirectory.js}" />
+		<!-- Delete JS Min Directory -->
+		<delete dir="${ps.minDirectory.css}" />
+	</target>
+
+	<!--
+		Creates javascript from soy templates
+	-->
+	<target name="compile-soy">
+        <path id="ps.compileSoy.path"> 
+                <fileset dir="${ps.srcDirectory.soy}" includes="**/*.soy"/> 
+        </path> 
+		
+	    <pathconvert property="ps.compileSoy.space-seperated-path" refid="ps.compileSoy.path" pathsep=" " setonempty="false" /> 
+		
+        <java fork="true" jar="${ps.soy.compiler}"> 
+                <arg line="--outputPathFormat ${ps.buildDirectory}'/soy/{INPUT_FILE_NAME_NO_EXT}.js'"/> 
+                <arg line="${ps.compileSoy.space-seperated-path}" /> 
+        </java> 
+	</target>
+		
+	<!--
+		Minifies all scripts and target into min.
+	-->
+    <target name="combine-js" description="Concatenate JavaScript source files">
+    	<concat destfile="${ps.buildDirectory}/${ps.finalname.js}">
+            <fileset dir="${ps.srcDirectory.js}" includes="soyutils.js" />
+    		<fileset dir="${ps.buildDirectory}/soy" includes="*.js" />
+    		<fileset dir="${ps.srcDirectory.js}" includes="fbldr.js" />
+    		<fileset dir="${ps.srcDirectory.js}" includes="*.js" excludes="soyutils.js, fbldr.js, main.js" />
+            <fileset dir="${ps.srcDirectory.js}" includes="main.js" />
+        </concat>
+    </target>
+	
+	<target name="compile-js">		
+		<mkdir dir="${ps.minDirectory.js}"/>
+		
+	    <apply verbose="true" executable="java" parallel="false" failonerror="true">
+	        <fileset dir="${ps.buildDirectory}" includes="${ps.finalname.js}"/>
+	        <arg line="-jar"/>
+	        <arg path="${ps.yui.compressor}"/>
+	    	<arg line="--nomunge"/>
+	        <srcfile/>
+	        <arg line="-o"/>
+	        <mapper type="glob" from="*.js" to="${ps.minDirectory.js}/${ps.finalname.js.min}"/>
+	    	
+	        <targetfile/>
+	    </apply>			
+	</target>
+	
+    <target name="combine-css" description="Concatenate CSS source files">
+    	<concat destfile="${ps.buildDirectory}/${ps.finalname.css}">
+            <fileset dir="${ps.srcDirectory.css}" includes="*.css" />
+        </concat>
+    </target>
+	
+	<!--
+		Minifies and Combines all css
+	-->
+	<target name="compile-css">
+		<mkdir dir="${ps.minDirectory.css}"/>
+		
+	    <apply verbose="true" executable="java" parallel="false" failonerror="true">
+	        <fileset dir="${ps.buildDirectory}" includes="${ps.finalname.css}" />
+	        <arg line="-jar"/>
+	        <arg path="${ps.yui.compressor}"/>
+	        <srcfile/>
+	        <arg line="-o"/>
+	        <mapper type="glob" from="*.css" to="${ps.minDirectory.css}/${ps.finalname.css.min}"/>
+	        <targetfile/>
+	    </apply>					
+	</target>
+</project>

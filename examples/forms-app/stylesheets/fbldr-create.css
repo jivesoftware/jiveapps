@@ -1,0 +1,125 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+ 
+#fbldr-create {
+    margin-left: 5px;
+    overflow: auto;
+}
+
+#fbldr-create .ui-tabs .ui-tabs-panel {
+    padding: 1em;
+}
+
+#fbldr-create .jive-icon-med,
+#fbldr-create .jive-icon-sml {
+    display: inline-block;
+    float: none;
+    margin: 0 1px;
+}
+
+#fbldr-create-controls,
+#fbldr-create-views {
+    float: left;
+    height: 594px;
+    overflow: auto;
+    padding: 2px;
+}
+
+#fbldr-create-controls {
+    min-width: 340px;
+    width: 35%;
+}
+
+#fbldr-create-controls .fbldr-label {
+    width: 85px;
+}
+
+#fbldr-create-controls .fbldr-input {
+    min-width: 175px;
+}
+
+#fbldr-create-controls ul.fbldr-field-list {
+    width: 175px;
+}
+
+#fbldr-create-controls select.fbldr-input {
+    min-width: 180px;
+}
+
+#fbldr-create-views {
+    width: 60%;
+}
+
+#fbldr-create-text {
+    margin: 10px 0;
+    width: 90%;
+}
+
+#fbldr-create-preview-head {
+    margin-top: 10px;
+}
+
+#fbldr-create-preview-head .fbldr-create-preview-text {
+    margin: 0 20px;
+}
+
+div.fbldr-create-field {
+    background-color: #F1F1F1;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 5px 10px;
+    margin: 2px;
+}
+
+div.fbldr-create-field span {
+    display: inline-block;
+    margin-right: 5px;
+    overflow: hidden;
+}
+
+div.fbldr-create-field span.fbldr-create-field-id {
+    width: 75px;
+}
+
+div.fbldr-create-field span.fbldr-create-field-label {
+    width: 135px;
+}
+
+#fbldr-fields {
+    list-style: none;
+    margin: 20px 0;
+}
+
+#fbldr-fields li:first-child a.fbldr-field-up {
+    display: none;
+}
+
+#fbldr-fields li:last-child a.fbldr-field-down {
+    display: none;
+}
+
+#fbldr-content-preview-head {
+    font-size: 14pt;
+    margin: 10px 15px 0 15px; 
+}
+
+#fbldr-content-preview-container {
+    margin: 10px 15px;
+}
