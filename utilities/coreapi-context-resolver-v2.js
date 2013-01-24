@@ -58,7 +58,17 @@
             batch.execute(callback);
         }
     }
-    function getLoader(staticClass, typeId) {
+    function getLoader(staticClass, className, url) {
+        if (className && url) {
+            return function(type, id, key, batch) {
+                var params = {
+                    className: className,
+                    findUrl: url.replace(/\{id\}/g, String(id)),
+                    jsonPath: '/'
+                };
+                batch.add(key, osapi.jive.core.getObject(params));
+            }
+        }
         return function(type, id, key, batch) {
             if (staticClass && typeof(staticClass.get) === "function") {
                 var filter = typeId == null ? byID(id) : byTypeAndId(typeId, id);
@@ -77,9 +87,9 @@
             // loaders for the various data types
             loaders = {
                 "osapi.jive.core.Document": getLoader(osapi.jive.core.documents),
-                "osapi.jive.core.Comment": getLoader(osapi.jive.core.comments),
+                "osapi.jive.core.Comment": getLoader(osapi.jive.core.comments, "Comment", "/comments/{id}"),
                 "osapi.jive.core.Discussion": getLoader(osapi.jive.core.discussions),
-                "osapi.jive.core.Message": getLoader(osapi.jive.core.messages),
+                "osapi.jive.core.Message": getLoader(osapi.jive.core.messages, "Message", "/messages/{id}"),
                 "osapi.jive.core.Post": getLoader(osapi.jive.core.posts),
                 "osapi.jive.core.Update": getLoader(osapi.jive.core.updates),
                 "osapi.jive.core.DirectMessage": getLoader(osapi.jive.core.dms),
