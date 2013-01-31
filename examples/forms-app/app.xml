@@ -71,11 +71,12 @@
   <UserPref name="fbldr_tags" display_name="Template Doc Tags (comma-delimited list):" datatype="string" default_value="fbldr_templates,fbldr_template" required="true" />
   <UserPref name="fbldr_docs" display_name="Template Doc IDs (comma-delimited list):" datatype="string" default_value="" required="false" />
   
-  <UserPref name="fbldr_redirect" display_name="Redirect to New Content After Creation:" datatype="bool" default_value="true" required="false" />
-  
   <!-- Template Prefs -->
   <UserPref name="fbldr_category" display_name="Default Category:" datatype="string" />
   <UserPref name="fbldr_template" display_name="Default Template:" datatype="string" />
+
+  <UserPref name="fbldr_redirect" display_name="Redirect to New Content After Creation:" datatype="bool" default_value="true" required="false" />
+  <UserPref name="fbldr_debug" display_name="Enable Debug Logging in Console:" datatype="bool" default_value="false" required="false" />
 
   <!-- To begin development, remove the hello view and uncomment the home and canvas views below -->
   <Content type="html" view="canvas,home" href="home.html" preferred_height="640" preferred_width="480" />

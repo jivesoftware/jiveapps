@@ -114,6 +114,12 @@ jive.fbldr.ContentCreator = function(template, form) {
     }
     
     var createContent = function(container, content, callback) {
+    	if (jive.fbldr.isDebug()) {
+    		console.log("Create content in container: ", container);
+    		console.log("Content title: ", content.title);
+    		console.log("Content body: ", content.body);
+    	}
+    
         var containerType = container.containerType;
         var containerId = container.containerId;
         

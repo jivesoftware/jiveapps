@@ -25,6 +25,16 @@ jive.fbldr.dataFilter = function(data, type) {
     return type === 'json' ? $j.trim(data.replace(/^throw [^;]*;/, '')) : data;
 };
 
+jive.fbldr.isDebug = function() {
+	if (gadgets) {
+		var prefs = new gadgets.Prefs();
+		return prefs.getBool("fbldr_debug");
+	}
+	else {
+		return true;
+	}
+}
+
 jive.fbldr.isEmbedded = function() {
     return ($j("body#fbldr-body-embed").length > 0);
 }

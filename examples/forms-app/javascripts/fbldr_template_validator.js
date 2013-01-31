@@ -201,8 +201,11 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
             }
             else {
                 var document = response.data;
-                template.content.title = $j("<div/>").html(document.subject).html();
-                template.content.body = $j("<div/>").html(document.content.text).html();
+                // Escaping the HTML this way is broken in IE, do NOT do this, just use the raw content
+                // template.content.title = $j("<div/>").html(document.subject).html();
+                // template.content.body = $j("<div/>").html(document.content.text).html();
+                template.content.title = document.subject;
+                template.content.body = document.content.text;
             }
             
             finalizeValidation();
