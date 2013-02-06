@@ -119,7 +119,7 @@ jive.fbldr.ContentCreator = function(template, form) {
     		console.log("Content title: ", content.title);
     		console.log("Content body: ", content.body);
     	}
-    
+    	
         var containerType = container.containerType;
         var containerId = container.containerId;
         
@@ -142,6 +142,9 @@ jive.fbldr.ContentCreator = function(template, form) {
         if (containerType == "group") {
             postToGroup(containerId, contentType, data, callback);
         }
+        else if (containerType == "project") {
+            postToProject(containerId, contentType, data, callback);
+        }
         else if (containerType == "space") {
             postToSpace(containerId, contentType, data, callback);
         }
@@ -149,38 +152,36 @@ jive.fbldr.ContentCreator = function(template, form) {
     
     var postToGroup = function(groupId, contentType, data, callback) {
         osapi.jive.core.groups.get({id: groupId}).execute(function(response) {
-            if (response.error) {
-                callback({ error: response.error.message });
-                return;
-            }
-
-            var group = response.data;
-            
-            if (contentType == "discussion") {
-                postDiscussion(group, data, callback); 
-            }
-            else if (contentType == "document") {
-                postDocument(group, data, callback);
-            }
+        	doPost(response, contentType, data, callback);
         });
     };
 
+    var postToProject = function(projectId, contentType, data, callback) {
+        osapi.jive.core.projects.get({id: projectId}).execute(function(response) {
+        	doPost(response, contentType, data, callback);
+        });
+    };    
+
     var postToSpace = function(spaceId, contentType, data, callback) {
         osapi.jive.core.spaces.get({id: spaceId}).execute(function(response) {
-            if (response.error) {
-                callback({ error: response.error.message });
-                return;
-            }
-
-            var space = response.data;
-            
-            if (contentType == "discussion") {
-                postDiscussion(space, data, callback); 
-            }
-            else if (contentType == "document") {
-                postDocument(space, data, callback);
-            }
+            doPost(response, contentType, data, callback);
         });
+    };
+    
+    var doPost = function(response, contentType, data, callback) {
+        if (response.error) {
+            callback({ error: response.error.message });
+            return;
+        }
+
+        var container = response.data;
+        
+        if (contentType == "discussion") {
+            postDiscussion(container, data, callback); 
+        }
+        else if (contentType == "document") {
+            postDocument(container, data, callback);
+        }
     };
     
     var postDiscussion = function(container, data, callback) {
@@ -363,7 +364,7 @@ jive.fbldr.ContentCreator = function(template, form) {
     		osapi.jive.core.places.requestPicker({
                 success: function(response) {
     			    if (!response.data) {
-    			    	callback({ error: "Invalid place selected, must be a space or group." });
+    			    	callback({ error: "Invalid place selected: must be a space, project, or group." });
     			    	return;
     			    }
     		
@@ -379,14 +380,17 @@ jive.fbldr.ContentCreator = function(template, form) {
     			    else if (uri.indexOf('/groups/') >= 0) {
     			        container.containerType = "group";
     		        }
-    		
+    			    else {
+    			        container.containerType = "project";
+    		        }
+    		        
     		        container.containerId = place.id;
     			    
     		        if (isValidContainer(container)) {
     		            callback(container);
     		        }
     		        else {
-    		        	callback({ error: "Invalid place selected, must be a space or group." })
+    		        	callback({ error: "Invalid place selected: must be a space, project, or group." })
     		        }
                 },
         	    error: function(response) {
@@ -405,7 +409,7 @@ jive.fbldr.ContentCreator = function(template, form) {
     	var containerType = container.containerType;
     	var containerId = container.containerId;
     	
-        if (!containerType || (containerType != "group" && containerType != "space")) {
+        if (!containerType || (containerType != "group" && containerType != "project" && containerType != "space")) {
             return false;
         }
         if (isNaN(containerId) || containerId <= 0) {
