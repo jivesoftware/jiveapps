@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+  <ModulePrefs title="props"
+               description="Give props to your team!"
+               author="Jive Software"
+               author_affiliation="Jive Software"
+               author_email="apps@jivesoftware.com">
+
+    <!-- Commonly used features -->
+    <Require feature="dynamic-height" />
+    <Require feature="jive-core-v3" />
+    <Require feature="jive-opensocial-ext-v1" />
+    <Require feature="opensocial-1.0" />
+    <Require feature="opensocial-data"/>
+    <Require feature="opensocial-templates"/>
+    <Require feature="osapi"/>
+    <Require feature="settitle"/>
+    <Require feature="views" />
+
+    <Require feature="actions">
+        <Param name="action-contributions">
+            <![CDATA[
+            <action id="org.jiveProps.embedProp"
+                    path="jive/actions/rte"
+                    label="Give props to another user"
+                    view="embedded.embedProp"
+                    icon="http://apphosting.jivesoftware.com/apps/dev/props/img/icon16.png" />
+            ]]>
+        </Param>
+    </Require>
+    <Require feature="selection" />
+
+    <!-- Icons: 3 sizes, 16x16, 48x48, 128x128 -->
+    <Link rel="Icon"       href="img/icon16.png" />
+    <Link rel="MediumIcon" href="img/icon48.png" />
+    <Link rel="LargeIcon"  href="img/icon128.png" />
+
+    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
+    <Link rel="Screenshot1" href="img/screenshots/screenshot1.png" />
+    <Link rel="Screenshot2" href="img/screenshots/screenshot2.png" />
+    <Link rel="Screenshot3" href="img/screenshots/screenshot3.png" />
+
+  </ModulePrefs>
+
+  <Content type="html" view="canvas" href="props.html" preferred_height="600" />
+
+  <Content type="html" view="embedded.embedProp" href="props.html" preferred_height="570" preferred_width="840" />
+  <Content type="html" view="embedded.showProp" href="props.html" preferred_height="190" preferred_width="660" />
+
+</Module>

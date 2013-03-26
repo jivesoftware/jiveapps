@@ -1,0 +1,42 @@
+desc "copy all JS, CSS, and Image assets to a new dir"
+task :cache_assets do
+  `mkdir -p cache`
+  # figure out next cache dir number
+  last_cache = Dir.chdir("cache") { Dir["*"] }.sort.last.to_i
+  next_cache = last_cache + 1
+  next_cache_dir = 1.upto(6 - next_cache.to_s.length).to_a.map{"0"}.join + next_cache.to_s
+
+  # create cache dir and copy assets to it
+  `mkdir -p cache/#{next_cache_dir}`
+  `cp -R js cache/#{next_cache_dir}/`
+  `cp -R css cache/#{next_cache_dir}/`
+  `cp -R img cache/#{next_cache_dir}/`
+  `cp -R vendor cache/#{next_cache_dir}/`
+
+  # replace URLs in search.html
+  old_search_html = File.read("search.html")
+  new_search_html = old_search_html.split(/\n/).map do |line|
+    if line =~ /<link|<script/ && line =~ /src=|href=/
+      # if already cached, replace cache dir...
+      if line =~ /(src|href)=\"cache\//
+        line.gsub(/\"cache\/\d+\//, "\"cache/#{next_cache_dir}/")
+
+      # if not an external link, add cache dir...
+      elsif line =~ /src=\"/ && line !~ /src=\"http(s):/
+        line.gsub(/src=\"/, "src=\"cache/#{next_cache_dir}/")
+
+      elsif line =~ /href=\"/ && line !~ /href=\"http(s):/
+        line.gsub(/href=\"/, "href=\"cache/#{next_cache_dir}/")
+
+      # else just leave it alone
+      else
+        line
+      end
+    else
+      line
+    end
+  end.join("\n")
+
+  File.open("search.html", 'w') {|f| f.write(new_search_html) }
+
+end
