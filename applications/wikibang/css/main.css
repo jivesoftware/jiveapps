@@ -1,0 +1,89 @@
+.main {
+	padding: 15px 15px 15px 15px;
+/*	top: 100px; */
+}
+
+#icon {
+	padding: 0px 15px 10px 0px;
+}
+#title {
+    font-family: serif;
+    font-size:175%;
+    color:#333;
+}
+
+#search .loading img {
+    display: block;
+	margin-top: 100px;
+	margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+	width: 176px;
+	height: 23px;
+}
+
+#search {
+	padding-bottom: 65px;
+	overflow: hidden;
+}
+
+#view .loading img {
+    display: block;
+	margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+	width: 176px;
+	height: 23px;
+}
+
+#more {
+	clear: both;
+	padding: 0px 17px 17px 0px;
+}
+
+	
+.main .wrap input {
+	width: 93%;
+}
+.main .wrap {
+	height: 38px;
+	margin-bottom: 22px;
+}
+
+/*#view {
+	width: 350px;
+	height: 110px;
+}*/
+
+
+
+#results {
+/*	width: 450px;*/
+	padding: 5px 5px 5px 5px;
+}
+
+#buttons {
+	text-align: right;
+	padding: 0px 17px 17px 0px;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+}
+
+.frame { 
+	padding: 5px; border: 1px solid #aaa; 
+}
+
+.align-right { 
+	float:right; 
+	margin: 0 0 15px 15px; 
+}
+
+#error {
+	font: 100%/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background: url('images/oops.png') no-repeat center 10px;
+	color: #a9a9a9;
+	padding: 0 0 0 0;
+	font-size: 14px;
+	text-align: center;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+  ~ /*
+  ~      Copyright 2013 Jive Software
+  ~
+  ~      Licensed under the Apache License, Version 2.0 (the "License");
+  ~      you may not use this file except in compliance with the License.
+  ~      You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~      Unless required by applicable law or agreed to in writing, software
+  ~      distributed under the License is distributed on an "AS IS" BASIS,
+  ~      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~      See the License for the specific language governing permissions and
+  ~      limitations under the License.
+  -->
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Wikipedia Search</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />	
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/shared.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/search.js"></script>
+</head>
+<body>
+    <img src='blank.gif' id='dummyImg' style='display:none' />
+	<div id="search" class="main">
+		<div class="wrap">
+			<input type="text" id="searchinput" class="search-query" placeholder="Search Wikipedia" data-provide="typeahead">
+		</div>
+		<div class="loading">
+			<img src="images/jive-image-loading.gif"/>
+		</div>
+		<div id="content">
+			<div id="results">
+				<div id="thumbnail">
+				</div>
+				<div id="display">
+				</div>
+			</div>
+		</div>
+		<div id="buttons">
+			<button id="ok" class="btn primary disabled" type="submit">
+			  &nbsp;&nbsp;&nbsp;Ok&nbsp;&nbsp;&nbsp;
+			</button>
+            <button id="cancel" class="btn" type="submit">
+                Cancel
+            </button>
+	    </div>		
+	</div> 
+	<!-- This image is needed to swap in as a background image via JavaScript (see search.js)-->
+	<!--img id="protoImage" src="images/wikipedia-logo-20-search.png" style="display: none;"/-->
+</body>
+</html>
