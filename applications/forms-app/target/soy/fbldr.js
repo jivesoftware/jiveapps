@@ -9,11 +9,11 @@ if (typeof jive.fbldr.soy == 'undefined') { jive.fbldr.soy = {}; }
 jive.fbldr.soy.attachments = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
   output.append('<div class="fbldr-attachments"><div class="fbldr-attach-head"><p>Use the following form to upload file attachments and, optionally, include a variable to reference the uploaded file in the form\'s HTML source.</p><p>Multiple files may be attached, but only one at a time.  Click "Finished" when all files have been attached.</p></div><div class="fbldr-attach-field"><label>Link to HTML Variable (optional) : </label></div><div class="fbldr-attach-field"><select id="fbldr-attach-link"><option value="" selected="selected">Select HTML variable...</option>');
-  var optionList23 = opt_data.variables;
-  var optionListLen23 = optionList23.length;
-  for (var optionIndex23 = 0; optionIndex23 < optionListLen23; optionIndex23++) {
-    var optionData23 = optionList23[optionIndex23];
-    output.append('<option value="', soy.$$escapeHtml(optionData23), '">', soy.$$escapeHtml(optionData23), '</option>');
+  var optionList34 = opt_data.variables;
+  var optionListLen34 = optionList34.length;
+  for (var optionIndex34 = 0; optionIndex34 < optionListLen34; optionIndex34++) {
+    var optionData34 = optionList34[optionIndex34];
+    output.append('<option value="', soy.$$escapeHtml(optionData34), '">', soy.$$escapeHtml(optionData34), '</option>');
   }
   output.append('</select></div><div class="fbldr-attach-field"><button type="button" id="fbldr-attach-file">Upload File to Attach</button></div><div class="fbldr-attach-field"><label>Attached Files : </label><br/><ul id="fbldr-attach-files"></ul></div></div>');
   return opt_sb ? '' : output.toString();
@@ -43,7 +43,7 @@ jive.fbldr.soy.attachLink = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.checkbox = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
   output.append('<input type="checkbox" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-checkbox" ', (opt_data.field.value) ? 'checked="checked"' : '', ' ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '"' : '', ' /></div>');
   return opt_sb ? '' : output.toString();
@@ -87,7 +87,33 @@ jive.fbldr.soy.heading = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.label = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<label class="fbldr-label">', soy.$$escapeHtml(opt_data.field.label), '</label><span class="fbldr-glyph fbldr-reqd">', (opt_data.field.required) ? '*' : '&nbsp;', '</span>');
+  output.append((opt_data.labelPosition == 'top') ? '<div class="fbldr-label-top"><span>' + soy.$$escapeHtml(opt_data.field.label) + ((opt_data.appendToLabel) ? ' ' + soy.$$escapeHtml(opt_data.appendToLabel) : '') + '</span><span class="fbldr-glyph-top fbldr-reqd">' + ((opt_data.field.required) ? '*' : '&nbsp;') + '</span></div>' : '<label class="fbldr-label">' + soy.$$escapeHtml(opt_data.field.label) + ((opt_data.appendToLabel) ? ' ' + soy.$$escapeHtml(opt_data.appendToLabel) : '') + '</label><span class="fbldr-glyph fbldr-reqd">' + ((opt_data.field.required) ? '*' : '&nbsp;') + '</span>');
+  return opt_sb ? '' : output.toString();
+};
+
+
+jive.fbldr.soy.link = function(opt_data, opt_sb) {
+  var output = opt_sb || new soy.StringBuilder();
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
+  jive.fbldr.soy.label(soy.$$augmentData(opt_data, {appendToLabel: (opt_data.labelPosition == 'top') ? 'Label / URL' : 'Label'}), output);
+  output.append('<input type="text" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '-text" class="fbldr-input" value="', (opt_data.field.value) ? soy.$$escapeHtml(opt_data.field.value) : '', '" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '-text"' : '', ' />');
+  jive.fbldr.soy.error(opt_data, output);
+  jive.fbldr.soy.title(opt_data, output);
+  output.append('</div><div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">', (! (opt_data.labelPosition == 'top')) ? '<label class="fbldr-label">' + soy.$$escapeHtml(opt_data.field.label) + ' URL</label><span class="fbldr-glyph fbldr-reqd">&nbsp;</span>' : '', '<input type="text" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-input" value="" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '"' : '', ' /></div>');
+  return opt_sb ? '' : output.toString();
+};
+
+
+jive.fbldr.soy.list = function(opt_data, opt_sb) {
+  var output = opt_sb || new soy.StringBuilder();
+  output.append((opt_data.ordered) ? '<ol' : '<ul', (opt_data.unstyled) ? ' style="list-style:none;"' : '', '>');
+  var itemList205 = opt_data.items;
+  var itemListLen205 = itemList205.length;
+  for (var itemIndex205 = 0; itemIndex205 < itemListLen205; itemIndex205++) {
+    var itemData205 = itemList205[itemIndex205];
+    output.append('<li>', itemData205, '</li>');
+  }
+  output.append((opt_data.ordered) ? '</ol>' : '</ul>');
   return opt_sb ? '' : output.toString();
 };
 
@@ -101,12 +127,12 @@ jive.fbldr.soy.load = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.options = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<option value="" class="fbldr-none">Select an option...</option>');
-  var optionList117 = opt_data.values;
-  var optionListLen117 = optionList117.length;
-  for (var optionIndex117 = 0; optionIndex117 < optionListLen117; optionIndex117++) {
-    var optionData117 = optionList117[optionIndex117];
-    output.append('<option class="fbldr-opt ', (optionData117.cssClass) ? soy.$$escapeHtml(optionData117.cssClass) : '', '" value="', soy.$$escapeHtml(optionData117.value), '" ', (optionData117.value == opt_data.value) ? ' selected="selected"' : '', '>', soy.$$escapeHtml(optionData117.label), '</option>');
+  output.append((! opt_data.multiple) ? '<option value="" class="fbldr-none">Select an option...</option>' : '');
+  var optionList222 = opt_data.values;
+  var optionListLen222 = optionList222.length;
+  for (var optionIndex222 = 0; optionIndex222 < optionListLen222; optionIndex222++) {
+    var optionData222 = optionList222[optionIndex222];
+    output.append('<option class="fbldr-opt ', (optionData222.cssClass) ? soy.$$escapeHtml(optionData222.cssClass) : '', '" value="', soy.$$escapeHtml(optionData222.value), '" ', (optionData222.value == opt_data.value) ? ' selected="selected"' : '', '>', soy.$$escapeHtml(optionData222.label), '</option>');
   }
   return opt_sb ? '' : output.toString();
 };
@@ -121,7 +147,7 @@ jive.fbldr.soy.notes = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.radio = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
   jive.fbldr.soy.radioOptions(opt_data, output);
   jive.fbldr.soy.error(opt_data, output);
@@ -134,11 +160,11 @@ jive.fbldr.soy.radio = function(opt_data, opt_sb) {
 jive.fbldr.soy.radioOptions = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
   output.append('<ul class="fbldr-field-list">');
-  var valueList147 = opt_data.field.values;
-  var valueListLen147 = valueList147.length;
-  for (var valueIndex147 = 0; valueIndex147 < valueListLen147; valueIndex147++) {
-    var valueData147 = valueList147[valueIndex147];
-    output.append('<li><input type="radio" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-radio" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '" value="' + soy.$$escapeHtml(valueData147.value) + '"' : '', (opt_data.field.value == valueData147.value) ? 'checked="checked"' : '', ' />', (valueData147.label) ? ' ' + soy.$$escapeHtml(valueData147.label) + ' ' : ' ' + soy.$$escapeHtml(valueData147.value) + ' ', '</li>');
+  var valueList256 = opt_data.field.values;
+  var valueListLen256 = valueList256.length;
+  for (var valueIndex256 = 0; valueIndex256 < valueListLen256; valueIndex256++) {
+    var valueData256 = valueList256[valueIndex256];
+    output.append('<li><input type="radio" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-radio" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '" value="' + soy.$$escapeHtml(valueData256.value) + '"' : '', (opt_data.field.value == valueData256.value) ? 'checked="checked"' : '', ' />', (valueData256.label) ? ' ' + soy.$$escapeHtml(valueData256.label) + ' ' : ' ' + soy.$$escapeHtml(valueData256.value) + ' ', '</li>');
   }
   output.append('</ul>');
   return opt_sb ? '' : output.toString();
@@ -147,10 +173,10 @@ jive.fbldr.soy.radioOptions = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.select = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
-  output.append('<select id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-input" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '"' : '', '>');
-  jive.fbldr.soy.options({values: opt_data.field.values, value: opt_data.field.value}, output);
+  output.append('<select id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-input" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '"' : '', (opt_data.field.type == 'multi-select') ? 'multiple="multiple"' : '', ' >');
+  jive.fbldr.soy.options({values: opt_data.field.values, value: opt_data.field.value, multiple: opt_data.field.type == 'multi-select'}, output);
   output.append('</select>');
   jive.fbldr.soy.error(opt_data, output);
   jive.fbldr.soy.title(opt_data, output);
@@ -189,7 +215,7 @@ jive.fbldr.soy.submitSuccess = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.text = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
   output.append('<input type="text" id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-input" value="', (opt_data.field.value) ? soy.$$escapeHtml(opt_data.field.value) : '', '" ', (opt_data.field.name) ? 'name="' + soy.$$escapeHtml(opt_data.field.name) + '"' : '', ' />');
   jive.fbldr.soy.error(opt_data, output);
@@ -201,7 +227,7 @@ jive.fbldr.soy.text = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.textarea = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
   output.append('<textarea id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-input" rows="4">', (opt_data.field.value) ? soy.$$escapeHtml(opt_data.field.value) : '', '</textarea>');
   jive.fbldr.soy.error(opt_data, output);
@@ -227,12 +253,12 @@ jive.fbldr.soy.userlink = function(opt_data, opt_sb) {
 
 jive.fbldr.soy.userpicker = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
-  output.append('<div class="fbldr-field">');
+  output.append('<div class="fbldr-field ', (opt_data.labelPosition == 'top') ? 'fbldr-field-top' : '', '">');
   jive.fbldr.soy.label(opt_data, output);
   output.append('<a href="#" id="fbldr-link-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-userpicker-link fbldr-input">select users</a>');
   jive.fbldr.soy.error(opt_data, output);
   jive.fbldr.soy.title(opt_data, output);
-  output.append('<ul id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-userpicker-list"></ul></div>');
+  output.append('<ul id="fbldr-field-', soy.$$escapeHtml(opt_data.field.id), '" class="fbldr-userpicker-list ', (opt_data.labelPosition == 'top') ? 'fbldr-userpicker-list-top' : '', '"></ul></div>');
   return opt_sb ? '' : output.toString();
 };
 
@@ -240,11 +266,11 @@ jive.fbldr.soy.userpicker = function(opt_data, opt_sb) {
 jive.fbldr.soy.validationErrors = function(opt_data, opt_sb) {
   var output = opt_sb || new soy.StringBuilder();
   output.append('<div class="fbldr-valid-errors">');
-  var errorList292 = opt_data.errors;
-  var errorListLen292 = errorList292.length;
-  for (var errorIndex292 = 0; errorIndex292 < errorListLen292; errorIndex292++) {
-    var errorData292 = errorList292[errorIndex292];
-    output.append('<div class="fbldr-valid-error"><span class="jive-icon-sml jive-icon-redalert fbldr-error"></span>&nbsp;<span class="fbldr-valid-error-text">', soy.$$escapeHtml(errorData292), '</span></div>');
+  var errorList425 = opt_data.errors;
+  var errorListLen425 = errorList425.length;
+  for (var errorIndex425 = 0; errorIndex425 < errorListLen425; errorIndex425++) {
+    var errorData425 = errorList425[errorIndex425];
+    output.append('<div class="fbldr-valid-error"><span class="jive-icon-sml jive-icon-redalert fbldr-error"></span>&nbsp;<span class="fbldr-valid-error-text">', soy.$$escapeHtml(errorData425), '</span></div>');
   }
   output.append('</div>');
   return opt_sb ? '' : output.toString();

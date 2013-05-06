@@ -68,7 +68,14 @@
             </div>
             <div id="fbldr-create-source">
                 <h1>Form Source</h1>
-                <textarea id="fbldr-create-text" rows="35" cols="105" readonly="readonly"></textarea>
+                <textarea id="fbldr-create-text" rows="30" cols="105" readonly="readonly"></textarea>
+                <div id="fbldr-create-template" class="clearfix">
+                    <button type="button" id="fbldr-create-template-btn" disabled="true">Create Template</button>
+                    <div id="fbldr-create-template-status" class="fbldr-submit-error" style="display:none;">
+                        <span class="jive-icon jive-icon-med jive-icon-redalert"></span>
+                        <span class="fbldr-submit-text">Template Contains Errors</span>
+                    </div>
+                </div>
             </div>
             <div id="fbldr-content-preview">
                 <h1>Content Preview</h1>
@@ -76,6 +83,8 @@
                 <div id="fbldr-content-preview-head"></div>
                 <div class="fbldr-divider">&nbsp;</div>
                 <div id="fbldr-content-preview-container"></div>
+                <div class="fbldr-divider">&nbsp;</div>
+                <div id="fbldr-content-preview-tags"></div>
             </div>
         </div>
         <div id="fbldr-create-controls">
@@ -90,8 +99,7 @@
             <div id="fbldr-create-fields">
                 <h1>Form Fields</h1>
                 <form id="fbldr-field-form"></form>
-                <ul id="fbldr-fields">
-                </ul>
+                <div id="fbldr-fields"></div>
             </div>
         </div>
     </div>

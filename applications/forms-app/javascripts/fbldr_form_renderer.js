@@ -61,7 +61,7 @@ jive.fbldr.FormRenderer = function(options) {
             .append(jive.fbldr.soy.form({ id: formId }));
 
         for (var i = 0; i < template.fields.length; i++) {
-            renderField(template.fields[i]);
+            renderField(template.fields[i], template);
         }
         
         $j(form)
@@ -80,7 +80,10 @@ jive.fbldr.FormRenderer = function(options) {
        var contentType = template.content.type;
        var label = "Submit Form";
 
-       if (jive.fbldr.isEmbedded()) {
+       if (options.preview) {
+    	   label = "Preview Content";
+       }
+       else if (jive.fbldr.isEmbedded()) {
            label = "Insert Form Content"; 
        }
        else if (contentType == "doc" || contentType == "document") {
@@ -88,6 +91,9 @@ jive.fbldr.FormRenderer = function(options) {
        }
        else if (contentType == "discussion" || contentType == "thread") {
            label = "Post Discussion";
+       }
+       else if (contentType == "message") {
+    	   label = "Send Message";
        }
        else if (contentType == "question") {
            label = "Post Question";
@@ -126,7 +132,7 @@ jive.fbldr.FormRenderer = function(options) {
             }
             else {
                 renderStatus('error');
-            }
+            }            
         });
     };
     
@@ -138,41 +144,53 @@ jive.fbldr.FormRenderer = function(options) {
             renderStatus('failure');
         }
         else {
-            var msg = 'Succesfully created ' + response.content.contentType + ': ' + response.content.subject;
+            // var msg = 'Succesfully created ' + response.content.contentType + ': ' + response.content.subject;
             // jive.fbldr.successMessage(msg);
             // console.log(msg);            
             renderStatus('success', response.content);
         }
     };
     
-    var renderField = function(field) {
+    var renderField = function(field, template) {
+    	var data = {
+    		field: field,
+    		labelPosition: template.labelPosition
+    	};
+    	
         if (field.type == "boolean") {
-            $j(form).append(jive.fbldr.soy.checkbox({ field: field }));
+            $j(form).append(jive.fbldr.soy.checkbox(data));
         }
         else if (field.type == "date") {
-            $j(form).append(jive.fbldr.soy.text({ field: field }));
+            $j(form).append(jive.fbldr.soy.text(data));
             $j("#fbldr-field-" + field.id).datepicker({
                 showOn: "both",
                 buttonImage: $j("#fbldr-cal-icon").attr("src"),
-                buttonImageOnly: true
+                buttonImageOnly: true,
+                dateFormat: template.dateFormat
             });
         }
+        else if (field.type == "link") {
+            $j(form).append(jive.fbldr.soy.link(data));
+        }
+        else if (field.type == "multi-select") {
+            $j(form).append(jive.fbldr.soy.select(data));
+        }
         else if (field.type == "select" || field.type == "userselect") {
-            $j(form).append(jive.fbldr.soy.select({ field: field }));
+            $j(form).append(jive.fbldr.soy.select(data));
             $j("#fbldr-field-" + field.id).toggleClass("fbldr-none", !$j("#fbldr-field-" + field.id).val()).change(function() {
                 $j(this).toggleClass('fbldr-none', !$j(this).val());
             });
         }
-        else if (field.type == "text") {
-            $j(form).append(jive.fbldr.soy.text({ field: field }));
+        else if (field.type == "tags" || field.type == "text") {
+            $j(form).append(jive.fbldr.soy.text(data));
         }
-        else if (field.type == "textarea") {
-            $j(form).append(jive.fbldr.soy.textarea({ field: field }));
+        else if (field.type == "textarea" || field.type == "list") {
+            $j(form).append(jive.fbldr.soy.textarea(data));
         }
         else if (field.type == "userpicker") {
-            var options = { field: field, multiple: true };
-            $j(form).append(jive.fbldr.soy.userpicker(options));
-            var userpicker = new jive.fbldr.UserPicker(options);
+        	data.multiple = true;
+            $j(form).append(jive.fbldr.soy.userpicker(data));
+            var userpicker = new jive.fbldr.UserPicker(data);
         }
         else {
             console.log("Unhandled field type: " + field.type + " (" + field.id + ")");
@@ -199,7 +217,7 @@ jive.fbldr.FormRenderer = function(options) {
         else if (status == 'success') {
             statusOptions.iconCss = 'jive-icon-check';
             
-            var text = (options.preview) ? 'Form preview success.' : 'New content created.';
+            var text = (options.preview) ? 'Preview success.' : 'Content created.';
             
             if (content) {
                 statusOptions.statusHtml = jive.fbldr.soy.submitSuccess({ content: content, text: text });

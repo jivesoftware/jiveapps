@@ -92,10 +92,11 @@
  * Create checkbox input
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .checkbox}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
         <input type="checkbox" id="fbldr-field-{$field.id}" class="fbldr-checkbox" {if $field.value}checked="checked"{/if} {if $field.name}name="{$field.name}"{/if} />
     </div>
@@ -167,10 +168,62 @@
  * Create field label
  *
  * @param field
+ * @param labelPosition
+ * @param? appendToLabel
  *
  */
 {template .label}
-    <label class="fbldr-label">{$field.label}</label><span class="fbldr-glyph fbldr-reqd">{if $field.required}*{else}&nbsp;{/if}</span>
+    {if $labelPosition == 'top'}
+        <div class="fbldr-label-top"><span>{$field.label}{if $appendToLabel} {$appendToLabel}{/if}</span><span class="fbldr-glyph-top fbldr-reqd">{if $field.required}*{else}&nbsp;{/if}</span></div>
+    {else}
+        <label class="fbldr-label">{$field.label}{if $appendToLabel} {$appendToLabel}{/if}</label><span class="fbldr-glyph fbldr-reqd">{if $field.required}*{else}&nbsp;{/if}</span>
+    {/if}    
+{/template}
+
+
+/**
+ * Create link input
+ *
+ * @param field
+ * @param labelPosition
+ *
+ */
+{template .link}
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">        
+        {call .label data="all"}
+            {param appendToLabel}{if $labelPosition == 'top'}Label / URL{else}Label{/if}{/param}
+        {/call}
+        <input type="text" id="fbldr-field-{$field.id}-text" class="fbldr-input"
+            value="{if $field.value}{$field.value}{/if}" {if $field.name}name="{$field.name}-text"{/if} />
+        {call .error data="all" /}
+        {call .title data="all" /}
+    </div>
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
+        {if not ($labelPosition == 'top')}
+        <label class="fbldr-label">{$field.label} URL</label><span class="fbldr-glyph fbldr-reqd">&nbsp;</span>
+        {/if}
+        <input type="text" id="fbldr-field-{$field.id}" class="fbldr-input"
+            value="" {if $field.name}name="{$field.name}"{/if} />        
+    </div>
+{/template}
+
+
+/**
+ * Create list output
+ *
+ * @param items
+ * @param ordered
+ * @param unstyled
+ *
+ */
+{template .list}
+    {if $ordered}<ol{else}<ul{/if}
+    {if $unstyled} style="list-style:none;"{/if}
+    >
+    {foreach $item in $items}
+        <li>{$item|noAutoescape}</li>
+    {/foreach}
+    {if $ordered}</ol>{else}</ul>{/if}
 {/template}
 
 
@@ -191,10 +244,13 @@
  *
  * @param values
  * @param? value
+ * @param multiple
  *
  */
 {template .options}
+    {if not $multiple}
     <option value="" class="fbldr-none">Select an option...</option>
+    {/if}
     {foreach $option in $values}
         <option class="fbldr-opt {if $option.cssClass}{$option.cssClass}{/if}" value="{$option.value}" {if $option.value == $value} selected="selected"{/if}>{$option.label}</option>
     {/foreach}
@@ -222,10 +278,11 @@
  * Create radio input
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .radio}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
         {call .radioOptions data="all" /}
         {call .error data="all" /}
@@ -255,15 +312,18 @@
  * Create select input
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .select}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
-        <select id="fbldr-field-{$field.id}" class="fbldr-input" {if $field.name}name="{$field.name}"{/if}>
+        <select id="fbldr-field-{$field.id}" class="fbldr-input" {if $field.name}name="{$field.name}"{/if}
+          {if $field.type == 'multi-select'}multiple="multiple"{/if} >
             {call .options}
                 {param values: $field.values /}
                 {param value: $field.value /}
+                {param multiple: $field.type == 'multi-select' /}
             {/call}
         </select>
         {call .error data="all" /}
@@ -344,10 +404,11 @@
  * Create text input
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .text}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
         <input type="text" id="fbldr-field-{$field.id}" class="fbldr-input"
             value="{if $field.value}{$field.value}{/if}" {if $field.name}name="{$field.name}"{/if} />
@@ -361,10 +422,11 @@
  * Create textarea input
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .textarea}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
         <textarea id="fbldr-field-{$field.id}" class="fbldr-input" rows="4">{if $field.value}{$field.value}{/if}</textarea>
         {call .error data="all" /}
@@ -400,15 +462,16 @@
  * Create user picker
  *
  * @param field
+ * @param labelPosition
  *
  */
 {template .userpicker}
-    <div class="fbldr-field">
+    <div class="fbldr-field {if $labelPosition == 'top'}fbldr-field-top{/if}">
         {call .label data="all" /}
         <a href="#" id="fbldr-link-{$field.id}" class="fbldr-userpicker-link fbldr-input">select users</a>
         {call .error data="all" /}
         {call .title data="all" /}
-        <ul id="fbldr-field-{$field.id}" class="fbldr-userpicker-list"></ul>
+        <ul id="fbldr-field-{$field.id}" class="fbldr-userpicker-list {if $labelPosition == 'top'}fbldr-userpicker-list-top{/if}"></ul>
     </div>
 {/template}
 

@@ -21,19 +21,32 @@ jive.fbldr.ContentCreator = function(template, form) {
     var prefs = new gadgets.Prefs();
     
     var create = function(callback) {
+    	var type = template.content.type;
         var title = parse(template.content.title);
         var body = parse(template.content.body);
         
         if (jive.fbldr.isEmbedded()) {
             osapi.jive.core.container.editor().insert(body);
         }
+        else if (type == 'message') {
+        	getUsers(function(users) {
+        		if (users.error) {
+        		    callback({ error: users.error });
+        		}
+        		else {
+        			createMessage(users, { title: title, body: body }, callback);
+        		}
+        	});
+        }
         else {
+            var tags = getFormTags();
+            
         	getContainer(function(container) {
         		if (container.error) {
         		    callback({ error: container.error });
         		}
         		else {
-        			createContent(container, { title: title, body: body }, callback);
+        			createContent(container, { title: title, body: body, tags: tags }, callback);
         		}
         	});
         }
@@ -42,10 +55,12 @@ jive.fbldr.ContentCreator = function(template, form) {
     var preview = function() {
         var title = parse(template.content.title);
         var body = parse(template.content.body);
+        var tags = getFormTags();
         
         return {
             title: title,
-            body: body
+            body: body,
+            tags: tags
         }
     };
     
@@ -53,9 +68,27 @@ jive.fbldr.ContentCreator = function(template, form) {
         var replaced = text;
         for (var i = 0; i < template.fields.length; i++) {
             var field = template.fields[i];
+            
+            if (field.type == 'tags') {
+                continue;
+            }
+            
             var value = getFieldValue(field);
+            
+            var elseRegex = new RegExp("\\{if \\$" + field.id + "\\}([\\\s\\\S]*?)\\{else\\}([\\\s\\\S]*?)\\{\\/if\\}", "g");
+            var ifRegex   = new RegExp("\\{if \\$" + field.id + "\\}([\\\s\\\S]*?)\\{\\/if\\}", "g");
             var valueRegex = new RegExp("\\{\\$" + field.id + "\\}", "g");
             var labelRegex = new RegExp("\\{\\$" + field.id + "\\.label\\}", "g");
+            
+            if (!value) {
+                replaced = replaced.replace(elseRegex, "$2");
+                replaced = replaced.replace(ifRegex, "");
+            }
+            else {
+                replaced = replaced.replace(elseRegex, "$1");
+                replaced = replaced.replace(ifRegex, "$1");
+            }
+            
             replaced = replaced.replace(valueRegex, value);
             replaced = replaced.replace(labelRegex, field.label);
         }
@@ -65,7 +98,16 @@ jive.fbldr.ContentCreator = function(template, form) {
     var getFieldValue = function(field) {
         var value;
         
-        if (field.type == "userpicker") {
+        if (field.type == "link") {
+            value = getLinkValue(field);
+        }        
+        else if (field.type == "list") {
+            value = getListValues(field);
+        }
+        else if (field.type == "multi-select") {
+            value = getMultiSelectValues(field);
+        }
+        else if (field.type == "userpicker") {
             value = getUserPickerValues(field);
         }
         else if (field.type == "userselect") {
@@ -76,7 +118,69 @@ jive.fbldr.ContentCreator = function(template, form) {
         }
         
         return value;
+    };
+    
+    var convertItemsToList = function(field, items) {
+        var style = field.listStyle;
+        
+        if (!items) {
+            return '';
+        }
+        else if (style == 'comma') {
+            return items.join(', ');
+        }
+        else {
+            return jive.fbldr.soy.list({
+               items: items,
+               ordered: (style == 'ordered'),
+               unstyled: (style == 'none')
+            });
+        }
     }
+
+    var getLinkValue = function(field) {
+        var href = getSafeValue(field) || '';
+        var label = getSafeValue({ id: field.id + '-text' }) || '';
+        
+        if (href.length > 0 && label.length <= 0) {
+            return '<a href="' + href + '">' + href + '</a>';
+        }
+        else if (href.length <= 0 && label.length > 0) {
+            return label;
+        }
+        else if (href.length > 0 && label.length > 0) {
+            return '<a href="' + href + '">' + label + '</a>';
+        }
+        else {
+            return '';
+        }
+    };
+    
+    var getListValues = function(field) {
+        var items = splitValues(field);
+        return convertItemsToList(field, items);
+    };
+    
+    var splitValues = function(field, separator) {
+        if (!separator) {
+            separator = ',';
+        }
+        
+        var items = new Array();
+        var values = getSafeValue(field, true).split(separator);
+        for (var i = 0; i < values.length; i++) {
+            var value = $j.trim(values[i]);
+            if (value) {
+                items.push(value);
+            }
+        }
+        return items;
+    };
+
+    var getMultiSelectValues = function(field) {
+        var items = $j(form).find("#fbldr-field-" + field.id).val();
+        return convertItemsToList(field, items);
+    };
     
     var getUserPickerValues = function(field) {
         var userLinks = new Array();
@@ -86,7 +190,7 @@ jive.fbldr.ContentCreator = function(template, form) {
             var name = $j(users[i]).attr('username');
             userLinks.push(jive.fbldr.soy.userlink({ userId: id, name: name }));
         }
-        return userLinks.join(', ');
+        return convertItemsToList(field, userLinks);
     };
 
     var getUserSelectValues = function(field) {
@@ -97,27 +201,84 @@ jive.fbldr.ContentCreator = function(template, form) {
             var id = $j.trim(userIds[i]);
             userLinks.push(jive.fbldr.soy.userlink({ userId: id, name: '' }));
         }
-        return userLinks.join(', ');
-    };
-
-    
-    var getSafeValue = function(field) {
-    	return sanitizeValue($j(form).find("#fbldr-field-" + field.id));
+        return convertItemsToList(field, userLinks);
     };
     
-    var sanitizeValue = function(element) {
+    var getSafeValue = function(field, clearNewlines) {
+    	return sanitizeValue($j(form).find("#fbldr-field-" + field.id), clearNewlines);
+    };
+    
+    var sanitizeValue = function(element, clearNewlines) {
+        if (clearNewlines == null) {
+            clearNewlines = false;
+        }
+        
         var value = $j(element).val();
         value = $j.trim(value);
         value = $j('<div/>').text(value).html(); // escapes html tags, etc.
-        value = value.replace(/\n/g, '<br/>'); // replace newlines with html breaks
+        value = value.replace(/\n/g, clearNewlines ? '' : '<br/>');
         return value;    	
-    }
+    };
     
+    var getFormTags = function() {
+        // Get the tags included with the template
+        var tags = template.content.tags || [];
+        
+        // Get any user-entered tags
+        for (var i = 0; i < template.fields.length; i++) {
+            var field = template.fields[i];
+            
+            if (field.type == 'tags') {
+                var items = splitValues(field, /[\s,]+/);
+                if (items && items.length > 0) {
+                    tags = tags.concat(items);
+                }
+            }
+        }
+        
+        return tags;
+    };
+    
+    var createMessage = function(users, content, callback) {
+    	if (jive.fbldr.isDebug()) {
+    		console.log("Create message for users: ", users);
+    		console.log("Content title: ", content.title);
+    		console.log("Content body: ", content.body);
+    	}
+
+    	var data = {
+    	    html: '<p>' + content.title + '</p><p>' + content.body + '</p>',
+    	    participant: []
+    	};
+    	
+    	var baseUrl = getBaseUrl();
+
+    	for (var i = 0; i < users.length; i++) {
+    		var user = users[i];
+    		data.participant.push(baseUrl + '/api/core/v2/users/' + user.id);
+    	}
+
+    	osapi.jive.core.directmessages.create(data).execute(function(response) {
+            if (response.error) {
+                callback({ error: response.error.message });
+            }
+            else {
+                var message = response.data;
+                message.contentType = "message";
+                message.href = "/inbox/dm/" + response.data.id;
+                message.subject = content.title;
+
+                doActions(message, callback);
+            }
+    	});
+    };    
+
     var createContent = function(container, content, callback) {
     	if (jive.fbldr.isDebug()) {
     		console.log("Create content in container: ", container);
     		console.log("Content title: ", content.title);
     		console.log("Content body: ", content.body);
+    		console.log("Content tags: ", content.tags);
     	}
     	
         var containerType = container.containerType;
@@ -137,6 +298,13 @@ jive.fbldr.ContentCreator = function(template, form) {
             var error = "Unable to create content of unknown type: " + contentType;
             callback({ error: error });
             return;
+        }
+        
+        if (content.tags && content.tags.length > 0 && jive.fbldr.isVer3()) {
+            var origCallback = callback;
+            callback = function(response) {
+                jive.fbldr.updateTags(response, contentType, content.tags, origCallback);
+            };
         }
         
         if (containerType == "group") {
@@ -234,6 +402,10 @@ jive.fbldr.ContentCreator = function(template, form) {
     };
     
     var addAttachments = function(template, content, callback) {
+        if (!content.attachments) {
+            content.attachments = [];
+        }
+        
     	var dirty = false;
     	
         $j('#fbldr-dialog').html(jive.fbldr.soy.attachments({
@@ -260,38 +432,92 @@ jive.fbldr.ContentCreator = function(template, form) {
         }); 
     	
         $j('#fbldr-attach-file').click(function() {
+            $j("#fbldr-attach-file").attr("disabled", "disabled");
+            $j("#fbldr-attach-link").attr("disabled", "disabled");
+            
         	content.requestAttachmentUpload(function(attachment) {
-            	if (!attachment || !attachment.id || !attachment.name || !attachment.contentType) {
-            		console.log("Unable to add valid attachment:", attachment);
-            		return;
-            	}
-
-            	console.log("Added attachment:", attachment);	
-
-                if (!content.attachments) {
-                	content.attachments = [];
-                }
-                content.attachments.push(attachment);
-                
-                var linkField = $j("#fbldr-attach-link");
-                var linkTo = sanitizeValue(linkField);
-                if (linkTo) {
-                	var parsedText = parseAttachment(linkTo, content, attachment);
-                	content.content.text = parsedText;
-                	$j('#fbldr-attach-link').find('option[value="' + linkTo + '"]').remove();
-                }
-                $j(linkField).val("");
-                $j('#fbldr-attach-files').append(jive.fbldr.soy.attachFile({
-                	attachment: attachment,
-                	linkTo: linkTo
-                }));
-                
-                dirty = true;
+        	    if (attachment && attachment.id) {
+        	        handleAttachmentUpload(attachment);
+        	    }
+        	    else {
+        	        content.get().execute(function(response) {
+                        try {
+            	            if (response.error) {
+            	                handleAttachmentUpload();
+            	            }
+            	            else {
+            	                handleAttachmentUpload(getNewAttachment(content, response.data));
+            	            }
+                        }
+                        catch (e) {
+                            console.log('Error adding attachment', e);
+                        }
+        	        });
+        	    }
             }, {
                 dialogTitle: "Form Attachment",
                 instructionMsg: "Select a file to attach to the content being created by the form."
             });
-        });        
+        });
+        
+        var handleAttachmentUpload = function(attachment) {
+            if (!attachment) {
+                $j("#fbldr-attach-file").removeAttr("disabled");
+                $j("#fbldr-attach-link").removeAttr("disabled");
+                return;
+            }
+
+            console.log("Added attachment:", attachment);   
+            content.attachments.push(attachment);
+            
+            var linkField = $j("#fbldr-attach-link");
+            var linkTo = sanitizeValue(linkField);
+            if (linkTo) {
+                var parsedText = parseAttachment(linkTo, content, attachment);
+                content.content.text = parsedText;
+                $j('#fbldr-attach-link').find('option[value="' + linkTo + '"]').remove();
+            }
+            $j(linkField).val("");
+            $j('#fbldr-attach-files').append(jive.fbldr.soy.attachFile({
+                attachment: attachment,
+                linkTo: linkTo
+            }));
+            
+            $j("#fbldr-attach-file").removeAttr("disabled");
+            $j("#fbldr-attach-link").removeAttr("disabled");
+            
+            dirty = true;
+        };
+        
+        var getNewAttachment = function(oldContent, newContent) {
+            if (!newContent || !newContent.attachments) {
+                return null;
+            }
+            
+            var oldAttaches = oldContent.attachments || [];
+            var newAttaches = newContent.attachments || [];
+            
+            for (var i = 0; i < newAttaches.length; i++) {
+                if (!containsAttach(oldAttaches, newAttaches[i])) {
+                    return newAttaches[i];
+                }
+            }
+            
+            return null;
+        };
+        
+        var containsAttach = function(oldAttaches, newAttach) {
+            var contains = false;
+            
+            for (var i = 0; i < oldAttaches.length; i++) {
+                if (newAttach.id == oldAttaches[i].id) {
+                    contains = true;
+                    break;
+                }
+            }
+            
+            return contains;
+        };
     };
     
     var getHtmlVariables = function(text) {
@@ -399,7 +625,7 @@ jive.fbldr.ContentCreator = function(template, form) {
                 contentType: contentType
             });
     	}
-    }
+    };
     
     var isValidContainer = function(container) {
     	if (!container) {
@@ -416,7 +642,62 @@ jive.fbldr.ContentCreator = function(template, form) {
             return false;
         }
         return true;
-    }
+    };
+    
+    var getUsers = function(callback) {
+    	var user = {
+    		id: parseInt($j.getViewParam('userId'))
+    	};
+    	
+    	if (isValidUser(user)) {
+    		console.log("Got user from URL: ",  user);    		
+    		callback([ user ]);
+    	}
+    	else {
+            osapi.jive.core.users.requestPicker({
+                multiple : true,
+                success : function(response) {
+    			    if (!response.data) {
+    			    	callback({ error: "Invalid user selected." });
+    			    	return;
+    			    }
+            	
+                    var users;
+                    if ($j.isArray(response.data)) {
+                        users = response.data;
+                    } else {
+                        users = new Array();
+                        users.push(response.data);
+                    }
+                    
+                    console.log('Got users from chooser: ', users);
+                    
+                    if (users.length > 0) {
+                        callback(users);
+                    }
+                    else {
+                    	callback({ error: 'No users selected.' });
+                    }
+                },
+                error : function(error) {
+                	callback({ error: response.message });
+                }
+            });
+    	}
+    };
+
+    var isValidUser = function(user) {
+    	if (!user) {
+    		return false;
+    	}
+    	
+    	var userId = user.id;
+    	
+        if (isNaN(userId) || userId <= 0) {
+            return false;
+        }
+        return true;
+    };
             
     return {
         create: create,

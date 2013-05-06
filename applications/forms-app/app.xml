@@ -28,12 +28,13 @@
                author_email="robert.fernandes@jivesoftware.com">
 
     <!-- Commonly used features -->
-    <Require feature="dynamic-height" />
-    <Require feature="jive-core-v2" />
-    <Require feature="osapi"/>
-    <Require feature="settitle"/>
-    <Require feature="tabs"/>
-    <Require feature="views" />
+    <Require  feature="dynamic-height" />
+    <Require  feature="jive-core-v2" />
+    <Optional feature="jive-core-v3" />
+    <Require  feature="osapi"/>
+    <Require  feature="settitle"/>
+    <Require  feature="tabs"/>
+    <Require  feature="views" />
     <Optional feature="embedded-experiences" />
     <Optional feature="actions">
         <Param name="action-contributions">
@@ -70,7 +71,7 @@
   <!-- Tag/Search Prefs -->
   <UserPref name="fbldr_tags" display_name="Template Doc Tags (comma-delimited list):" datatype="string" default_value="fbldr_templates,fbldr_template" required="true" />
   <UserPref name="fbldr_docs" display_name="Template Doc IDs (comma-delimited list):" datatype="string" default_value="" required="false" />
-  
+    
   <!-- Template Prefs -->
   <UserPref name="fbldr_category" display_name="Default Category:" datatype="string" />
   <UserPref name="fbldr_template" display_name="Default Template:" datatype="string" />

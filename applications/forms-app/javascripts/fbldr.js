@@ -39,6 +39,15 @@ jive.fbldr.isEmbedded = function() {
     return ($j("body#fbldr-body-embed").length > 0);
 }
 
+jive.fbldr.isVer3 = function() {
+    if (gadgets && gadgets.util) {
+        return gadgets.util.hasFeature("jive-core-v3");
+    }
+    else {
+        return false;
+    }
+}
+
 jive.fbldr.errorMessage = function(msg) {
     var $p = $j('<p/>').html(msg);
     $j('<div title="Error"/>').append($p).dialog({modal: true}); 
@@ -47,6 +56,35 @@ jive.fbldr.errorMessage = function(msg) {
 jive.fbldr.successMessage = function(msg) {
     var $p = $j('<p/>').html(msg);
     $j('<div title="Success"/>').append($p).dialog({modal: true}); 
+};
+
+jive.fbldr.updateTags = function(postResponse, contentType, tags, callback) {
+    if (!jive.fbldr.isVer3() || postResponse.error) {
+        callback(postResponse);
+        return;
+    }
+    
+    var descriptor = (contentType == "document" ? "102" : "1")
+        + "," + postResponse.content.id;
+
+    osapi.jive.corev3.contents.get({ entityDescriptor: descriptor }).execute(function(response) {
+        if (response.error) {
+            callback(postResponse);
+            return;
+        }
+        
+        var content = response.list[0];
+        content.tags = tags;
+        
+        // console.log("Updating tags on content", tags, content);
+        
+        content.update().execute(function(response) {
+            if (response.error) {
+                console.log("Error updating tags on content", postResponse, response);
+            }
+            callback(postResponse);
+        });
+    });
 };
 
 (function ($) {

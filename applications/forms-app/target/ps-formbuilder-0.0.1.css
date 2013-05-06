@@ -103,15 +103,14 @@ div.fbldr-create-field span.fbldr-create-field-label {
 }
 
 #fbldr-fields {
-    list-style: none;
     margin: 20px 0;
 }
 
-#fbldr-fields li:first-child a.fbldr-field-up {
+#fbldr-fields div:first-child a.fbldr-field-up {
     display: none;
 }
 
-#fbldr-fields li:last-child a.fbldr-field-down {
+#fbldr-fields div:last-child a.fbldr-field-down {
     display: none;
 }
 
@@ -120,7 +119,7 @@ div.fbldr-create-field span.fbldr-create-field-label {
     margin: 10px 15px 0 15px; 
 }
 
-#fbldr-content-preview-container {
+#fbldr-content-preview-container, #fbldr-content-preview-tags {
     margin: 10px 15px;
 }
 /*
@@ -333,6 +332,18 @@ body.fbldr-body {
     margin: 5px;
 }
 
+.fbldr-field-top {
+    margin-left: 10px;
+}
+
+.fbldr-field-top .fbldr-label-top {
+    margin-left: 20px;
+}
+
+.fbldr-field-top .fbldr-input {
+    margin-left: 60px;
+}
+
 ul.fbldr-field-list {
     float: left;
     list-style: none;
@@ -347,6 +358,7 @@ ul.fbldr-field-list {
 
 select.fbldr-input {
     padding: 3px 0;
+    max-width: 245px;
     min-width: 245px;
 }
 
@@ -355,6 +367,10 @@ select.fbldr-input {
     padding-top: 2px;
     text-align: right;
     width: 140px;
+}
+
+.fbldr-label-top {
+    margin: 15px 0 10px 0;
 }
 
 .fbldr-checkbox {
@@ -380,10 +396,17 @@ select.fbldr-input {
 
 .fbldr-glyph {
     float: left;
+    top: 3px;
+}
+
+.fbdlr-glpyh-top {
+    top: 1px;
+}
+
+.fbldr-glyph, .fbldr-glyph-top {
     margin: 0 3px;
     position: relative;
     text-align: center;
-    top: 3px;
     width: 6px;
 }
 
@@ -430,12 +453,14 @@ select.fbldr-input {
     padding: 0 10px 10px 20px;
 }
 
-#fbldr-submit-btn {
+#fbldr-submit-btn,
+#fbldr-create-template-btn {
     float: left;
     margin-right: 10px;
 }
 
-#fbldr-submit-status {
+#fbldr-submit-status,
+#fbldr-create-template-status {
     border: 1px solid #A6A6A6;
     border-radius: 4px;
     -moz-border-radius: 4px;
@@ -449,12 +474,15 @@ select.fbldr-input {
 }
 
 #fbldr-submit-status.fbldr-submit-error,
-#fbldr-submit-status.fbldr-submit-error span {
+#fbldr-submit-status.fbldr-submit-error span,
+#fbldr-create-template-status.fbldr-submit-error,
+#fbldr-create-template-status.fbldr-submit-error span {
     border-color: #C00000;
     color: #C00000;
 }
 
-#fbldr-submit-status span.fbldr-submit-text {
+#fbldr-submit-status span.fbldr-submit-text,
+#fbldr-create-template-status span.fbldr-submit-text {
     position: relative;
     top: -3px;
 }
@@ -472,6 +500,13 @@ a.fbldr-userpicker-link {
 
 ul.fbldr-userpicker-list {
     margin: 0 100px 0 155px;
+}
+
+ul.fbldr-userpicker-list.fbldr-userpicker-list-top {
+    margin-left: 20px;
+}
+
+ul.fbldr-userpicker-list, ul.fbldr-userpicker-list-top {
     list-style: none;
 }
 
@@ -2350,7 +2385,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-datepicker-multi-4 .ui-datepicker-group { width:25%; }
 .ui-datepicker-multi .ui-datepicker-group-last .ui-datepicker-header { border-left-width:0; }
 .ui-datepicker-multi .ui-datepicker-group-middle .ui-datepicker-header { border-left-width:0; }
-.ui-datepicker-multi .ui-datepicker-buttonpane { clear:left; }Œ
+.ui-datepicker-multi .ui-datepicker-buttonpane { clear:left; }ï¿½
 .ui-datepicker-row-break { clear:both; width:100%; font-size:0em; }
 
 /* RTL support */

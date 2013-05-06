@@ -103,15 +103,14 @@ div.fbldr-create-field span.fbldr-create-field-label {
 }
 
 #fbldr-fields {
-    list-style: none;
     margin: 20px 0;
 }
 
-#fbldr-fields li:first-child a.fbldr-field-up {
+#fbldr-fields div:first-child a.fbldr-field-up {
     display: none;
 }
 
-#fbldr-fields li:last-child a.fbldr-field-down {
+#fbldr-fields div:last-child a.fbldr-field-down {
     display: none;
 }
 
@@ -120,6 +119,6 @@ div.fbldr-create-field span.fbldr-create-field-label {
     margin: 10px 15px 0 15px; 
 }
 
-#fbldr-content-preview-container {
+#fbldr-content-preview-container, #fbldr-content-preview-tags {
     margin: 10px 15px;
 }

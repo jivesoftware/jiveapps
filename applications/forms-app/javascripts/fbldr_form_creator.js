@@ -57,39 +57,51 @@ jive.fbldr.FormCreator = function(options) {
                     }
                 }
 
-                value = values;
+                if (values.length > 0) {
+                    value = values;
+                }
             }
             
             // Do not assign an empty array if nothing was specified
-        	if (!value || value.length == 0) {
-        		return;
+        	if (value != null) {
+        		field[name] = value;
         	}   
-
-            field[name] = value;
         });
         
-        var fieldError = false;
+        if (!field.id || !field.label) {
+            $j('#fbldr-create-error-box').find('span.message').html("Error: field ID and label are required.");
+            $j('#fbldr-create-error-box').show();
+            return false;
+        }
+        
+        var hasDuplicate = false;
         
         $j('#fbldr-fields input[type="hidden"]').each(function() {
-            var value = $j(this).val();
+            var value = unescape($j(this).val());
             var otherField = JSON.parse(value);
             if (field.id == otherField.id) {
                 $j('#fbldr-create-error-box').find('span.message').html("Error: '" + field.id + "' is aleady defined.");
                 $j('#fbldr-create-error-box').show();
-                fieldError = true;
+                hasDuplicate = true;
             }
         });
         
-        if (fieldError) {
+        if (hasDuplicate) {
             return false;
         }
         
         $j('#fbldr-fields').append(jive.fbldr.create.soy.field({
             field: field,
-            json: JSON.stringify(field)
+            json: escape(JSON.stringify(field))
         }));
         
-        $j('#jive-create-error-box').hide();
+        $j('#fbldr-field-fbldr-field-listStyle').attr('disabled', 'disabled');
+        $j('#fbldr-field-fbldr-field-listStyle').closest('div.fbldr-field').hide();
+        
+        $j('#fbldr-field-fbldr-field-values').attr('disabled', 'disabled');
+        $j('#fbldr-field-fbldr-field-values').closest('div.fbldr-field').hide();
+        
+        $j('#fbldr-create-error-box').hide();
         $j('#fbldr-field-form').get(0).reset();
         
         return true;
@@ -109,11 +121,25 @@ jive.fbldr.FormCreator = function(options) {
                 field : { id: 'fbldr-form-desc', label: 'Description', name: 'desc', required: true, value: 'My Template Description',
             	    title: 'A more verbose description of the template, and its intended use / purpose.  This will display above the template form, once the template is selected in the app.' }
             }))
+            .append(jive.fbldr.soy.text({
+                field : { id: 'fbldr-form-date', label: 'Date Format', name: 'dateFormat', required: false, value: 'mm/dd/yy',
+                    title: 'Date format to use for any date fields contained within the form.' }
+            }))
+            .append(jive.fbldr.soy.select({
+                field : { id: 'fbldr-form-label-position', label: 'Label Position', name: 'labelPosition', required: true, value: 'left',
+            	    title: 'Position of field label, with respect to the input field, within the rendered form.',
+                    values : [ { value: 'left', label: 'Left' }, { value: 'top', label: 'Top' } ]
+                }
+            }))
             .append(jive.fbldr.soy.select({
                 field : { id: 'fbldr-form-type', label: 'Content Type', name: 'content.type', required: true, value: 'document',
             	    title: 'What type of content to create (Document, Discussion, etc.) when using the template to post from the home / canvas app view.',
-                    values : [ { value: 'document', label: 'Document' }, { value: 'discussion', label: 'Discussion' }, { value: 'question', label: 'Question' } ]
+                    values : [ { value: 'document', label: 'Document' }, { value: 'discussion', label: 'Discussion' }, { value: 'message', label: 'Private Message' }, { value: 'question', label: 'Question' } ]
                 }
+            }))
+            .append(jive.fbldr.soy.text({
+                field : { id: 'fbldr-form-tags', label: 'Content Tags', name: 'content.tags', required: false, value: '',
+                    title: 'Tags to automatically apply to any content created by the form.' }
             }))
             .append(jive.fbldr.soy.checkbox({
                 field : { id: 'fbldr-form-attach', label: 'Attachments', name: 'content.includeAttachment',
@@ -154,7 +180,18 @@ jive.fbldr.FormCreator = function(options) {
             	    title: 'The data / UI entry type of the field, Text Field, Date, etc.',
                     values : [ { value: 'text', label: 'Text Field'}, { value: 'textarea', label: 'Text Area' },
                                { value: 'boolean', label: 'Checkbox' }, { value: 'date', label: 'Date Field' },
-                               { value: 'select', label: 'Select Option' }, { value: 'userpicker', label: 'User Picker' } ]
+                               { value: 'link', label: 'Link / URL' }, { value: 'list', label: 'List of Values' },
+                               { value: 'multi-select', label: 'Select Multiple Options' }, { value: 'select', label: 'Select Single Option' },
+                               { value: 'tags', label: 'Tags for Content' }, { value: 'userpicker', label: 'User Picker' } ]
+                }
+            }))
+            .append(jive.fbldr.soy.select({
+                field : { id: 'fbldr-field-listStyle', label: 'List Style', name: 'listStyle', required: false, value: 'comma',
+                    title: 'For list and user fields, how to render the list of items.',
+                    values : [ { value: 'comma', label: 'Comma-Delimited List'},
+                               { value: 'none', label: 'No List Icon' },
+                               { value: 'ordered', label: 'Numbered List Icon' },
+                               { value: 'unordered', label: 'Bulleted List Icon' } ]
                 }
             }))
             .append(jive.fbldr.soy.text({
@@ -199,9 +236,43 @@ jive.fbldr.FormCreator = function(options) {
                 docId : "",
                 title : "",
                 body : "",
+                tags : [],
                 includeAttachment : false
             }
         };
+    };
+    
+    var createTemplate = function(container) {
+        if (!container) return;
+        
+        var isVer3 = jive.fbldr.isVer3();
+        
+        var title = "Forms Template: " + $j.trim($j('#fbldr-field-fbldr-form-name').val());
+        
+        var body = $j('<div />').html(jive.fbldr.create.soy.boilerplateHeader({ v3: isVer3 })).html() 
+                 + $j('#fbldr-create-text').val()
+                 + $j('<div />').html(jive.fbldr.create.soy.boilerplateFooter()).html();
+        
+        var data = { subject: title, html: body }
+        
+        container.documents.create(data).execute(function(response){
+            if (response.error) {
+            	console.log('Error creating template: ' + response.error.message);
+            	jive.fbldr.errorMessage(response.error.message);
+            }
+            else {
+                var location = "/docs/DOC-" + response.data.id;
+                var payload = { content: response.data, error: null };
+                
+                jive.fbldr.updateTags(payload, "document", [ "fbldr_template" ], function() {
+                    // console.log("Redirect to new template: " + location);
+                    setTimeout(function() {
+                        window.parent.location = location;
+                    }, 500);                    
+                });
+            }
+        });
+
     };
     
     var handleFormInputs = function() {
@@ -231,15 +302,15 @@ jive.fbldr.FormCreator = function(options) {
         });
         
         $j('#fbldr-fields').on('click', 'a.fbldr-field-del', function() {
-            $j(this).closest('li').remove();
+            $j(this).closest('div').remove();
             rebuildViews();
             return false;
         });
         
         $j('#fbldr-fields').on('click', 'a.fbldr-field-down', function() {
-            var listItem = $j(this).closest('li');
+            var listItem = $j(this).closest('div');
             var index = listItem.index();
-            var last = $j('#fbldr-fields').children('li').length - 1;
+            var last = $j('#fbldr-fields').children('div').length - 1;
             
             if (index != last) {
                 listItem.next().after(listItem);
@@ -250,7 +321,7 @@ jive.fbldr.FormCreator = function(options) {
         });
 
         $j('#fbldr-fields').on('click', 'a.fbldr-field-up', function() {
-            var listItem = $j(this).closest('li');
+            var listItem = $j(this).closest('div');
             var index = listItem.index();
             
             if (index != 0) {
@@ -259,6 +330,25 @@ jive.fbldr.FormCreator = function(options) {
             }
             
             return false;
+        });
+    };
+    
+    var handleSourceInputs = function() {
+        $j('#fbldr-create-template-btn').click(function() {
+    		osapi.jive.core.places.requestPicker({
+                success: function(response) {
+    			    if (!response.data) {
+    			    	return;
+    			    }
+    		
+    			    createTemplate(response.data);
+                },
+        	    error: function(response) {
+                	console.log('Error retrieving place: ' + response.message);
+                },
+                contentType: 'document'
+            });
+
         });
     };
     
@@ -279,8 +369,11 @@ jive.fbldr.FormCreator = function(options) {
             }
             
             var value = null;
-            
-            if ($j(this).attr('type') == 'checkbox') {
+
+            if ($j(this).attr('name') == 'content.tags') {
+                value = splitValues($j(this));
+            }
+            else if ($j(this).attr('type') == 'checkbox') {
                 value = $j(this).is(':checked');
             }
             else {
@@ -301,7 +394,7 @@ jive.fbldr.FormCreator = function(options) {
         });
         
         $j('#fbldr-fields input[type="hidden"]').each(function() {
-            var value = $j(this).val();
+            var value = unescape($j(this).val());
             var field = JSON.parse(value);
             template['fields'].push(field);
         });
@@ -309,10 +402,43 @@ jive.fbldr.FormCreator = function(options) {
         return template;
     };
     
+    var splitValues = function(element) {
+        var items = new Array();
+        
+        if (!element) {
+            return items;
+        }
+        
+        var value = $j(element).val();
+        
+        if (!value) {
+            return items;
+        }
+        
+        var values = value.split(/[\s,]+/);
+        for (var i = 0; i < values.length; i++) {
+            items.push($j.trim(values[i]));
+        }
+        
+        return items;
+    };
+    
     var rebuildPreview = function(data) {
         new jive.fbldr.TemplateValidator(data, function() {
             formRenderer.render(data);
+            rebuildCreate(data);            
         });
+    };
+    
+    var rebuildCreate = function(data) {
+    	if (data.errors) {
+        	$j('#fbldr-create-template-status').show();
+        	$j('#fbldr-create-template-btn').attr('disabled', 'disabled');
+        }
+        else {
+        	$j('#fbldr-create-template-status').hide();
+        	$j('#fbldr-create-template-btn').removeAttr('disabled');
+        }
     };
     
     var rebuildSource = function(data) {
@@ -325,6 +451,7 @@ jive.fbldr.FormCreator = function(options) {
     var renderContentPreview = function(content) {
         $j('#fbldr-content-preview-head').html('Title : ' + content.title);
         $j('#fbldr-content-preview-container').html(content.body);
+        $j('#fbldr-content-preview-tags').html('Tags (' + content.tags.length + ') : ' + content.tags.join(', '));
         
         $j('#fbldr-create-views').tabs( "option", "disabled", [] );
         $j('#fbldr-create-views').tabs( "option", "selected", 2 );
@@ -347,8 +474,12 @@ jive.fbldr.FormCreator = function(options) {
 
     var renderFieldValues = function() {
         var value = $j('#fbldr-field-form select[name="type"]').val();
-        var showValues = (value == 'select');
+        var showStyles = (value == 'list' || value == 'multi-select' || value == 'userpicker' || value == 'userselect');
+        var showValues = (value == 'multi-select' || value == 'select');
 
+        $j('#fbldr-field-fbldr-field-listStyle').attr('disabled', showStyles ? null : 'disabled');
+        $j('#fbldr-field-fbldr-field-listStyle').closest('div.fbldr-field').toggle(showStyles);
+        
         $j('#fbldr-field-fbldr-field-values').attr('disabled', showValues ? null : 'disabled');
         $j('#fbldr-field-fbldr-field-values').closest('div.fbldr-field').toggle(showValues);
     };
@@ -367,6 +498,7 @@ jive.fbldr.FormCreator = function(options) {
         
         handleFormInputs();
         handleFieldInputs();
+        handleSourceInputs();
         rebuildViews();        
         
         $j('#fbldr-menu-create').hide();

@@ -20,29 +20,31 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
     
     var structure = {
         template: {
-            required: ['category','name','desc','fields','content'],
-            optional: ['defaultCategory']
+            required: ['category', 'name', 'desc', 'fields', 'content'],
+            optional: ['dateFormat', 'defaultCategory', 'labelPosition']
         },
         field: {
-            required: ['type','id','label'],
-            optional: ['required','patterns','patternError','title','value','values']
+            required: ['type', 'id', 'label'],
+            optional: ['listStyle', 'required', 'patterns', 'patternError', 'title', 'value', 'values']
         },
         value: {
-            required: ['value','label'],
+            required: ['value', 'label'],
             optional: []
         },
         content: {
             required: ['type'],
-            optional: ['docId','title','body','includeAttachment']
+            optional: ['docId', 'title', 'body', 'includeAttachment', 'tags']
         },
         contentBody: {
-            required: ['type','title','body'],
-            optional: ['includeAttachment']
+            required: ['type', 'title', 'body'],
+            optional: ['includeAttachment', 'tags']
         }
     };
     
-    var validContentTypes = ['document', 'discussion', 'question'];
-    var validFieldTypes = ['boolean', 'date', 'select', 'text', 'textarea', 'userpicker', 'userselect'];
+    var validContentTypes = ['document', 'discussion', 'message', 'question'];
+    var validFieldTypes = ['boolean', 'date', 'link', 'list', 'multi-select', 'select', 'tags', 'text', 'textarea', 'userpicker', 'userselect'];
+    var validListFieldTypes = ['list', 'multi-select', 'userpicker', 'userselect'];
+    var validListStyles = ['comma', 'none', 'ordered', 'unordered'];
     
     var self = this;
     
@@ -60,7 +62,7 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
     var init = function() {
         validateTemplate();
         validateFields();
-        validateContent();        
+        validateContent();
     };
     
     var validateTemplate = function() {
@@ -68,6 +70,18 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
             template.category = template.defaultCategory;
         }
         validateStructure(template, 'template');
+        normalizeLabelPosition();
+    };
+    
+    var normalizeLabelPosition = function() {
+    	var position = template.labelPosition;
+    	if (!position)  {
+    		position = "left";
+    	}
+    	else if (position != "left" && position != "top") {
+    		position = "left";
+    	}
+    	template.labelPosition = position;
     };
     
     var validateFields = function() {
@@ -88,6 +102,7 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
             var field = fields[i];
             validateStructure(field, 'field');
             validateFieldType(field);
+            normalizeListStyle(field);
             normalizeRequired(field);
             validatePatterns(field);
             normalizeValues(field);
@@ -103,6 +118,17 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
             errors.push("Invalid field type '" + type + "' specified for field '" + field.id + "'");
         }
     };
+
+    var normalizeListStyle = function(field) {
+        if (!field.listStyle) return;
+
+        if ($j.inArray(field.type, validListFieldTypes) < 0) {
+            delete field.listStyle;
+        }                
+        else if ($j.inArray(field.listStyle, validListStyles) < 0) {
+            field.listStyle = "comma";
+        }    
+    };
     
     var normalizeRequired = function(field) {
         field.required = field.required
@@ -115,9 +141,8 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
         if (!$j.isArray(field.patterns)) {
             var objType = Object.prototype.toString.call(values);
             errors.push("Expected array of string patterns but found '" + objType + "' instead");
-            return;
         }
-    }
+    };
     
     var normalizeValues = function(field) {
         if  (!field.values) return;
@@ -159,6 +184,8 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
     };
 
     var validateContentBody = function() {
+        validateTags();
+        
         if (!template.content.docId) {
             validateStructure(template.content, 'contentBody');
             normalizeBody();
@@ -210,6 +237,17 @@ jive.fbldr.TemplateValidator = function(template, onLoad) {
             
             finalizeValidation();
         });
+    };
+    
+    var validateTags = function() {
+        if (!template.content.tags) return;
+        
+        var tags = template.content.tags;
+        
+        if (!$j.isArray(tags)) {
+            var objType = Object.prototype.toString.call(tags);
+            errors.push("Expected array of tags but found '" + objType + "' instead");
+        }
     };
         
     var validateContentType = function() {
