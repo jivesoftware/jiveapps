@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+    <ModulePrefs title="DL Share"
+                 description="Share content with members of an email Distribution List."
+                 author="Jussi Heikkola"
+                 author_affiliation="Jive Software IT"
+                 author_email="jussi.heikkola@jivesoftware.com">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v3"/>
+        <Require feature="jquery-1.6"/>
+        <Require feature="osapi"/>
+        <Require feature="settitle"/>
+        <Require feature="views"/>
+        <Require feature="embedded-experiences"/>
+        <Require feature="actions">
+            <Param name="action-contributions">
+                <![CDATA[
+                  <action id="com.jivesoftware.it.shareDocumentWithDL"
+                  path="jive/actions/content/document"
+                  label="DL Share" view="embedded.share" icon="images/share-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.shareDiscussionWithDL"
+                  path="jive/actions/content/discussion"
+                  label="DL Share" view="embedded.share" icon="images/share-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.shareQuestionWithDL"
+                  path="jive/actions/content/question"
+                  label="DL Share" view="embedded.share" icon="images/share-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.sharePostWithDL"
+                  path="jive/actions/content/blog_post"
+                  label="DL Share" view="embedded.share" icon="images/share-16.png"/> ]]>
+            </Param>
+        </Require>
+        <Require feature="jive-connects-v1">
+            <Param name="alias:dlservice|title:DL Service">jive:service://jivesoftware.com/it/usersearch?version=1</Param>
+        </Require>
+        <Link rel="Icon" href="images/share-16.png"/>
+        <Link rel="MediumIcon" href="images/share-48.png"/>
+        <Link rel="LargeIcon" href="images/share-128.png"/>
+        <Link rel="Screenshot1" href="images/dlshare-screenshot.png" />
+        <Link rel="Screenshot2" href="images/dlshare-action.png" />
+
+    </ModulePrefs>
+    <Content type="html" view="canvas" href="canvas.html" preferred_height="400"/>
+    <Content type="html" view="embedded.share" href="share.html" preferred_height="280" preferred_width="550"/>
+</Module>
+
+<!--
+/*
+ * Copyright 2013, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
