@@ -32,7 +32,8 @@ module.exports = function(grunt) {
             'vendor/bootstrap/bootstrap-alert.js',
             'vendor/bootstrap/bootstrap-modal.js',
             'vendor/bootstrap/bootstrap-tooltip.js',
-            'vendor/bootstrap/bootstrap-popover.js'
+            'vendor/bootstrap/bootstrap-popover.js',
+            'vendor/bootstrap/bootstrap-dropdown.js'
           ],
           dest: 'dist/vendor.js',
           separator: ';'

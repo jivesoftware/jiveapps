@@ -17,6 +17,7 @@
 var JIVE_INSTANCE = null;
 
 gadgets.util.registerOnLoadHandler(function() {
+
     // ======================================================
     // Backbone App Initialization
     // ======================================================
@@ -55,7 +56,7 @@ gadgets.util.registerOnLoadHandler(function() {
     window.givePropsWizardView = new GivePropsWizardView({collection: window.props, el: '#give-props'});
     window.sidebarView         = new SidebarView({el: '.sidebar'});
 
-    sidebarView.on('viewChanged', trophySidebarView.fadeOut)
+    sidebarView.on('viewChanged', trophySidebarView.fadeOut);
 
     // If invoked via the RTE
     if(currentView === 'embedded.embedProp' || currentView === 'embedded.showProp') {
@@ -138,9 +139,14 @@ gadgets.util.registerOnLoadHandler(function() {
         findTrophyCaseView.trophyDisplayView.on("trophySelected", trophySidebarView.render);
     }
 
+    console.log("browser: "+$.browser)
+    if ($.browser.msie) {
+        console.log("IE detected!");
+        $('#propModal').removeClass('hide').removeClass('fade').hide();
+    }
+
     $('#panel-loading').hide();
     $('#panel-main').show();
-
 
     // ======================================================
     // Debug View

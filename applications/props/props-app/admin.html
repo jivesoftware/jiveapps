@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>!props-admin</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-subnav.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div class="container-fluid" id="admin-panel-loading">
+    <div class="row row-fluid" style="text-align: center">
+        <div class="span4" style="margin-top: 50px">&nbsp;
+        </div>
+        <div class="span4" style="margin-top: 50px">
+            <div><strong>Loading...</strong></div>
+            <div class="progress progress-striped active">
+                <div class="bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid" id="admin-panel-main" style="display:none">
+    <!-- ******** NavBar ********* -->
+    <ul class="span6 nav nav-pills" style="padding-left: 128px;padding-top: 24px;">
+        <li class="active"><a href="#" id="create-prop-type-tab">Create/Modify</a></li>
+        <li><a href="#" id="remove-prop-type-tab">Remove</a></li>
+    </ul>
+    <hr class="span6">
+    <!-- ******** Main Content ********* -->
+    <div class="span6 main-content">
+        <!-- Create Prop Type -->
+        <div class="sub-container" id="create-prop-types">
+            <div class="span4 well propType-adder">
+                <div class="row-fluid">
+                    <strong>Create New Prop Type</strong>
+                    <input type="text" placeholder="Title" id="title-inp">
+                    <input type="text" placeholder="Level Needed to Give" id="level-inp">
+                    <textarea class="input-large" id="definition-inp" rows="3" placeholder="Your Prop's Tagline"></textarea>
+                    <input type="text" id="img-inp" placeholder="Link to Image">
+                    <a href="#" class="btn btn-success create-it">Create Prop!</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remove Prop Types -->
+        <div class="sub-container" id="remove-prop-types" style="display:none">
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">
+                        Remove Prop Type
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- all types available to remove -->
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-danger" id="resetToDefaults" href="#" style="padding-top:5px">Reset To Default Prop Types</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" charset="utf-8" src="vendor/jquery-1.7.2/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="vendor/bootstrap/bootstrap-dropdown.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/make_http_request.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/admin_main.js"></script>
+
+</html>
+

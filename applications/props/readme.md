@@ -1,6 +1,18 @@
 Props App
 =========
 
+What's changed in props app?
+- Ability for community administrators to create, modify, and delete prop types
+- Moved the props backend to a server hosted by Jive, with a postgreSQL database instead of Amazon SimpleDB.
+- Fixed an issue where users were unable to give props when using Internet Explorer.
+
+Before running, you need to:
+Server:
+- Edit init.js in props-server to point to your database and you server.
+- Add your jiveapp's credentials into "oauthCreds" object in web.coffee
+Client:
+- Edit init.js in props-app to point to your server. (This should match with the server address on the server side).
+
 The Props App allows users to thank one another by awarding virtual goods. Users can give "props" up to three times a day, either via !props or the app canvas view. Each goodie has an image, name and optional message associated with it. Props publish to both the giver and receiver's activity streams.
  
 Three props award types are available to users to give to others when they first create their Jive account. Users unlock more gifts to give as they earn more status points.
@@ -10,7 +22,7 @@ When a user launches the canvas view of an app, they'll see an option to give a 
 It is possible to search and load the "trophy case for any other user", and to give the same prop to someone multiple times, but only once per day.
 
 ### Prop Types ###
-Below are the various Props types available to a user for awarding to other users, as they ascend levels.
+Below are the various default Props types available to a user for awarding to other users, as they ascend levels. A Jive Community Administrator can change this set by clicking App Settings -> Admin.
 
 <table border="1" class="jiveBorder" style="border-image: initial; width: 100%; border-width: 1px; border-color: #000000; border-style: solid;">
 <tbody>
@@ -276,94 +288,21 @@ The back-end can be replaced easily as long as it implements the functionality t
 
 Backend Server
 --------------
-The Props app backend is a nodejs application which is typically hosted as a Heroku app in Amazon Web Service (AWS), with a SimpleDB storage backend. It is responsible for providing  the REST API called by the Jive App front end, and for persistence.
-
-### Storage Data Model ###
-SimpleDB allows the following simple hierarchy for storage:
-
-<table border="1" class="jiveBorder" style="border-image: initial; width: 100%; border-width: 1px; border-color: #000000; border-style: solid;">
-<tbody>
-<tr><th style="text-align: center; background-color: #6690bc; color: #ffffff; padding: 2px;" valign="middle"><strong>Parent</strong></th><th style="text-align: center; background-color: #6690bc; color: #ffffff; padding: 2px;" valign="middle"><strong>Child</strong></th></tr>
-<tr>
-<td style="padding: 2px;">One or more Domains</td>
-<td style="padding: 2px;">One or more Items</td>
-</tr>
-<tr>
-<td style="padding: 2px;">Item</td>
-<td style="padding: 2px;">One or more Attributes</td>
-</tr>
-<tr>
-<td style="padding: 2px;">Attribute</td>
-<td style="padding: 2px;">One or more name value pairs</td>
-</tr>
-</tbody>
-</table>
-
-<br>
+The Props app backend is a nodejs application with a postgreSQL database. It is responsible for providing the REST API called by the Jive App front end, and for persistence.
 
 ### Data Model ###
-
-The Amazon Web Service (AWS) SimpleDB is used for backend data storage for the Props app. Here are the data structure that SimpleDB is using:
-
-- User Account : Represents the entire data in the AWS SimpleDB account
-- Domains : Domains represent similar data and similar to tables concept. You can execute queries against a domain, but cannot execute queries across different domains.
-- Items : Items represent individual objects that contain one or more attribute name value pairs.
-- Attributes : Attributes represent categories of data that can be assigned to items. Think of it like columns in database table rows.
-- Values : Values represent instances of attributes for items. An attribute can have multiple values.
-
-This link shows limitation of SimpleDB storage: http://docs.amazonwebservices.com/AmazonSimpleDB/latest/DeveloperGuide/SDBLimits.html
-
-### Domains ###
-Here are the domains needed for the Props app:
-
-- DefaultProps: This domain will store the default props that can be given by user. The idea is that we could support extension for Jive instance specific DefaultProps domain that could override the default image and attributes or even add new kind of props.
-- UserProps_&lt;Jive ID&gt;: The domains will store the props that are given to a user in a particular jive instance. So the name of the items in each of this domain will guaranteed unique within a jive instance. Each item will represent an action of prop giving to a user. We use SimpleDB count (http://docs.amazonwebservices.com/AmazonSimpleDB/latest/DeveloperGuide/CountingDataSelect.html) query to get the count for how many props a user have been given.
-- User_&lt;Jive ID&gt;: The domains will store user info needed for each Jive instance.
-- JiveInstance_&lt;JIve ID&gt;: These domains will store info for each Jive instance connected to the props backend.
-
-### Attributes for Items in the Domains ###
-####DefaultProps####
-
-Name : Represents the short name used to uniquely identify each prop.
-The items in DefaultProps domain could have these attributes:
-
-- Image URL: Represents the image URL for a prop
-- Definition: Represents the description or meaning of the prop. (TODO: do we need to support i18n for the description?)
-- PointLevel: Represents the minimum point level needed for a user to give the prop.
-
-#### UserProps_&lt;Jive ID&gt; ####
-Similar to suggestion from https://forums.aws.amazon.com/thread.jspa?threadID=32405 we will take hash of target user id + timestamp + giver user id + prop short name.&rdquo; to generate unique name for each item name.
-
-The items in UserProps_&lt;Jive ID&gt; domain could have these attributes:
-
-- TargetUserID: represents the per jive instance unique user ID that is going to be given a prop.
-- GiverUserID: represents the per jive instance unique user ID that is giving the prop.
-- Timestamp: represents the timestamp when the prop giving occur in the Prop app backend server.
-- PropName: the prop given based on short name
-- Message: text message sent with the prop given
-- Context: context info related with the prop.
-
-#### User_&lt;Jive ID&gt; ####
-Name: user id per Jive instance
-
-The items in User_&lt;Jive ID&gt; domain could have these attributes:
-
-- Level: Represent the current level each user to let what trophies can be given to him/her.
- 
-#### JiveInstance_&lt;Jive ID&gt; ####
-Name: unique id per Jive instance
-
-The items in JiveInstance_&lt;Jive_ID&gt; could have these attributes:
-
-- PropName: the prop has been given in this community
+There are four tables in the database:
+jiveinstances - stores all the jive instances that have been registered
+proptypes - stores all the prop types that have been created, including the default prop types
+props - stores all the props that have been given
+linkedcontent - if a prop is given within !props (the embedded view), the pieces of content associated with those props are stored in this table.
 
 ### Security ###
 
-- The oauth keys and Amazon SimpleDB access keys are stored in the node.js code.
+- The oauth keys and postgres username/password are stored in the node.js code.
 - All collaborators have access to information stored in database.
 - https is not used for communication to props app server.
 - Although calls to gateway from Jive servers are protected by oauth signature the data is sent un-encrypted.
-- aws-lib makes signed requests (not oauth) SimpleDB server. SimpleDB server calls are web-based and secured (https requests).
 
 # License & Copyright #
   Copyright 2013 Jive Software

@@ -166,7 +166,11 @@ window.GivePropsWizardView = Backbone.View.extend({
             $('#propModal .trophy .bg').css('background-image', propTypeImage);
             $('#propModal textarea').val(propType.get('definition'));
 
-            $('#propModal').modal();
+            if ($.browser.msie) {
+                console.log("IE detected in giving prop!");
+                $("#propModal").show();
+            }
+            $('#propModal').modal('show');
         });
 
         $('#propModal').on('shown', function () {
@@ -235,6 +239,7 @@ window.GivePropsWizardView = Backbone.View.extend({
             }
 
             function postNotification(activityPostResponse) { // activityPostResponse is a StreamEntry object
+                console.log("activity post response:",activityPostResponse)
 		        if(!activityPostResponse.error) {
                     newProp.set({ stream_entry_url: activityPostResponse.url });
 
@@ -284,11 +289,18 @@ window.GivePropsWizardView = Backbone.View.extend({
 		            newProp.save(null, {
 			            success: function(model, resp) {
 			                console.log("Stream entry URL saved");
+                            newProp.set({ '$ItemName': resp['$ItemName'] });
+                            props.unshift(newProp);
+                            window.viewer.decrementPropsRemaining();
+                            that.showAutoHideAlert('success', '<strong>Success!</strong> Prop given to ' + personName + '!');
 			                complete(false);
 			            },
 			            error: function(originalModel, resp, options) {
-			                console.log("Stream entry URL not saved " + JSON.stringify(resp.content));
-			                complete(true);
+                            var errors = resp.content;
+                            var errorString = _.map(errors, function(error) { return error[0] + " " + error[1]; }).join(", ");
+                            that.showAutoHideAlert('error', '<strong>Error!</strong> ' + errorString);
+
+                            complete(true);
 			            }
 		            });
 		        }
@@ -313,23 +325,7 @@ window.GivePropsWizardView = Backbone.View.extend({
 	        }
 
             $('#propModal .give-it').html("Saving ...");
-            newProp.save(null, {
-                success: function(model, resp) {
-                    newProp.set({ '$ItemName': resp['$ItemName'] });
-                    props.unshift(newProp);
-                    window.viewer.decrementPropsRemaining();
-                    that.showAutoHideAlert('success', '<strong>Success!</strong> Prop given to ' + personName + '!');
-                    postActivity();
-                    $('#propModal .give-it').html("Posting activity ...");
-                },
-                error: function(originalModel, resp, options) {
-                    var errors = resp.content;
-                    var errorString = _.map(errors, function(error) { return error[0] + " " + error[1]; }).join(", ");
-                    that.showAutoHideAlert('error', '<strong>Error!</strong> ' + errorString);
-
-                    complete(true);
-                }
-            });
+            postActivity();
 
             console.log("newProp: ", newProp);
 
@@ -384,7 +380,7 @@ window.GivePropsWizardView = Backbone.View.extend({
                     user_name: personName,
 		            artifact_markup: artifactMarkup.markup,
 		            artifact_text: newProp.get('message'),
-                    stream_entry_url: newProp.get('stream_entry_url'),
+                    stream_entry_url: newProp.get('stream_entry_url')
 		        };
 		        var dropHtml = thisView.artifactTemplate(artifactValues);
 		        osapi.jive.core.container.editor().insert(dropHtml);

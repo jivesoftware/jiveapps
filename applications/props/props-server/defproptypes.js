@@ -14,7 +14,7 @@
    limitations under the License.
 **/
 
-var rootUrl = 'http://cold-stream-9638.herokuapp.com/';
+var rootUrl = 'http://gentle-scrubland-4425.herokuapp.com/';
 
 exports.propTypes = [
     {

@@ -47,4 +47,5 @@
   <Content type="html" view="embedded.embedProp" href="props.html" preferred_height="570" preferred_width="840" />
   <Content type="html" view="embedded.showProp" href="props.html" preferred_height="190" preferred_width="660" />
 
+  <Content type="html" view="system-settings" href="admin.html" preferred_height="570" preferred_width="840"/>
 </Module>

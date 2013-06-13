@@ -18,14 +18,20 @@ $            = require "jquery"
 coffeescript = require "coffee-script"
 crypto       = require "crypto"
 express      = require "express"
+fs           = require "fs"
+request      = require "request"
+im           = require "imagemagick"
+log          = require "util"
 
 # Require Project Libraries
 #
+init       = require "./init.js"
 oauth      = require "./oauth.js"
 opensocial = require "./opensocial.js"
-DB         = require "./db.coffee"
+DB         = require "./db_postgres.coffee"
 activity   = require "./activity.coffee"
 util       = require './util.js'
+proptypes  = require "./defproptypes.js"
 
 # App OAuth Credentials
 #
@@ -33,19 +39,17 @@ prodAppId = "6e966b7a-2e6e-4eeb-9f71-9c2b2d9b1b3f"
 oauthCreds =
   "6e966b7a-2e6e-4eeb-9f71-9c2b2d9b1b3f":
     id: "<app-id>",
-    key: "<key>"
+    key: "<key>",
     secret: "<secret>",
     gateway: "http://gateway.jivesoftware.com",
-    description: "Production, DO NOT MODIFY"
+    description: "PRODUCTION, DO NOT MODIFY"
 
 # Authenticate OAuth Request
 #
 authenticate = (request, response, next) ->
-  console.log "authenticate called"
-
   request.on "end", ->
     oauthobj = new oauth.OAuth(undefined, undefined, oauthCreds.key, oauthCreds.secret, "1.0", undefined, "HMAC-SHA1", undefined)
-    console.log oauthobj
+    log.debug oauthobj
     verified = oauthobj.verifySignature("http://" + request.headers.host + request.url)
     message = (if verified then "Success. Signature Verified!" else "Failure. Signatures do not match!")
     response.writeHead 200,
@@ -61,16 +65,16 @@ authenticate = (request, response, next) ->
 #
 handleError = (error, request, response, next) ->
   if error instanceof oauth.OAuthError
-    console.log "OAuth Error: ", error
+    log.debug "OAuth Error: ", error
     response.statusCode = 401
     response.end '{ error: "' + error.message + '" }'
   else
     next error
 
-handleSimpleDbErrors = (error, request, response, noSuchDomainResponse=[]) ->
-  if error.Code and error.Code is "NoSuchDomain"
-    console.log "No such domain exists for this Jive instance, sending empty array."
-    response.send noSuchDomainResponse
+handlePostgresDbErrors = (error, request, response, noSuchDomainResponse=[]) ->
+  if error && error.code=="42P01" #42P01 is postgres error code for table does not exist
+    log.debug "No such table exists for this Jive instance, sending empty array."
+    response.send error, 400
   else
     response.send error, 400
 
@@ -84,10 +88,10 @@ oauthLookup = (request, type, appId, callback) ->
     if oauthCreds[appId]
       callback oauthCreds[appId].secret;
     else
-      console.log "Lookup for unknown " + appId + " attempted."
+      log.debug "Lookup for unknown " + appId + " attempted."
       callback ""
   else
-    console.log "Unknown secret type ", type
+    log.debug "Unknown secret type ", type
 
 # Setup Webserver
 #
@@ -106,9 +110,39 @@ app.use setContentType = (req, res, next) ->
 
 app.error handleError
 
+download = (uri, filename) ->
+  filename = __dirname+'/public/img/prop_types/'+filename;
+  log.debug("image download:", uri, "->", filename)
+  req = request(uri).pipe(fs.createWriteStream(filename))
+  req.on('finish', () ->
+    log.debug("got image");
+    im.resize({
+      srcPath:filename,
+      dstPath:filename,
+      width:128
+    }, (err) ->
+      if err
+        log.debug("resize image err: "+err);
+      else
+        log.debug("saved!");
+    );
+  );
+
+undownload = (filename, callback) ->
+  fs.unlink(__dirname+'/public/img/prop_types/'+filename, callback);
 
 # ########## App Routes ###########
 
+app.get "/instances/register", (req, res) ->
+  if req.query.jiveInstanceId
+    DB.Instances.register(req.query.jiveInstanceId, (err) ->
+      if err
+        res.send "Registration failed", 500
+      else
+        res.send "Successfully registered jive Instace #{req.query.jiveInstanceId} into props app!", 200
+    );
+  else
+    res.send "Need jive Instance id!", 400
 
 # ### Prop Types ###
 
@@ -116,16 +150,76 @@ app.error handleError
 # Get default prop types, optionally filter by current request level
 #
 app.get "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
-  DB.PropType.findAllByLevel req.query.level, (error, result, meta) ->
+  DB.PropType.findAllByLevel req.opensocial.getJiveId(), req.query.level, (error, result) ->
     if error
       res.send error, 400
     else
-      res.send result
+      res.send result, 200
 
-app.get "/props/types/reset", (req, res) ->
-  DB.PropType.resetDomain()
-  res.send("Resetting prop types.")
+app.get "/props/types/reset", oauth.verifySignature(oauthLookup), (req, res) ->
+  DB.PropType.resetTable(req.opensocial.getJiveId())
+  res.send("Resetting prop types.\n")
 
+# GET /testRemove
+# testing for removing a prop type
+app.get "/testRemove", oauth.verifySignature(oauthLookup), (req,res) ->
+  log.debug("testRemove: ", typeof(req.query), req.query)
+  DB.PropType.findByName req.opensocial.getJiveId(), req.query.type, (error, propTypeResult) ->
+    if (error)
+      res.send error, 400
+    else
+      if (propTypeResult)
+        res.send "to delete:"+propTypeResult.$ItemName, 200
+      else
+        res.send "does not exist:"+req.query.type, 200
+
+# GET /props/types/remove
+# Remove the specified prop type, specified by query param 'type'
+app.get "/props/types/remove", oauth.verifySignature(oauthLookup), (req,res) ->
+  log.debug("remove prop type request: "+req)
+  jiveInstanceid = req.opensocial.getJiveId();
+  DB.PropType.findById jiveInstanceid, req.query.type, (error, propTypeResult) ->
+    if error
+      res.send error, 400
+    else
+      if propTypeResult
+        DB.PropType.delete jiveInstanceid, propTypeResult.$ItemName, (error) ->
+          if error
+            res.send error, 400
+          else
+            undownload util.stringHash(propTypeResult.title+jiveInstanceid)+'.png', (err) ->
+              if (err)
+                res.send err, 200
+              else
+                res.send "successfully removed prop type "+req.query.type, 200
+      else
+        res.send "already removed: "+req.query.type, 200
+
+# POST /props/types
+# Create a new type of prop, or modify an existing prop type
+# prop types are uniquely identified by name.
+app.post "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
+  log.log("create new prop type request: "+req.body)
+  body = req.body
+  if (body.title && body.definition && body.image_url && body.level)
+    jiveInstanceid = req.opensocial.getJiveId();
+    download(body.image_url, util.stringHash(body.title+jiveInstanceid)+'.png')
+    body.image_url = body.reflection_image_url = exports.BASE_URL+'/img/prop_types/'+util.stringHash(body.title+jiveInstanceid)+'.png'
+    DB.PropType.modify(jiveInstanceid, body, (error, result) ->
+      if error
+        res.send error, 400
+      else if result == null
+        res.send "", 404
+      else
+        DB.PropType.findByName(jiveInstanceid, body.title, (error, propTypeResult) ->
+          if error
+            res.send error, 400
+          else
+            res.send propTypeResult, 200
+        );
+    );
+  else
+    res.send "bad request: "+JSON.stringify(req), 400
 
 # GET /props
 # Get all props for a user
@@ -141,7 +235,7 @@ app.get "/props", oauth.verifySignature(oauthLookup), (req, res) ->
 
   DB.Prop.findAll options, (error, result, meta) ->
     if error
-      handleSimpleDbErrors error, req, res
+      handlePostgresDbErrors error, req, res
     else
       res.send result
 
@@ -159,7 +253,7 @@ app.get "/props/count", oauth.verifySignature(oauthLookup), (req, res) ->
 
   DB.Prop.count req.opensocial.getJiveId(), options, (error, result, meta) ->
     if error
-      handleSimpleDbErrors error, req, res, [{"$ItemName":"Domain","Count":"0"}]
+      handlePostgresDbErrors error, req, res
     else
       res.send result
 
@@ -171,7 +265,7 @@ app.get "/props/stream", oauth.verifySignature(oauthLookup), (req, res) ->
 
   DB.Prop.stream req.opensocial.getJiveId(), options, (error, result, meta) ->
     if error
-      handleSimpleDbErrors error, req, res
+      handlePostgresDbErrors error, req, res
     else
       res.send result
 
@@ -187,32 +281,30 @@ app.get "/props/:id", oauth.verifySignature(oauthLookup), (req, res) ->
     else
       res.send result
 
-
 # POST /props
 # Create a prop
 #
 app.post "/props", oauth.verifySignature(oauthLookup), (req, res) ->
-  propObj = $.extend(req.body,
-    giver_id: req.opensocial.getOwnerId()
-  )
+  propObj = $.extend(req.body, {giver_id: req.opensocial.getOwnerId()});
 
   # disallow self propping
   if propObj.giver_id == propObj.user_id
     return res.send { error: "Forbidden: Just do it in your mind, not so publicly" }, 403
 
   propObj.message = util.escapeMessage propObj.message
-  DB.Prop.create req.opensocial.getJiveId(), propObj, (error, result, meta) ->
-    if error
-      res.send error, 400
+  DB.Prop.createProp(req.opensocial.getJiveId(), propObj, (err, result) ->
+    if err
+      res.send err, 400
     else
-      DB.PropType.findByName propObj.prop_type, (error, propTypeResult) ->
+      DB.PropType.findById req.opensocial.getJiveId(), propObj.prop_type, (err1, propTypeResult) ->
         propImageUrl = propTypeResult.image_url
         # creds = oauthCreds[req.opensocial.getAppId()]
         # activity.postProp req.opensocial.getJiveId(), propObj, propImageUrl, creds
         res.send result, 201
+  );
 
 app.post "/debugPost", (req, res) ->
-  console.log(typeof(req.body), req.body)
+  log.debug(typeof(req.body), req.body)
   obj =
     body: req.body
     params: req.params
@@ -249,16 +341,48 @@ app.delete "/keys/:app_id", (req, res) ->
     res.send 200
 
 
-app.get "/status", (req, res) ->
+app.get "/manage/help", (req, res) ->
+  res.send("Jive Props App Backend Server\n
+  Public Endpoints:
+  GET /instances/register to register a new Jive Instance into the Props App Database.\n
+  POST /props to create a prop\n
+  GET /props to get all props for a user\n
+  GET /props/stream to get recent props\n
+  GET /props/count to get the number of props with given parameters\n
+  POST /props/types to create a prop type\n
+  GET /props/types to view prop types\n
+  GET /props/types/remove to remove a prop type\n
+  GET /props/types/reset to reset prop types for a jive instance to deafult
+  Must be called from Jive App with Registered OAuth key and secret.", 200)
+
+app.get "/manage/ping", (req, res) ->
   res.send 200
 
+app.get "/manage/version", (req, res) ->
+  res.send("1.1.0", 200)
 
+app.get "/manage/health/check", (req, res) ->
+  require("./dbhealth_postgres.js").healthTest((result, code) ->
+    res.send(result,200)
+  );
+
+app.get "/manage/health/connectivity", (req, res) ->
+  require("./dbhealth_postgres.js").connectivityCheck (result, code) ->
+    res.send(result,200)
+
+app.get "/manage/health/metrics", (req, res) ->
+  require("./dbhealth_postgres.js").getStats((result, code) ->
+    res.send(result,200)
+  );
+
+app.get "/manage/health/shutdown", (req, res) ->
+  res.send("Shutting down...", 200);
+  process.exit();
 
 # Listen for requests on the specified port
 #
 port = process.env.PORT or 5000
-console.log("about to listen...")
+log.debug("about to listen...")
 app.listen port, ->
   DB.env process.env.NODE_ENV # Set db environment (development/production/etc)
-  DB.init()                   # Initialize database, populate propTypes table if needed
-  console.log "Running in #{DB.env()} mode, listening on #{port}"
+  log.debug "Running in #{DB.env()} mode, listening on #{port}"

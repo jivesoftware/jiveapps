@@ -14,7 +14,11 @@
       "redis-url":          "0.1.0",
       "simpledb":           "git://github.com/aarong/simpledb.git#master",
       "oauth":              "0.9.7",
-      "jquery":             "1.7.2",
-      "scoped-http-client": "0.9.7"
+      "jquery":             "1.7.3",
+      "scoped-http-client": "0.9.7",
+      "request":            "git://github.com/mikeal/request.git#master",
+      "pg":                 "git://github.com/brianc/node-postgres.git#master",
+      "gm":                 "git://github.com/rsms/node-imagemagick.git#master",
+      "string-hash":        "git://github.com/darkskyapp/string-hash.git#master"
   }
 }
