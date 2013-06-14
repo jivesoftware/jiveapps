@@ -20,6 +20,7 @@ http = require('http');
 https = require('https');
 url = require('url');
 qs = require('querystring');
+hash = require('string-hash');
 
 exports.S4 = function() {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -27,6 +28,10 @@ exports.S4 = function() {
 exports.guid = function() {
   var S4 = exports.S4;
   return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
+};
+
+exports.stringHash = function(string) {
+    return hash(string)-2147483648; //subtract 2^31 to change the range from [0,2^32] to [-2^31,2^31]
 };
 
 exports.escapeMessage = function(message) {

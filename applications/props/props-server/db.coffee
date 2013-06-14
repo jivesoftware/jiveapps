@@ -14,6 +14,7 @@
 
 #
 # DB Abstraction Layer
+# No longer used after the move to postgres. See db_postgres.coffee for the actual implementation of the DB abstraction layer.
 #
 
 #
@@ -119,6 +120,12 @@ DB =
 
     findByName: (name, callback) ->
       sdb.getItem DB.PropType.domainName(), name, DB.standardCallback(callback)
+
+    modify: (name, title, definition, img_url, reflection_img_url, level, callback) ->
+      sdb.putItem(DB.PropType.domainName(), name, {title:title,definition:definition,image_url:img_url,reflection_image_url:reflection_img_url,level:level}, undefined, callback);
+
+    deleteByName: (name, callback) ->
+      sdb.deleteItem(DB.PropType.domainName(), name, undefined, undefined, callback);
 
   Prop:
     domainName: (jiveInstanceId) ->

@@ -15,4 +15,4 @@
 //
 
 // change this to point to your backend service
-window.BACKEND_HOST='https://your.props.appserver.com/';
+window.BACKEND_HOST='http://yourapp.example.com';

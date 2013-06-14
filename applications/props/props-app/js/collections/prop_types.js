@@ -32,12 +32,12 @@ window.PropTypes = Backbone.Collection.extend({
 
   registerOnLoad: function(callback) {
       if(window.propTypes.ready) callback();
-      else push(onLoadCallbacks, callback);
+      else this.onLoadCallbacks.push(this.onLoadCallbacks, callback);
   },
 
   callOnLoadCallbacks: function() {
-      for(var i in onLoadCallbacks) {
-          onLoadCallbacks[i]();
+      for(var i in this.onLoadCallbacks) {
+          this.onLoadCallbacks[i]();
       }
   }
 

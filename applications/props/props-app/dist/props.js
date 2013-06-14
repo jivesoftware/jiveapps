@@ -15,7 +15,7 @@
 //
 
 // change this to point to your backend service
-window.BACKEND_HOST='https://your.props.appserver.com/';
+window.BACKEND_HOST='http://gentle-scrubland-4425.herokuapp.com';
 //
 // Copyright 2013 Jive Software
 //
@@ -585,12 +585,12 @@ window.PropTypes = Backbone.Collection.extend({
 
   registerOnLoad: function(callback) {
       if(window.propTypes.ready) callback();
-      else push(onLoadCallbacks, callback);
+      else this.onLoadCallbacks.push(this.onLoadCallbacks, callback);
   },
 
   callOnLoadCallbacks: function() {
-      for(var i in onLoadCallbacks) {
-          onLoadCallbacks[i]();
+      for(var i in this.onLoadCallbacks) {
+          this.onLoadCallbacks[i]();
       }
   }
 
@@ -1401,7 +1401,11 @@ window.GivePropsWizardView = Backbone.View.extend({
             $('#propModal .trophy .bg').css('background-image', propTypeImage);
             $('#propModal textarea').val(propType.get('definition'));
 
-            $('#propModal').modal();
+            if ($.browser.msie) {
+                console.log("IE detected in giving prop!");
+                $("#propModal").show();
+            }
+            $('#propModal').modal('show');
         });
 
         $('#propModal').on('shown', function () {
@@ -1470,6 +1474,7 @@ window.GivePropsWizardView = Backbone.View.extend({
             }
 
             function postNotification(activityPostResponse) { // activityPostResponse is a StreamEntry object
+                console.log("activity post response:",activityPostResponse)
 		        if(!activityPostResponse.error) {
                     newProp.set({ stream_entry_url: activityPostResponse.url });
 
@@ -1519,11 +1524,18 @@ window.GivePropsWizardView = Backbone.View.extend({
 		            newProp.save(null, {
 			            success: function(model, resp) {
 			                console.log("Stream entry URL saved");
+                            newProp.set({ '$ItemName': resp['$ItemName'] });
+                            props.unshift(newProp);
+                            window.viewer.decrementPropsRemaining();
+                            that.showAutoHideAlert('success', '<strong>Success!</strong> Prop given to ' + personName + '!');
 			                complete(false);
 			            },
 			            error: function(originalModel, resp, options) {
-			                console.log("Stream entry URL not saved " + JSON.stringify(resp.content));
-			                complete(true);
+                            var errors = resp.content;
+                            var errorString = _.map(errors, function(error) { return error[0] + " " + error[1]; }).join(", ");
+                            that.showAutoHideAlert('error', '<strong>Error!</strong> ' + errorString);
+
+                            complete(true);
 			            }
 		            });
 		        }
@@ -1548,23 +1560,7 @@ window.GivePropsWizardView = Backbone.View.extend({
 	        }
 
             $('#propModal .give-it').html("Saving ...");
-            newProp.save(null, {
-                success: function(model, resp) {
-                    newProp.set({ '$ItemName': resp['$ItemName'] });
-                    props.unshift(newProp);
-                    window.viewer.decrementPropsRemaining();
-                    that.showAutoHideAlert('success', '<strong>Success!</strong> Prop given to ' + personName + '!');
-                    postActivity();
-                    $('#propModal .give-it').html("Posting activity ...");
-                },
-                error: function(originalModel, resp, options) {
-                    var errors = resp.content;
-                    var errorString = _.map(errors, function(error) { return error[0] + " " + error[1]; }).join(", ");
-                    that.showAutoHideAlert('error', '<strong>Error!</strong> ' + errorString);
-
-                    complete(true);
-                }
-            });
+            postActivity();
 
             console.log("newProp: ", newProp);
 
@@ -1619,7 +1615,7 @@ window.GivePropsWizardView = Backbone.View.extend({
                     user_name: personName,
 		            artifact_markup: artifactMarkup.markup,
 		            artifact_text: newProp.get('message'),
-                    stream_entry_url: newProp.get('stream_entry_url'),
+                    stream_entry_url: newProp.get('stream_entry_url')
 		        };
 		        var dropHtml = thisView.artifactTemplate(artifactValues);
 		        osapi.jive.core.container.editor().insert(dropHtml);
@@ -1748,6 +1744,7 @@ window.GivePropsWizardView = Backbone.View.extend({
 var JIVE_INSTANCE = null;
 
 gadgets.util.registerOnLoadHandler(function() {
+
     // ======================================================
     // Backbone App Initialization
     // ======================================================
@@ -1786,7 +1783,7 @@ gadgets.util.registerOnLoadHandler(function() {
     window.givePropsWizardView = new GivePropsWizardView({collection: window.props, el: '#give-props'});
     window.sidebarView         = new SidebarView({el: '.sidebar'});
 
-    sidebarView.on('viewChanged', trophySidebarView.fadeOut)
+    sidebarView.on('viewChanged', trophySidebarView.fadeOut);
 
     // If invoked via the RTE
     if(currentView === 'embedded.embedProp' || currentView === 'embedded.showProp') {
@@ -1869,9 +1866,14 @@ gadgets.util.registerOnLoadHandler(function() {
         findTrophyCaseView.trophyDisplayView.on("trophySelected", trophySidebarView.render);
     }
 
+    console.log("browser: "+$.browser)
+    if ($.browser.msie) {
+        console.log("IE detected!");
+        $('#propModal').removeClass('hide').removeClass('fade').hide();
+    }
+
     $('#panel-loading').hide();
     $('#panel-main').show();
-
 
     // ======================================================
     // Debug View
