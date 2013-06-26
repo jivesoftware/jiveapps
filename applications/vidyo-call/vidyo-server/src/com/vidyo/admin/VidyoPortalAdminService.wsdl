@@ -1,0 +1,3269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="VidyoPortalAdminService" targetNamespace="http://portal.vidyo.com/admin/v1_1" xmlns="http://portal.vidyo.com/admin/v1_1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://portal.vidyo.com/admin/v1_1" xmlns="http://portal.vidyo.com/admin/v1_1">
+
+			<xs:annotation>
+				<xs:documentation xml:lang="en"/>
+			</xs:annotation>
+
+			<xs:element name="OK">
+				<xs:annotation>
+					<xs:documentation>
+                        String representation of successful operation - 'OK'
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="OK"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+            <xs:element name="ErrorMessage" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        String presentation of fault
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="Language">
+				<xs:annotation>
+					<xs:documentation>
+                        Languages supported by VidyoPortal
+					</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="en"/>
+						<xs:enumeration value="de"/>
+						<xs:enumeration value="es"/>
+						<xs:enumeration value="fr"/>
+						<xs:enumeration value="it"/>
+						<xs:enumeration value="ja"/>
+						<xs:enumeration value="ko"/>
+						<xs:enumeration value="pt"/>
+						<xs:enumeration value="zh_CN"/>
+						<xs:enumeration value="fi"/>
+						<xs:enumeration value="pl"/>
+						<xs:enumeration value="zh_TW"/>
+						<xs:enumeration value="th"/>
+						<xs:enumeration value="ru"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="RoleName">
+				<xs:annotation>
+					<xs:documentation>
+                        Member's Role supported by VidyoPortal
+					</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Admin"/>
+						<xs:enumeration value="Operator"/>
+						<xs:enumeration value="Normal"/>
+						<xs:enumeration value="VidyoRoom"/>
+						<xs:enumeration value="Legacy"/>
+                        <xs:enumeration value="Executive"/>
+                        <xs:enumeration value="Panorama"/>
+                    </xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:simpleType name="sortDir">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ASC"/>
+					<xs:enumeration value="DESC"/>
+				</xs:restriction>
+			</xs:simpleType>
+
+			<xs:element name="Filter">
+				<xs:annotation>
+					<xs:documentation>
+						Filter for search queries.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="start" nillable="true" type="xs:int"/>
+						<xs:element minOccurs="0" name="limit" nillable="true" type="xs:int"/>
+						<xs:element minOccurs="0" name="sortBy" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="dir" nillable="true" type="sortDir"/>
+						<xs:element minOccurs="0" name="query" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="EntityType">
+				<xs:annotation>
+					<xs:documentation>
+						There are three types of entities in VidyoPortal:
+						1. Member - A member is an authorized user of VidyoPortal with a user account.
+						- A member may have at the most one personal room.
+						- A member has a display name
+						- A member has an extension that can also be used for search purposes.
+						2. Rooom - It is a meeting place. Rooms are of two kinds:
+						- Personal, as explained above
+						- Public. Each room has a owner assigned who can control the room.
+						3. Legacy - This entity represents external endpoints. Think of it as a label to identify and search external devices.
+						Legacy entity does not have an account on the VidyoPortal. There is no owner assigned to legacy devices.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Member"/>
+						<xs:enumeration value="Room"/>
+						<xs:enumeration value="Legacy"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="MemberMode">
+				<xs:annotation>
+					<xs:documentation>
+						The Member can override the current status with these possible values. Changing a mode will impact VidyoPortal operations.
+						For e.g. if the mode is set to DoNotDisturb for a member, this member will not get any incoming requests to join a meeting or a direct call.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Available"/>
+						<xs:enumeration value="Away"/>
+						<xs:enumeration value="DoNotDisturb"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="MemberStatus">
+				<xs:annotation>
+					<xs:documentation>
+						Describes the member status based on the
+						operation state of the endpoint in
+						use by the member:
+						- Status is 'Offline' and hence can't be reached for a conference.
+						- Status is 'Online' and can be reached for a conference or a direct call.
+						- Status is 'Busy' in conference and can't can be reached for another conference or a direct call.
+						- Status is 'BusyInOwnRoom' in conference in own personal room and can't can be reached for another conference.
+						- Status is 'Ringing' endpoint associated with member start to ring on receive direct call or invite event from other part.
+						- Status is 'RingAccepted' endpoint associated with member accept the call from other part.
+						- Status is 'RingRejected' endpoint associated with member reject the call from other part.
+						- Status is 'RingNoAnswer' endpoint associated with member is not answered in some period of time.
+						- Status is 'Alerting' endpoint associated with member is alerting about income call.
+						- Status is 'AlertCancelled' endpoint associated with member is stop to be alerting about income call.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Offline"/>
+						<xs:enumeration value="Online"/>
+						<xs:enumeration value="Busy"/>
+						<xs:enumeration value="BusyInOwnRoom"/>
+						<xs:enumeration value="Ringing"/>
+						<xs:enumeration value="RingAccepted"/>
+						<xs:enumeration value="RingRejected"/>
+						<xs:enumeration value="RingNoAnswer"/>
+						<xs:enumeration value="Alerting"/>
+						<xs:enumeration value="AlertCancelled"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="RoomStatus">
+				<xs:annotation>
+					<xs:documentation>
+						Status is 'Empty' and hence can be used for meeting.
+						Status is 'Full' and is not accepting any more participants to the meeting.
+						Status is 'Occupied' some participants use the room for meeting.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Empty"/>
+						<xs:enumeration value="Full"/>
+						<xs:enumeration value="Occupied"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:element name="RoomMode">
+				<xs:annotation>
+					<xs:documentation>
+						- 'roomURL' (optional) means that room has an URL to be used to join the meeting. Typically used for sending invitations to users via mail, etc.
+						- 'roomLocked' means the owner is not allowing any more participants to join the room.
+						- is 'hasPIN' means that the participant is required to enter a PIN in order to join this room.
+						- 'roomPIN' is the actual PIN that participant uses to enter the room.
+						- 'hasModeratorPIN' (optional) means that the participant is required to enter a Moderator PIN in order to control this room.
+						- 'moderatorPIN' (optional) is the actual Moderator PIN that participant uses to control the room.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="roomURL" nillable="true" type="xs:string"/>
+						<xs:element maxOccurs="1" minOccurs="1" name="isLocked" type="xs:boolean"/>
+						<xs:element maxOccurs="1" minOccurs="1" name="hasPIN" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="roomPIN" nillable="true" type="xs:string"/>
+						<xs:element maxOccurs="1" minOccurs="1" name="hasModeratorPIN" nillable="true" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="moderatorPIN" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:simpleType name="EntityID">
+				<xs:annotation>
+					<xs:documentation>
+						This is an ID of addressing object in VidyoPortal (Member, Room, or Legacy device).
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:restriction base="xs:int"/>
+			</xs:simpleType>
+
+			<xs:element name="Entity">
+				<xs:annotation>
+					<xs:documentation>
+						This object is returned as a result of search for member, public room, or legacy device.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="entityID" type="EntityID"/>
+						<xs:element minOccurs="0" name="participantID" nillable="true" type="EntityID"/>
+						<xs:element ref="EntityType"/>
+						<xs:element name="displayName" type="xs:string"/>
+						<xs:element name="extension" type="xs:string"/>
+						<xs:element minOccurs="0" name="description" type="xs:string"/>
+						<xs:element minOccurs="0" ref="Language"/>
+						<xs:element minOccurs="0" ref="MemberStatus"/>
+						<xs:element minOccurs="0" ref="MemberMode"/>
+						<xs:element minOccurs="0" name="canCallDirect" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="canJoinMeeting" type="xs:boolean"/>
+						<xs:element minOccurs="0" ref="RoomStatus"/>
+						<xs:element minOccurs="0" ref="RoomMode"/>
+						<xs:element minOccurs="0" name="canControl" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="audio" nillable="true" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="video" nillable="true" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="appshare" nillable="true" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GeneralFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the Faults happens in system.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="InvalidArgumentFault">
+				<xs:annotation>
+					<xs:documentation>
+						This means that the arguments which are passed into services are wrong.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="MemberNotFoundFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="MemberAlreadyExistsFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RoomNotFoundFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RoomAlreadyExistsFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GroupNotFoundFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GroupAlreadyExistsFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="NotLicensedFault">
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:element name="InvalidModeratorPINFormatFault">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:complexType name="Member">
+				<xs:annotation>
+					<xs:documentation>
+						Member Description on VidyoPortal.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element minOccurs="0" name="memberID" type="EntityID"/>
+					<xs:element name="name" type="xs:string"/>
+					<xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+					<xs:element name="displayName" type="xs:string"/>
+					<xs:element name="extension" type="xs:string"/>
+					<xs:element ref="Language"/>
+					<xs:element ref="RoleName"/>
+					<xs:element name="groupName" type="xs:string"/>
+					<xs:element minOccurs="0" name="proxyName" type="xs:string"/>
+					<xs:element name="emailAddress" type="xs:string"/>
+					<xs:element minOccurs="0" name="created" type="xs:date"/>
+					<xs:element minOccurs="0" name="description" type="xs:string"/>
+					<xs:element minOccurs="0" name="allowCallDirect" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="allowPersonalMeeting" type="xs:boolean"/>
+					<xs:element name="locationTag" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:element name="RoomType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Personal"/>
+						<xs:enumeration value="Public"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+
+			<xs:complexType name="Room">
+				<xs:annotation>
+					<xs:documentation>
+						Room Description on VidyoPortal.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element minOccurs="0" name="roomID" type="EntityID"/>
+					<xs:element name="name" type="xs:string"/>
+					<xs:element ref="RoomType"/>
+					<xs:element name="ownerName" type="xs:string"/>
+					<xs:element name="extension" type="xs:string"/>
+					<xs:element name="groupName" type="xs:string"/>
+					<xs:element ref="RoomMode"/>
+					<xs:element minOccurs="0" name="description" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Group">
+				<xs:annotation>
+					<xs:documentation>
+						Group Description on VidyoPortal.
+                        All the members and rooms belong to the same group share the same properties.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element minOccurs="0" name="groupID" type="EntityID"/>
+					<xs:element name="name" type="xs:string"/>
+					<xs:element name="roomMaxUsers" type="xs:string"/>
+					<xs:element name="userMaxBandWidthIn" type="xs:string"/>
+					<xs:element name="userMaxBandWidthOut" type="xs:string"/>
+					<xs:element minOccurs="0" name="description" type="xs:string"/>
+					<xs:element minOccurs="0" name="allowRecording" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Tenant">
+				<xs:annotation>
+					<xs:documentation>
+						Tenant Description on VidyoPortal in Multitenant configuration.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element minOccurs="0" name="tenantID" type="EntityID"/>
+					<xs:element name="name" type="xs:string"/>
+					<xs:element name="url" type="xs:string"/>
+					<xs:element name="prefix" type="xs:string"/>
+					<xs:element minOccurs="0" name="description" type="xs:string"/>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="callTo" type="EntityID"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="LicenseFeatureData">
+				<xs:sequence>
+					<xs:element maxOccurs="1" minOccurs="1" name="Name" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="1" name="MaxValue" type="xs:string"/>
+					<xs:element maxOccurs="1" minOccurs="0" name="CurrentValue" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:element name="GetMembersRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Returns Members meeting a search criterion (optional)
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="Filter"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetMembersResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="member" nillable="true" type="Member"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetMemberRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Get details of a Member.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="memberID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetMemberResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="member" type="Member"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="AddMemberRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="member" type="Member"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AddMemberResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UpdateMemberRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="memberID" type="EntityID"/>
+						<xs:element name="member" type="Member"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdateMemberResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="DeleteMemberRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="memberID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DeleteMemberResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetRoomsRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Returns Rooms meeting a search criterion (optional)
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="Filter"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRoomsResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="room" nillable="true" type="Room"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetRoomRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Get details of a Room.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetRoomResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="room" type="Room"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="AddRoomRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="room" type="Room"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AddRoomResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UpdateRoomRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+						<xs:element name="room" type="Room"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdateRoomResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="DeleteRoomRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DeleteRoomResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetGroupsRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Returns Groups meeting a search criterion (optional)
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="Filter"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetGroupsResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="group" nillable="true" type="Group"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetGroupRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Get details of a Group.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="groupID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetGroupResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="group" type="Group"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="AddGroupRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="group" type="Group"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AddGroupResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UpdateGroupRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="groupID" type="EntityID"/>
+						<xs:element name="group" type="Group"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdateGroupResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="DeleteGroupRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="groupID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DeleteGroupResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetParticipantsRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to list the participants in a meeting as idenfied by EntityId.
+                        To list the participants in a personal room belonging to a Member, the EntityID must be set to the Member.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element minOccurs="0" ref="Filter"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetParticipantsResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element minOccurs="0" name="recorderID" nillable="true" type="xs:int"/>
+						<xs:element minOccurs="0" name="recorderName" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="paused" nillable="true" type="xs:boolean"/>
+						<xs:element minOccurs="0" name="webcast" nillable="true" type="xs:boolean"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" ref="Entity"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="InviteToConferenceRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Invites a Member to a room.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:choice>
+							<xs:element name="entityID" type="EntityID"/>
+							<xs:element name="invite" type="xs:string"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InviteToConferenceResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="LeaveConferenceRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to remove the EntityID (Endpoint) from the conference.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="participantID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="LeaveConferenceResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="MuteAudioRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to mute the audio for a given EntityID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="participantID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="MuteAudioResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UnmuteAudioRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to unmute the audio for a given EntityID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="participantID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UnmuteAudioResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="StartVideoRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to start the video for a given EntityID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="participantID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StartVideoResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="StopVideoRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to stop the video for a given EntityID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="participantID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StopVideoResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="CreateRoomURLRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to create a URL for a Room or a Member's personal room.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CreateRoomURLResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RemoveRoomURLRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to delete a URL for a Room or a Member's personal room.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RemoveRoomURLResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="CreateRoomPINRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Create a PIN for a Room or a Member's personal room.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+						<xs:element name="PIN" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CreateRoomPINResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RemoveRoomPINRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Removes a PIN for a Room or a Member's personal room.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RemoveRoomPINResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UpdatePasswordRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Updates a Member's password.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="password" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdatePasswordResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="UpdateLanguageRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Updates a Member's language settings.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="Language"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UpdateLanguageResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetLicenseDataRequest" nillable="true">
+				<xs:annotation>
+					<xs:documentation>
+						Request for currently effective licese data
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetLicenseDataResponse">
+				<xs:annotation>
+					<xs:documentation>
+						License Data currently in effect. Feature names 'Ports', 'Seats', 'Installs'
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" name="LicenseFeature" type="LicenseFeatureData"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:complexType name="Recorder">
+                <xs:annotation>
+                    <xs:documentation>
+                        Available Recording Profile
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                    <xs:element name="recorderPrefix" type="xs:string"/>
+                    <xs:element name="description" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:element name="GetRecordingProfilesRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Recording Profiles Request
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GetRecordingProfilesResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Recording Profiles Response
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="recorder" nillable="true" type="Recorder"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="StartRecordingRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to record the video for a given roomId
+						and profileId.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="recorderPrefix" type="xs:string"/>
+						<xs:element name="webcast" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StartRecordingResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetPortalVersionRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Portal Version Request
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="GetPortalVersionResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Portal Version Response
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="portalVersion" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="ResourceNotAvailableFault">
+				<xs:annotation>
+					<xs:documentation>
+						Resources are not available for the requested operation.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+                        <xs:element ref="ErrorMessage"/>
+                    </xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="PauseRecordingRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to pause the recording for a given participantID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="recorderID" type="xs:int"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PauseRecordingResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="ResumeRecordingRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to resume the recording for a given participantID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="recorderID" type="xs:int"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ResumeRecordingResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="StopRecordingRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to stop the recording for a given participantID (Endpoint) in the conference.
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="conferenceID" type="EntityID"/>
+						<xs:element name="recorderID" type="xs:int"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="StopRecordingResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:complexType name="Location">
+				<xs:annotation>
+					<xs:documentation>
+						Location Tag 
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="locationTag" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:element name="GetLocationTagsRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to get the available Location Tags
+                   </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" ref="Filter"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetLocationTagsResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Response containing available Location Tags
+                   </xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="total" type="xs:int"/>
+						<xs:element maxOccurs="unbounded" minOccurs="0" name="location" type="Location"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="GetWebcastURLRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to get the Webcast URL and Pin Indicator for a Room
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="GetWebcastURLResponse">
+				<xs:annotation>
+					<xs:documentation>
+						Response containing the Webcast URL and Pin Indicator for a Room
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="webCastURL" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="hasWebCastPIN" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="CreateWebcastURLRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to create a URL for a Webcast
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CreateWebcastURLResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="CreateWebcastPINRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to create a PIN for a Webcast
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+						<xs:element name="PIN" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CreateWebcastPINResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RemoveWebcastURLRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to remove Webcast URL for a Room
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RemoveWebcastURLResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="RemoveWebcastPINRequest">
+				<xs:annotation>
+					<xs:documentation>
+						Request to remove PIN for a Webcast
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomID" type="EntityID"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="RemoveWebcastPINResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="OK"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+            <xs:complexType name="RoomProfile">
+                <xs:annotation>
+                    <xs:documentation>
+                        Available Room Profile
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                    <xs:element name="roomProfileName" type="xs:string"/>
+                    <xs:element name="description" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:element name="GetRoomProfilesRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Room Profiles Request
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GetRoomProfilesResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Room Profiles Response
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="total" type="xs:int"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="roomProfile" nillable="true" type="RoomProfile"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="GetRoomProfileRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to get a Profile for a room
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomID" type="EntityID"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetRoomProfileResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomProfile" nillable="true" type="RoomProfile"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="SetRoomProfileRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to set a Profile for a room
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomID" type="EntityID"/>
+                        <xs:element name="roomProfileName" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SetRoomProfileResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="RemoveRoomProfileRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request to remove RoomProfile for a room
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomID" type="EntityID"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RemoveRoomProfileResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="CreateModeratorPINRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Create a Moderator PIN for a Room or a Member's personal room.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomID" type="EntityID"/>
+                        <xs:element name="PIN" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CreateModeratorPINResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="RemoveModeratorPINRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Removes a Moderator PIN for a Room or a Member's personal room.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="roomID" type="EntityID"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RemoveModeratorPINResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="OK"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+        </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="unmuteAudioOutput">
+    <wsdl:part name="parameter" element="UnmuteAudioResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomProfileInput">
+    <wsdl:part name="parameter" element="GetRoomProfileRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeModeratorPINInput">
+    <wsdl:part name="parameter" element="RemoveModeratorPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="muteAudioInput">
+    <wsdl:part name="parameter" element="MuteAudioRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addRoomInput">
+    <wsdl:part name="parameter" element="AddRoomRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteGroupInput">
+    <wsdl:part name="parameter" element="DeleteGroupRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="stopRecordingOutput">
+    <wsdl:part name="parameter" element="StopRecordingResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteRoomInput">
+    <wsdl:part name="parameter" element="DeleteRoomRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recordProfilesInput">
+    <wsdl:part name="parameter" element="GetRecordingProfilesRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateMemberInput">
+    <wsdl:part name="parameter" element="UpdateMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeWebcastPINInput">
+    <wsdl:part name="parameter" element="RemoveWebcastPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateRoomInput">
+    <wsdl:part name="parameter" element="UpdateRoomRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGroupsInput">
+    <wsdl:part name="parameter" element="GetGroupsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomPINInput">
+    <wsdl:part name="parameter" element="RemoveRoomPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeModeratorPINOutput">
+    <wsdl:part name="parameter" element="RemoveModeratorPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLicenseDataOutput">
+    <wsdl:part name="parameter" element="GetLicenseDataResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getParticipantsInput">
+    <wsdl:part name="parameter" element="GetParticipantsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="locationTagsInput">
+    <wsdl:part name="parameter" element="GetLocationTagsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeWebcastURLOutput">
+    <wsdl:part name="parameter" element="RemoveWebcastURLResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeWebcastPINOutput">
+    <wsdl:part name="parameter" element="RemoveWebcastPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomProfilesOutput">
+    <wsdl:part name="parameter" element="GetRoomProfilesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addGroupOutput">
+    <wsdl:part name="parameter" element="AddGroupResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addGroupInput">
+    <wsdl:part name="parameter" element="AddGroupRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="inviteToConferenceInput">
+    <wsdl:part name="parameter" element="InviteToConferenceRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateRoomOutput">
+    <wsdl:part name="parameter" element="UpdateRoomResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="resumeRecordingOutput">
+    <wsdl:part name="parameter" element="ResumeRecordingResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MemberNotFoundFault">
+    <wsdl:part name="fault" element="MemberNotFoundFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createModeratorPINInput">
+    <wsdl:part name="parameter" element="CreateModeratorPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setRoomProfileInput">
+    <wsdl:part name="parameter" element="SetRoomProfileRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="webcastURLOutput">
+    <wsdl:part name="parameter" element="GetWebcastURLResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="portalVersionOutput">
+    <wsdl:part name="parameter" element="GetPortalVersionResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="portalVersionInput">
+    <wsdl:part name="parameter" element="GetPortalVersionRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomProfileOutput">
+    <wsdl:part name="parameter" element="GetRoomProfileResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomPINOutput">
+    <wsdl:part name="parameter" element="RemoveRoomPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMemberOutput">
+    <wsdl:part name="parameter" element="GetMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GroupAlreadyExistsFault">
+    <wsdl:part name="fault" element="GroupAlreadyExistsFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NotLicensedFault">
+    <wsdl:part name="fault" element="NotLicensedFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MemberAlreadyExistsFault">
+    <wsdl:part name="fault" element="MemberAlreadyExistsFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteGroupOutput">
+    <wsdl:part name="parameter" element="DeleteGroupResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="InvalidArgumentFault">
+    <wsdl:part name="fault" element="InvalidArgumentFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="startVideoInput">
+    <wsdl:part name="parameter" element="StartVideoRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="webcastURLInput">
+    <wsdl:part name="parameter" element="GetWebcastURLRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="stopRecordingInput">
+    <wsdl:part name="parameter" element="StopRecordingRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="InvalidModeratorPINFormatFault">
+    <wsdl:part name="fault" element="InvalidModeratorPINFormatFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getParticipantsOutput">
+    <wsdl:part name="parameter" element="GetParticipantsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateMemberOutput">
+    <wsdl:part name="parameter" element="UpdateMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="muteAudioOutput">
+    <wsdl:part name="parameter" element="MuteAudioResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createWebcastURLOutput">
+    <wsdl:part name="parameter" element="CreateWebcastURLResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="startRecordingOutput">
+    <wsdl:part name="parameter" element="StartRecordingResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="stopVideoInput">
+    <wsdl:part name="parameter" element="StopVideoRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createWebcastPINOutput">
+    <wsdl:part name="parameter" element="CreateWebcastPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RoomNotFoundFault">
+    <wsdl:part name="fault" element="RoomNotFoundFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGroupInput">
+    <wsdl:part name="parameter" element="GetGroupRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMembersOutput">
+    <wsdl:part name="parameter" element="GetMembersResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="leaveConferenceOutput">
+    <wsdl:part name="parameter" element="LeaveConferenceResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RoomAlreadyExistsFault">
+    <wsdl:part name="fault" element="RoomAlreadyExistsFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="unmuteAudioInput">
+    <wsdl:part name="parameter" element="UnmuteAudioRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMembersInput">
+    <wsdl:part name="parameter" element="GetMembersRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLicenseDataInput">
+    <wsdl:part name="parameter" element="GetLicenseDataRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="inviteToConferenceOutput">
+    <wsdl:part name="parameter" element="InviteToConferenceResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomURLOutput">
+    <wsdl:part name="parameter" element="RemoveRoomURLResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addRoomOutput">
+    <wsdl:part name="parameter" element="AddRoomResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GeneralFault">
+    <wsdl:part name="fault" element="GeneralFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteRoomOutput">
+    <wsdl:part name="parameter" element="DeleteRoomResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGroupOutput">
+    <wsdl:part name="parameter" element="GetGroupResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteMemberInput">
+    <wsdl:part name="parameter" element="DeleteMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="stopVideoOutput">
+    <wsdl:part name="parameter" element="StopVideoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setRoomProfileOutput">
+    <wsdl:part name="parameter" element="SetRoomProfileResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomProfilesInput">
+    <wsdl:part name="parameter" element="GetRoomProfilesRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMemberInput">
+    <wsdl:part name="parameter" element="GetMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateGroupOutput">
+    <wsdl:part name="parameter" element="UpdateGroupResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pauseRecordingOutput">
+    <wsdl:part name="parameter" element="PauseRecordingResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pauseRecordingInput">
+    <wsdl:part name="parameter" element="PauseRecordingRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getGroupsOutput">
+    <wsdl:part name="parameter" element="GetGroupsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomURLInput">
+    <wsdl:part name="parameter" element="RemoveRoomURLRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createModeratorPINOutput">
+    <wsdl:part name="parameter" element="CreateModeratorPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomProfileInput">
+    <wsdl:part name="parameter" element="RemoveRoomProfileRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomsOutput">
+    <wsdl:part name="parameter" element="GetRoomsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="startRecordingInput">
+    <wsdl:part name="parameter" element="StartRecordingRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createRoomURLOutput">
+    <wsdl:part name="parameter" element="CreateRoomURLResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomInput">
+    <wsdl:part name="parameter" element="GetRoomRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeRoomProfileOutput">
+    <wsdl:part name="parameter" element="RemoveRoomProfileResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createRoomURLInput">
+    <wsdl:part name="parameter" element="CreateRoomURLRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="startVideoOutput">
+    <wsdl:part name="parameter" element="StartVideoResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createWebcastURLInput">
+    <wsdl:part name="parameter" element="CreateWebcastURLRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addMemberOutput">
+    <wsdl:part name="parameter" element="AddMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="leaveConferenceInput">
+    <wsdl:part name="parameter" element="LeaveConferenceRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteMemberOutput">
+    <wsdl:part name="parameter" element="DeleteMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createRoomPINOutput">
+    <wsdl:part name="parameter" element="CreateRoomPINResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateGroupInput">
+    <wsdl:part name="parameter" element="UpdateGroupRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GroupNotFoundFault">
+    <wsdl:part name="fault" element="GroupNotFoundFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="resumeRecordingInput">
+    <wsdl:part name="parameter" element="ResumeRecordingRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="removeWebcastURLInput">
+    <wsdl:part name="parameter" element="RemoveWebcastURLRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ResourceNotAvailableFault">
+    <wsdl:part name="fault" element="ResourceNotAvailableFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addMemberInput">
+    <wsdl:part name="parameter" element="AddMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createRoomPINInput">
+    <wsdl:part name="parameter" element="CreateRoomPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="locationTagsOutput">
+    <wsdl:part name="parameter" element="GetLocationTagsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomsInput">
+    <wsdl:part name="parameter" element="GetRoomsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRoomOutput">
+    <wsdl:part name="parameter" element="GetRoomResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="recordProfilesOutput">
+    <wsdl:part name="parameter" element="GetRecordingProfilesResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createWebcastPINInput">
+    <wsdl:part name="parameter" element="CreateWebcastPINRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="VidyoPortalAdminServicePortType">
+    <wsdl:operation name="getMembers">
+      <wsdl:input message="getMembersInput">
+    </wsdl:input>
+      <wsdl:output message="getMembersOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMember">
+      <wsdl:input message="getMemberInput">
+    </wsdl:input>
+      <wsdl:output message="getMemberOutput">
+    </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault" message="MemberNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addMember">
+      <wsdl:input message="addMemberInput">
+    </wsdl:input>
+      <wsdl:output message="addMemberOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="MemberAlreadyExistsFault" message="MemberAlreadyExistsFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateMember">
+      <wsdl:input message="updateMemberInput">
+    </wsdl:input>
+      <wsdl:output message="updateMemberOutput">
+    </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault" message="MemberNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteMember">
+      <wsdl:input message="deleteMemberInput">
+    </wsdl:input>
+      <wsdl:output message="deleteMemberOutput">
+    </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault" message="MemberNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRooms">
+      <wsdl:input message="getRoomsInput">
+    </wsdl:input>
+      <wsdl:output message="getRoomsOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoom">
+      <wsdl:input message="getRoomInput">
+    </wsdl:input>
+      <wsdl:output message="getRoomOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault" message="RoomNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addRoom">
+      <wsdl:input message="addRoomInput">
+    </wsdl:input>
+      <wsdl:output message="addRoomOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomAlreadyExistsFault" message="RoomAlreadyExistsFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateRoom">
+      <wsdl:input message="updateRoomInput">
+    </wsdl:input>
+      <wsdl:output message="updateRoomOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault" message="RoomNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomAlreadyExistsFault" message="RoomAlreadyExistsFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteRoom">
+      <wsdl:input message="deleteRoomInput">
+    </wsdl:input>
+      <wsdl:output message="deleteRoomOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault" message="RoomNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <wsdl:input message="getGroupsInput">
+    </wsdl:input>
+      <wsdl:output message="getGroupsOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getGroup">
+      <wsdl:input message="getGroupInput">
+    </wsdl:input>
+      <wsdl:output message="getGroupOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault" message="GroupNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addGroup">
+      <wsdl:input message="addGroupInput">
+    </wsdl:input>
+      <wsdl:output message="addGroupOutput">
+    </wsdl:output>
+      <wsdl:fault name="GroupAlreadyExistsFault" message="GroupAlreadyExistsFault">
+    </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateGroup">
+      <wsdl:input message="updateGroupInput">
+    </wsdl:input>
+      <wsdl:output message="updateGroupOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault" message="GroupNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteGroup">
+      <wsdl:input message="deleteGroupInput">
+    </wsdl:input>
+      <wsdl:output message="deleteGroupOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault" message="GroupNotFoundFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getParticipants">
+      <wsdl:input message="getParticipantsInput">
+    </wsdl:input>
+      <wsdl:output message="getParticipantsOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="inviteToConference">
+      <wsdl:input message="inviteToConferenceInput">
+    </wsdl:input>
+      <wsdl:output message="inviteToConferenceOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="leaveConference">
+      <wsdl:input message="leaveConferenceInput">
+    </wsdl:input>
+      <wsdl:output message="leaveConferenceOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="muteAudio">
+      <wsdl:input message="muteAudioInput">
+    </wsdl:input>
+      <wsdl:output message="muteAudioOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="unmuteAudio">
+      <wsdl:input message="unmuteAudioInput">
+    </wsdl:input>
+      <wsdl:output message="unmuteAudioOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="startVideo">
+      <wsdl:input message="startVideoInput">
+    </wsdl:input>
+      <wsdl:output message="startVideoOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="stopVideo">
+      <wsdl:input message="stopVideoInput">
+    </wsdl:input>
+      <wsdl:output message="stopVideoOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createRoomURL">
+      <wsdl:input message="createRoomURLInput">
+    </wsdl:input>
+      <wsdl:output message="createRoomURLOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomURL">
+      <wsdl:input message="removeRoomURLInput">
+    </wsdl:input>
+      <wsdl:output message="removeRoomURLOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createRoomPIN">
+      <wsdl:input message="createRoomPINInput">
+    </wsdl:input>
+      <wsdl:output message="createRoomPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomPIN">
+      <wsdl:input message="removeRoomPINInput">
+    </wsdl:input>
+      <wsdl:output message="removeRoomPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getLicenseData">
+      <wsdl:input message="getLicenseDataInput">
+    </wsdl:input>
+      <wsdl:output message="getLicenseDataOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalVersion">
+      <wsdl:input message="portalVersionInput">
+    </wsdl:input>
+      <wsdl:output message="portalVersionOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRecordingProfiles">
+      <wsdl:input message="recordProfilesInput">
+    </wsdl:input>
+      <wsdl:output message="recordProfilesOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="startRecording">
+      <wsdl:input message="startRecordingInput">
+    </wsdl:input>
+      <wsdl:output message="startRecordingOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault" message="ResourceNotAvailableFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pauseRecording">
+      <wsdl:input message="pauseRecordingInput">
+    </wsdl:input>
+      <wsdl:output message="pauseRecordingOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="resumeRecording">
+      <wsdl:input message="resumeRecordingInput">
+    </wsdl:input>
+      <wsdl:output message="resumeRecordingOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="stopRecording">
+      <wsdl:input message="stopRecordingInput">
+    </wsdl:input>
+      <wsdl:output message="stopRecordingOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getLocationTags">
+      <wsdl:input message="locationTagsInput">
+    </wsdl:input>
+      <wsdl:output message="locationTagsOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getWebcastURL">
+      <wsdl:input message="webcastURLInput">
+    </wsdl:input>
+      <wsdl:output message="webcastURLOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createWebcastURL">
+      <wsdl:input message="createWebcastURLInput">
+    </wsdl:input>
+      <wsdl:output message="createWebcastURLOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeWebcastURL">
+      <wsdl:input message="removeWebcastURLInput">
+    </wsdl:input>
+      <wsdl:output message="removeWebcastURLOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createWebcastPIN">
+      <wsdl:input message="createWebcastPINInput">
+    </wsdl:input>
+      <wsdl:output message="createWebcastPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeWebcastPIN">
+      <wsdl:input message="removeWebcastPINInput">
+    </wsdl:input>
+      <wsdl:output message="removeWebcastPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoomProfiles">
+      <wsdl:input message="getRoomProfilesInput">
+    </wsdl:input>
+      <wsdl:output message="getRoomProfilesOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoomProfile">
+      <wsdl:input message="getRoomProfileInput">
+    </wsdl:input>
+      <wsdl:output message="getRoomProfileOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="setRoomProfile">
+      <wsdl:input message="setRoomProfileInput">
+    </wsdl:input>
+      <wsdl:output message="setRoomProfileOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomProfile">
+      <wsdl:input message="removeRoomProfileInput">
+    </wsdl:input>
+      <wsdl:output message="removeRoomProfileOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createModeratorPIN">
+      <wsdl:input message="createModeratorPINInput">
+    </wsdl:input>
+      <wsdl:output message="createModeratorPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidModeratorPINFormatFault" message="InvalidModeratorPINFormatFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeModeratorPIN">
+      <wsdl:input message="removeModeratorPINInput">
+    </wsdl:input>
+      <wsdl:output message="removeModeratorPINOutput">
+    </wsdl:output>
+      <wsdl:fault name="NotLicensedFault" message="NotLicensedFault">
+    </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault" message="InvalidArgumentFault">
+    </wsdl:fault>
+      <wsdl:fault name="GeneralFault" message="GeneralFault">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="VidyoPortalAdminServiceBinding" type="VidyoPortalAdminServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getMembers">
+      <soap:operation soapAction="getMembers"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMember">
+      <soap:operation soapAction="getMember"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault">
+        <soap:fault name="MemberNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addMember">
+      <soap:operation soapAction="addMember"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="MemberAlreadyExistsFault">
+        <soap:fault name="MemberAlreadyExistsFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateMember">
+      <soap:operation soapAction="updateMember"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault">
+        <soap:fault name="MemberNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteMember">
+      <soap:operation soapAction="deleteMember"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="MemberNotFoundFault">
+        <soap:fault name="MemberNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRooms">
+      <soap:operation soapAction="getRooms"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoom">
+      <soap:operation soapAction="getRoom"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault">
+        <soap:fault name="RoomNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addRoom">
+      <soap:operation soapAction="addRoom"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomAlreadyExistsFault">
+        <soap:fault name="RoomAlreadyExistsFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateRoom">
+      <soap:operation soapAction="updateRoom"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault">
+        <soap:fault name="RoomNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomAlreadyExistsFault">
+        <soap:fault name="RoomAlreadyExistsFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteRoom">
+      <soap:operation soapAction="deleteRoom"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="RoomNotFoundFault">
+        <soap:fault name="RoomNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <soap:operation soapAction="getGroups"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getGroup">
+      <soap:operation soapAction="getGroup"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault">
+        <soap:fault name="GroupNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addGroup">
+      <soap:operation soapAction="addGroup"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="GroupAlreadyExistsFault">
+        <soap:fault name="GroupAlreadyExistsFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateGroup">
+      <soap:operation soapAction="updateGroup"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault">
+        <soap:fault name="GroupNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="deleteGroup">
+      <soap:operation soapAction="deleteGroup"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GroupNotFoundFault">
+        <soap:fault name="GroupNotFoundFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getParticipants">
+      <soap:operation soapAction="getParticipants"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="inviteToConference">
+      <soap:operation soapAction="inviteToConference"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="leaveConference">
+      <soap:operation soapAction="leaveConference"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="muteAudio">
+      <soap:operation soapAction="muteAudio"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="unmuteAudio">
+      <soap:operation soapAction="unmuteAudio"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="startVideo">
+      <soap:operation soapAction="startVideo"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="stopVideo">
+      <soap:operation soapAction="stopVideo"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createRoomURL">
+      <soap:operation soapAction="createRoomURL"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomURL">
+      <soap:operation soapAction="removeRoomURL"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createRoomPIN">
+      <soap:operation soapAction="createRoomPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomPIN">
+      <soap:operation soapAction="removeRoomPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getLicenseData">
+      <soap:operation soapAction="getLicenseData"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortalVersion">
+      <soap:operation soapAction="getPortalVersion"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRecordingProfiles">
+      <soap:operation soapAction="getRecordingProfiles"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="startRecording">
+      <soap:operation soapAction="startRecording"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ResourceNotAvailableFault">
+        <soap:fault name="ResourceNotAvailableFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="pauseRecording">
+      <soap:operation soapAction="pauseRecording"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="resumeRecording">
+      <soap:operation soapAction="resumeRecording"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="stopRecording">
+      <soap:operation soapAction="stopRecording"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getLocationTags">
+      <soap:operation soapAction="getLocationTags"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getWebcastURL">
+      <soap:operation soapAction="getWebcastURL"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createWebcastURL">
+      <soap:operation soapAction="createWebcastURL"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeWebcastURL">
+      <soap:operation soapAction="removeWebcastURL"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createWebcastPIN">
+      <soap:operation soapAction="createWebcastPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeWebcastPIN">
+      <soap:operation soapAction="removeWebcastPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoomProfiles">
+      <soap:operation soapAction="getRoomProfiles"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRoomProfile">
+      <soap:operation soapAction="getRoomProfile"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="setRoomProfile">
+      <soap:operation soapAction="setRoomProfile"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeRoomProfile">
+      <soap:operation soapAction="removeRoomProfile"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createModeratorPIN">
+      <soap:operation soapAction="createRoomModeratorPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidModeratorPINFormatFault">
+        <soap:fault name="InvalidModeratorPINFormatFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="removeModeratorPIN">
+      <soap:operation soapAction="removeRoomModeratorPIN"/>
+      <wsdl:input>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+      </wsdl:output>
+      <wsdl:fault name="NotLicensedFault">
+        <soap:fault name="NotLicensedFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentFault">
+        <soap:fault name="InvalidArgumentFault" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="GeneralFault">
+        <soap:fault name="GeneralFault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="VidyoPortalAdminService">
+    <wsdl:port name="VidyoPortalAdminServicePort" binding="VidyoPortalAdminServiceBinding">
+      <soap:address location="http://jivesoftware.sandbox.vidyo.com/services/v1_1/VidyoPortalAdminService/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

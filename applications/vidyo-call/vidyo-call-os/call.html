@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="stylesheets/jquery-ui-1.10.2.custom.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/bootstrap.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+<script type="text/javascript" charset="utf-8" src="javascripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/jquery-ui-1.10.2.custom.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/q.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
+
+<div id="container">
+    <label>Search for users</label>
+    <div id="search">
+        <input type="text" id="user-search-input"/>
+        <a id="user-list-link" href="#">Select from list</a>
+    </div>
+
+    <div id="user-list-container" style="display: none;">
+        <div id="user-list" class="user-list">
+            <ul></ul>
+        </div>
+        <div id="frequent-user-list" class="user-list" style="display: none;">
+            <div class="user-list-header">FREQUENTLY CALLED</div>
+            <ul></ul>
+        </div>
+        <div id="author-list" class="user-list" style="display: none;">
+            <div class="user-list-header">AUTHOR</div>
+            <ul></ul>
+        </div>
+        <div id="context-user-list" class="user-list" style="display: none;">
+            <div class="user-list-header">PARTICIPANTS</div>
+            <ul></ul>
+        </div>
+    </div>
+
+    <div id="info" style="display: none;">
+    </div>
+
+    <div id="controls">
+        <input type="button" value="Call" id="call-button" disabled="true"/>
+    </div>
+</div>
+
+<div id="errors">
+
+</div>
+
+<div id="started-view" style="display: none;">
+    <div id="started-message">Your call has started. Please click below to return to the call display.</div>
+    <input type="button" value="Make another call" id="reload-button"/>
+
+</div>
+
+<!--
+/*
+ * Copyright 2013, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+    <ModulePrefs title="Vidyo Call"
+                 description="Start a Vidyo call."
+                 author="Jussi Heikkola"
+                 author_affiliation="Jive Software IT"
+                 author_email="jussi.heikkola@jivesoftware.com">
+        <Require feature="dynamic-height"/>
+        <Require feature="jive-core-v3"/>
+        <Require feature="jquery-1.6"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+        <Require feature="embedded-experiences"/>
+        <Require feature="actions">
+            <Param name="action-contributions">
+                <![CDATA[
+                  <action id="com.jivesoftware.it.videoCallFromDocument"
+                  path="jive/actions/content/document"
+                  label="Vidyo Call" view="embedded.call" icon="images/vidyo-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.videoCallFromDiscussion"
+                  path="jive/actions/content/discussion"
+                  label="Vidyo Call" view="embedded.call" icon="images/vidyo-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.videoCallFromQuestion"
+                  path="jive/actions/content/question"
+                  label="Vidyo Call" view="embedded.call" icon="images/vidyo-16.png"/> ]]>
+                <![CDATA[
+                  <action id="com.jivesoftware.it.videoCallFromPost"
+                  path="jive/actions/content/blog_post"
+                  label="Vidyo Call" view="embedded.call" icon="images/vidyo-16.png"/> ]]>
+            </Param>
+        </Require>
+        <Require feature="jive-connects-v1">
+            <Param name="alias:vidyo|title:Vidyo Service">jive:service://jivesoftware.com/it/vidyo?version=1</Param>
+        </Require>
+        <Link rel="Icon" href="images/vidyo-16.png"/>
+        <Link rel="MediumIcon" href="images/vidyo-48.png"/>
+        <Link rel="LargeIcon" href="images/vidyo-128.png"/>
+        <Link rel="Screenshot1" href="images/vidyo-screenshot.png" />
+        <Link rel="Screenshot2" href="images/vidyo-screenshot2.png" />
+
+    </ModulePrefs>
+    <Content type="html" view="canvas" href="call.html" preferred_height="400"/>
+    <Content type="html" view="embedded.call" href="call.html" preferred_height="280" preferred_width="450"/>
+</Module>
+
+<!--
+/*
+ * Copyright 2013, Jive Software Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+-->
