@@ -6,4 +6,4 @@ to book one. Room metadata and availability information is retrieved from a cust
 Java service that uses Exchange web services.
 
 See here for an example implementation of the custom Java service:
-https://github.com/jivesoftware/jiveapps/tree/master/servers/roomfinder-server
+https://github.com/jivesoftware/jiveapps/tree/master/applications/roomfinder/roomfinder-server

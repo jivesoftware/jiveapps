@@ -25,7 +25,6 @@ public class RoomFinderServlet extends HttpServlet {
     private URI ewsUrl;
     private boolean ewsTrace;
     private String appUrl;
-    private int minMeetingTime = 10; // default 10 minutes
     private static final Logger logger = Logger.getLogger(RoomFinderServlet.class);
 
     @Override
@@ -52,7 +51,6 @@ public class RoomFinderServlet extends HttpServlet {
             ewsUrl = new URI(prop.getProperty("ews.url"));
             ewsTrace = Boolean.parseBoolean(prop.getProperty("ews.trace"));
             appUrl = prop.getProperty("app.url");
-            minMeetingTime = Integer.parseInt(prop.getProperty("min.meeting.time"));
         }
         catch (Exception e) {
             logger.error("Failed to load properties", e);
@@ -117,77 +115,57 @@ public class RoomFinderServlet extends HttpServlet {
      * Handle GET request for available conference rooms. Expected request params:
      * location = portland/paloalto/boulder
      * start = start of availability request as epoch msec
-     * end = end of availability request as epoch msec
+     * length = meeting length in minutes
+     * person = email address of a required attendee
      *
-     * For example localhost:8082/room-finder?location=portland&start=1326815440616&end=1326817240616
+     * For example localhost:8082/room-finder?location=portland&start=1326815440616&length=30
      *
-     * Returns a json array of AvailabilityInfo instances, one for each room that is available.
+     * Returns a json array of RoomAvailabilityDetails instances, one for each room that is available.
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<AvailabilityInfo> availability = new ArrayList<AvailabilityInfo>();
-        MergedCalendarEventMapper eventMapper = new MergedCalendarEventMapper();
-
+        RoomAvailabilityResponse response;
         try {
-            // Validate request parameters. The app client code decides on start and end time, so it is possible
-            // validation will fail due to system clock difference between client and server.
-            String location = getStringRequestParameter(req, "location");
-            Date reqStart = getDateRequestParameter(req, "start");
-            Date reqEnd = getDateRequestParameter(req, "end");
-            validateRequestTimewindow(reqStart, reqEnd);
-            validateLocation(location);
-
-            // EWS requires that availability info is requested for a minimum of 24 hours. It seems that EWS returns
-            // data for the full day when request time window starts, and any following full day included in the
-            // time window. This means we need to make the time window end 48 hours later to make sure we get availability
-            // data for today and tomorrow.
-            Date apiWindowEnd = new Date(reqStart.getTime() + 1000*60*60*48);
-
-            // Request availability for all rooms in a location, and then process data to find the rooms available
-            // for requested time window.
-            ExchangeService service = createExchangeService(req.getHeader("Authorization"));
-
-            List<AttendeeInfo> attendees = populateAttendees(location);
-            GetUserAvailabilityResults results = service.getUserAvailability(attendees, new TimeWindow(reqStart, apiWindowEnd), AvailabilityData.FreeBusy);
-
-            logger.info("Request for " + location + " rooms, start:" + reqStart + " (" + req.getParameter("start") +
-                    "), end:" + reqEnd + " (" + req.getParameter("end") + ")");
-
-            int attendeeIndex = 0; // must rely on index to map availability to room
-            for (AttendeeAvailability attendeeAvailability : results.getAttendeesAvailability()) {
-                ConferenceRoom room = getRoomByEmail(attendees.get(attendeeIndex).getSmtpAddress());
-                if (attendeeAvailability.getErrorCode() == ServiceError.NoError) {
-                    logger.info("Processing availability for " + room.getName());
-
-                    // First merge consecutive events to simplify availability logic and then check if this room is available
-                    List<MergedCalendarEvent> mergedEvents = eventMapper.map(attendeeAvailability.getCalendarEvents());
-                    AvailabilityInfo info = getAvailability(reqStart, reqEnd, mergedEvents);
-
-                    if (info != null) { // this room is available, add it into the list
-                        info.setRoom(room);
-                        availability.add(info);
-
-                        String availableFrom = (info.getAvailableFrom() == null) ? "start" : info.getAvailableFrom().toString();
-                        String availableTo = (info.getAvailableTo() == null) ? "end" : info.getAvailableTo().toString();
-                        logger.info(room.getName() + " is available " + availableFrom + " to " + availableTo);
-                    }
-                    else {
-                        logger.info(room.getName() + " is not available");
-                    }
-                }
-                else {
-                    logger.warn("Error for " + room.getName() + ": " + attendeeAvailability.getErrorCode().name() + " " +
-                            attendeeAvailability.getErrorMessage());
-                }
-                attendeeIndex++;
+            // Parse and validate request parameters
+            List<String> locations = getStringRequestParameterValues(req, "location");
+            List<String> emails = null;
+            if (req.getParameter("person") != null) {
+                emails = getStringRequestParameterValues(req, "person");
             }
+
+            Date reqStart;
+            if (req.getParameter("start") != null) {
+                reqStart = getDateRequestParameter(req, "start");
+            }
+            else {
+                // default to five minutes after now to leave time for the client to make a booking
+                // because exchange does not allow meeting to start in the past
+                Calendar cal = new GregorianCalendar();
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.add(Calendar.MINUTE, 5);
+                reqStart = cal.getTime();
+            }
+
+            int length = 30;
+            if (req.getParameter("length") != null) {
+                length = getIntRequestParameter(req, "length");
+            }
+
+            validateLocations(locations);
+
+            // create an exchange web service class and authenticate user
+            AvailabilityService service = createAvailabilityService(req.getHeader("Authorization"));
+
+            // find the first available room suggestion
+            response = service.getFirstAvailableRoom(reqStart, length, locations, emails);
 
             // Write response object in json
             ObjectMapper mapper = new ObjectMapper();
             resp.setContentType("application/json");
             resp.setCharacterEncoding("utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            mapper.writeValue(resp.getWriter(), availability);
+            mapper.writeValue(resp.getWriter(), response);
         }
         catch (RequestParameterException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -214,16 +192,21 @@ public class RoomFinderServlet extends HttpServlet {
 
     /**
      * Validate location parameter and throw exception if invalid
-     * @param location
+     * @param locations
      */
-    private void validateLocation(String location) throws RequestParameterException {
-        for (ConferenceRoom room : allRooms) {
-            if (room.getLocation().equals(location)) {
-                return; // found the location name
+    private void validateLocations(List<String> locations) throws RequestParameterException {
+        for (String location : locations) {
+            boolean found = false;
+            for (ConferenceRoom room : allRooms) {
+                if (room.getLocation().equals(location)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                logger.warn("Unknown location: " + location);
+                throw new RequestParameterException("Unknown location.");
             }
         }
-        logger.warn("Unknown location: " + location);
-        throw new RequestParameterException("Unknown location.");
     }
 
     /**
@@ -258,6 +241,20 @@ public class RoomFinderServlet extends HttpServlet {
     }
 
     /**
+     * Get a parameter value from request and throw appropriate exception if its missing
+     * @param req
+     * @param name
+     */
+    private List<String> getStringRequestParameterValues(HttpServletRequest req, String name) throws RequestParameterException {
+        String[] val = req.getParameterValues(name);
+        if (val == null) {
+            logger.warn("Missing request param: " + name);
+            throw new RequestParameterException("Parameter '" + name + "' is missing.");
+        }
+        return Arrays.asList(val);
+    }
+
+    /**
      * Get a date parameter value from request and throw appropriate exception if its missing or invalid
      * @param req
      * @param name
@@ -276,66 +273,29 @@ public class RoomFinderServlet extends HttpServlet {
     }
 
     /**
-     * Return availability for given timeframe based on existing calendar events. Return null
-     * if there is no availability.
-     *
-     * @param start
-     * @param end
-     * @return
+     * Get int parameter value from request and throw appropriate exception if its missing or invalid
+     * @param req
+     * @param name
      */
-    private AvailabilityInfo getAvailability(Date start, Date end, List<MergedCalendarEvent> mergedEvents) {
-        AvailabilityInfo info = new AvailabilityInfo();
-
-        // Check existing events and if any of them overlaps with the requested time
-        // window, define constraints in returned AvailabilityInfo or return null.
-        // If none of the existing events conflict with the request, return a blank info instance.
-
-        for (MergedCalendarEvent calendarEvent : mergedEvents) {
-            Date eventStart = calendarEvent.getStart();
-            Date eventEnd = calendarEvent.getEnd();
-
-            if (eventStart.after(start) && eventStart.before(end)) {
-                // existing event start is within the requested window, save the earliest one
-                if (info.getAvailableTo() == null || info.getAvailableTo().after(eventStart)) {
-                    info.setAvailableTo(eventStart);
-                }
-            }
-
-            if (eventEnd.after(start) && eventEnd.before(end)) {
-                // existing event end is within the requested window, save the latest one that is also
-                // before the earliest endpoint
-                if ((info.getAvailableFrom() == null || info.getAvailableFrom().before(eventEnd)) &&
-                    (info.getAvailableTo() == null || info.getAvailableTo().after(eventEnd))) {
-                    info.setAvailableFrom(eventEnd);
-                }
-            }
-
-            if ((eventStart.before(start) || eventStart.equals(start)) &&
-                (eventEnd.after(end) || eventEnd.equals(end))) {
-                // existing event overlaps requested window completely -> no availability
-                return null;
-            }
+    private int getIntRequestParameter(HttpServletRequest req, String name) throws RequestParameterException {
+        String val = getStringRequestParameter(req, name);
+        try {
+            return Integer.parseInt(val);
         }
-
-        // after processing existing calendar events, check minimum length of availability
-        if (info.getAvailableTo() != null || info.getAvailableFrom() != null) {
-            long startMsec = info.getAvailableFrom() == null ? start.getTime() : info.getAvailableFrom().getTime();
-            long endMsec = info.getAvailableTo() == null ? end.getTime() : info.getAvailableTo().getTime();
-            if (endMsec - startMsec < 1000*60*minMeetingTime) {
-                logger.info("Ignoring a short availability for " + (endMsec - startMsec)/1000 + " secs");
-                return null;
-            }
+        catch (NumberFormatException e) {
+            logger.warn("Invalid request param: " + name);
+            throw new RequestParameterException("Parameter value for '" + name + "' is invalid.");
         }
-
-        return info;
     }
 
     /**
      * Handle POST request to perform an action. Expected request params:
      * action = book  (only action supported currently)
-     * room = email address of the room
      * start = meeting start as epoch msec
      * end = meeting end as epoch msec
+     * room = email address of a required room
+     * person = email address of a required attendee
+     * subject = meeting subject
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -346,41 +306,54 @@ public class RoomFinderServlet extends HttpServlet {
                 logger.warn("Request with invalid action:" + action);
                 throw new RequestParameterException("Unsupported action parameter.");
             }
-            String roomEmail = getStringRequestParameter(req, "room");
+
+            List<String> rooms = getStringRequestParameterValues(req, "room");
+            List<String> people = new ArrayList<String>();
+            if (req.getParameter("person") != null) {
+                people = getStringRequestParameterValues(req, "person");
+            }
+
             Date meetingStart = getDateRequestParameter(req, "start");
             Date meetingEnd = getDateRequestParameter(req, "end");
+            String meetingSubject = getStringRequestParameter(req, "subject");
             validateRequestTimewindow(meetingStart, meetingEnd);
 
-            // Check for availability for this specific room before creating appointment
-            ExchangeService service = createExchangeService(req.getHeader("Authorization"));
-            Date apiWindowEnd = new Date(meetingStart.getTime() + 1000*60*60*24); // 24hrs required by EWS
-            GetUserAvailabilityResults results = service.getUserAvailability(
-                    Arrays.asList(new AttendeeInfo(roomEmail)),
-                    new TimeWindow(meetingStart, apiWindowEnd),
-                    AvailabilityData.FreeBusy);
-            AttendeeAvailability availability = results.getAttendeesAvailability().getResponseAtIndex(0);
-            if (availability.getErrorCode() == ServiceError.NoError) {
-                MergedCalendarEventMapper eventMapper = new MergedCalendarEventMapper();
-                List<MergedCalendarEvent> mergedEvents = eventMapper.map(availability.getCalendarEvents());
-                AvailabilityInfo info = getAvailability(meetingStart, meetingEnd, mergedEvents);
-                if (info == null || info.getAvailableFrom() != null || info.getAvailableTo() != null) {
-                    // room is not available or only partially available, someone must have booked it
-                    logger.info("Booking request for " + roomEmail + " failed because room no longer available");
-                    resp.sendError(HttpServletResponse.SC_CONFLICT, "Room is no longer available for the requested time");
-                    return;
-                }
+            // Check for availability for participants before creating appointment
+            AvailabilityService service = createAvailabilityService(req.getHeader("Authorization"));
+            List<String> allEmails = new ArrayList<String>();
+            allEmails.addAll(rooms);
+            allEmails.addAll(people);
+            if (!service.allAttendeesAvailable(meetingStart, meetingEnd, allEmails)) {
+                // room is not available or only partially available, someone must have booked it
+                logger.info("Requested attendees are no longer available");
+                resp.sendError(HttpServletResponse.SC_CONFLICT, "All required attendees are no longer available");
+                return;
             }
 
             // Create a new meeting as the requesting user and add the room as an attendee
-            Appointment appointment = new Appointment(service);
-            appointment.setSubject("My meeting");
-            String body = "Created from <a href='" + appUrl + "'>Room Finder</a>";
+            Appointment appointment = new Appointment(service.getExchangeService());
+            appointment.setSubject(meetingSubject);
+            String body = "Created by <a href='" + appUrl + "'>Room Finder</a>";
             appointment.setBody(MessageBody.getMessageBodyFromText(body));
             appointment.setStart(meetingStart);
             appointment.setEnd(meetingEnd);
-            appointment.getRequiredAttendees().add(roomEmail);
-            appointment.save();
 
+            String loc = "";
+            for (String email : rooms) {
+                appointment.getResources().add(email);
+                ConferenceRoom room = getRoomByEmail(email);
+                if (room != null) {
+                    loc += room.getName() + ",";
+                }
+            }
+            // remove the last comma from room list
+            appointment.setLocation(loc.substring(0, loc.length() - 1));
+
+            for (String person : people) {
+                appointment.getRequiredAttendees().add(person);
+            }
+
+            appointment.save(); // send web service request
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
         catch (RequestParameterException e) {
@@ -411,7 +384,7 @@ public class RoomFinderServlet extends HttpServlet {
      * @return
      * @throws URISyntaxException
      */
-    private ExchangeService createExchangeService(String authHeader) throws URISyntaxException, CredentialsMissingException {
+    private AvailabilityService createAvailabilityService(String authHeader) throws URISyntaxException, CredentialsMissingException {
         String username = null, password = null;
         int prefixCount = "Basic ".length();
         if (authHeader != null && authHeader.length() > prefixCount) {
@@ -432,14 +405,9 @@ public class RoomFinderServlet extends HttpServlet {
             throw new CredentialsMissingException("Credentials missing");
         }
 
-        logger.info("Initializing EWS service for " + username);
-
-        ExchangeService service = new ExchangeService();
-        ExchangeCredentials credentials = new WebCredentials(username, password);
-        service.setCredentials(credentials);
-        service.setUrl(ewsUrl);
-        service.setTraceEnabled(ewsTrace);
-        return service;
+        AvailabilityService svc = new AvailabilityService(username, password, ewsUrl, ewsTrace);
+        svc.setAllRooms(allRooms);
+        return svc;
     }
 
     private List<AttendeeInfo> populateAttendees(String location) {

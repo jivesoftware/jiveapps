@@ -33,6 +33,3 @@ Settings, App Services page. Add a new service with the following parameters:
 - Authentication: Basic
 - Tags: jive:service://jivesoftware.com/it/roomfinder?version=1
 - URI: https://yourserver.com/RoomFinderService
-
-This service definition is available for app users to choose when they configure
-the app during installation.

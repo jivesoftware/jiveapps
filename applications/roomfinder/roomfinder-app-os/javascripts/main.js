@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Jive Software Inc.
+ * Copyright 2013, Jive Software Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. The ASF licenses this file
@@ -17,63 +17,258 @@
  */
 
 var roomFinder = {
-    reqStartDate: null,       // requested meeting start time
-    reqEndDate: null,         // requested meeting end time
-    reqLocation: null,        // requested room location
-    reqEndExtension: 0,       // increased when user clicks add time
+    reqStartDate: null,       // requested meeting start date
+    reqStartHour: null,       // requested meeting start hour
+    reqStartMinute: null,     // requested meeting start minute
+    reqLength: null,          // requested meeting length
+    reqLocation: [],          // requested room locations
+    reqPeople: [],            // user objects of requested people
+    selectedRooms: [],        // room objects of selected rooms
+    peopleListChanged: false, // flag to detect edits to people list
     currentJiveUser: null,    // holds logged in Jive user
     appdata: {},              // holds app data for current user
     resetTimer: null,         // used to clear out search results if start time reached
-    minimsg: null,            // message shows to user when results are cleared
 
-    availableRooms: null,     // room availability info from server
+    availabilityResponse: [], // room availability responses from server
+    availabilityIndex: -1,    // index of currently shown availability response
     locations: null,          // room locations info from server
 
     // startup function, defines event handlers and loads user and location data
     init: function() {
-        var currentView = gadgets.views.getCurrentView().getName();
-        if (currentView != "home") {
-            $("#container").addClass("canvasview");
-            $("#results").addClass("canvasview");
-        }
-        $("#add-time").click(gadgets.util.makeClosure(this, this.handleAddTimeClick));
-        this.minimsg = new gadgets.MiniMessage("", document.getElementById("minimessage"));
-
-        // First need to load the current user, then app data, and then available rooms for
-        // the location selected last time. If this is the first time, show an instruction text
         var thisObj = this;
-        this.loadCurrentUser( function() {
-            thisObj.loadAppData( function() {
-                if (currentView == "canvas" && thisObj.appdata.defaultLocation) {
-                    thisObj.getAvailability(thisObj.appdata.defaultLocation);
-                }
-                else {
-                    $("#instruction").show();
-                }
+
+        // While we are loading current user and app data, we can request the location metadata
+        this.loadAppData(function() {
+            thisObj.loadLocations( function() {
+                thisObj.getAvailability();
             })
         });
 
-        // While we are loading current user and app data, we can request the location metadata
-        this.loadLocations();
+        $("#length-select").dropkick({
+            change: function() {
+                thisObj.clearResults(false);
+            }
+        });
+
+        $("#start-input-date").datepicker({
+            showOn: "button",
+            buttonText: "Today",
+            beforeShowDay: $.datepicker.noWeekends,
+            minDate: 0,
+            maxDate: 364,
+            onSelect: gadgets.util.makeClosure(this, this.handleDatepickerSelect)
+        });
+        $("button.ui-datepicker-trigger").button();
+
+        $("#start-input-time").timepicker({
+            showOn: "button",
+            button: $("#timepicker-trigger"),
+            hours: {starts: 6, ends: 19},
+            minutes: {interval: 30},
+            defaultTime: '',
+            rows: 3,
+            showPeriod: true, // use 12-hour format
+            periodSeparator: '',
+            showLeadingZero: false,
+            showMinutesLeadingZero: false,
+            amPmText: ['am', 'pm'],
+            showCloseButton: true,
+            showDeselectButton: true,
+            deselectButtonText: "Clear",
+            onHourShow: gadgets.util.makeClosure(this, this.handleTimepickerHourShow),
+            onMinuteShow: gadgets.util.makeClosure(this, this.handleTimepickerMinuteShow),
+            onSelect: gadgets.util.makeClosure(this, this.handleTimepickerSelect)
+        });
+        $("#timepicker-trigger").button();
+
+        $("#search-button").button().click(function() {
+            thisObj.getAvailability(); // need a function here to make a parameterless call to getAvailability
+        });
+
+        $("#people-button").button().click(gadgets.util.makeClosure(this, this.handlePeopleButtonClick));
+        $("#book-button").button().click(gadgets.util.makeClosure(this, this.bookMeeting)).attr('disabled', 'disabled');
+        $("#next-link").click(gadgets.util.makeClosure(this, this.nextAvailability));
+        $("#prev-link").click(gadgets.util.makeClosure(this, this.prevAvailability));
     },
 
-    // load Jive user object into this.currentUser and then invoke the callback
-    loadCurrentUser: function( callbackFn ) {
-        if (this.currentJiveUser) {
-            callbackFn(); // user is already set
+    updatePeopleButton: function() {
+        if (this.reqPeople.length == 0) {
+            $("#people-button").button( "option", "label", "people...");
         }
         else {
-            var thisObj = this;
-            osapi.jive.core.users.get({id: '@viewer'}).execute(function(userResponse) {
-                if (!userResponse.error) {
-                    thisObj.currentJiveUser = userResponse.data;
-                    callbackFn();
-                }
-                else {
-                    thisObj.showError(userResponse.error.message + " (error code:" + userResponse.error.code + ")");
-                }
-            });
+            $("#people-button").button( "option", "label", this.formatPeopleLabel());
         }
+    },
+
+    handleTimepickerHourShow: function(hour) {
+        if (this.reqStartDate == null) {
+            // a future start date has not been selected, so we need to restrict time to later than now
+            var now = new Date();
+            if (hour < now.getHours()) {
+                return false;
+            }
+            else if (hour == now.getHours() && now.getMinutes() > 30) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    handleTimepickerMinuteShow: function(hour, minute) {
+        if (this.reqStartDate == null) {
+            // a future start date has not been selected, so we need to restrict time to later than now
+            var now = new Date();
+            if (hour == now.getHours() && minute <= now.getMinutes()) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    handleTimepickerSelect: function(time, inst) {
+        var buttonText;
+        if (inst.hours >= 0) {
+            // user clicked on hours or minutes, set the request time and button text
+            this.reqStartHour = inst.hours;
+            this.reqStartMinute = (inst.minutes >= 0) ? inst.minutes : 0;
+            var d = new Date();
+            d.setHours(this.reqStartHour, this.reqStartMinute);
+            buttonText = this.formatTimeString(d);
+        }
+        else if (inst.hours == -1 && inst.minutes == -1) {
+            // clear start time
+            this.reqStartHour = null;
+            this.reqStartMinute = null;
+            buttonText = "time...";
+        }
+        else {
+            console.log("ignoring click on minutes");
+            return;
+        }
+        $("#timepicker-trigger").button( "option", "label", buttonText);
+        this.clearResults();
+    },
+
+    handleDatepickerSelect: function(datetimeText, inst) {
+        this.reqStartDate = new Date(datetimeText);
+        var today = new Date();
+        var buttonText;
+        if (this.isSameDay(today, this.reqStartDate)) {
+            this.reqStartDate = null;
+            buttonText = "Today";
+        }
+        else {
+            buttonText = this.formatDateLabel(this.reqStartDate);
+        }
+
+        $("button.ui-datepicker-trigger").button( "option", "label", buttonText);
+        this.clearResults();
+    },
+
+    formatDateLabel: function(d) {
+        var today = new Date();
+        if ((d.getTime() - today.getTime()) < 1000*60*60*24*6) {
+            // date is within a week -> show weekday name
+            return $.datepicker.formatDate("D", d);  // Tue
+        }
+        return $.datepicker.formatDate("M d", d);   // Mar 6
+    },
+
+    formatPeopleLabel: function() {
+        if (this.reqPeople.length == 1) {
+            return "1 person";
+        }
+        return this.reqPeople.length + " people";
+    },
+
+    handlePeopleButtonClick: function() {
+        var thisObj = this;
+        this.peopleListChanged = false;
+        this.renderPeopleList();
+        $("#people-dialog").dialog({
+            modal: true,
+            height: 250,
+            buttons: {
+                Add: function() {
+                    thisObj.addPeople(gadgets.util.makeClosure(thisObj, thisObj.renderPeopleList));
+                },
+                Done: function() {
+                    $(this).dialog("close");
+                }
+            },
+            open: function(event, ui) {
+                if (thisObj.reqPeople.length == 0) {
+                    // No people have been selected yet, show the people picker right away
+                    thisObj.addPeople(gadgets.util.makeClosure(thisObj, thisObj.renderPeopleList));
+                }
+            },
+            close: function(event, ui) {
+                thisObj.updatePeopleButton();
+                if (thisObj.peopleListChanged) {
+                    thisObj.clearResults();
+                }
+            }
+        })
+
+    },
+
+    renderPeopleList: function() {
+        $("#people-list").empty();
+        var appObj = this;
+
+        $.each(this.reqPeople, function(index, user) {
+            var removeIcon = $("<a>").addClass("remove").click( function() {
+                appObj.reqPeople.splice(index,1);
+                appObj.peopleListChanged = true;
+                $(this).parent().remove();
+            })
+
+            $("<li>").append(user.name).append(removeIcon).appendTo($("#people-list"));
+        });
+
+    },
+
+    addPeople: function(callback) {
+        var appObj = this;
+        osapi.jive.core.users.requestPicker({
+            multiple: true,
+            success: function(response) {
+                var users = [];
+                if (response.data instanceof osapi.jive.core.User) {
+                    users.push(response.data);
+                }
+                else if (response.data instanceof Array) {
+                    users = response.data;
+                }
+
+                // response.data will be an array of osapi.jive.core.User objects
+                $.each(users, function(n, user) {
+                    if (!appObj.userArrayHasEmail(appObj.reqPeople, user.email)) {
+                        appObj.reqPeople.push(user);
+                        appObj.peopleListChanged = true;
+                    }
+                });
+
+                if (callback) {
+                    callback();
+                }
+            },
+            error: function(error) {
+                // handle error, retry, console.log(error), etc.
+                console.log(error);
+            }
+        });
+    },
+
+    userArrayHasEmail: function(users, email) {
+        var found = false;
+        $.each(users, function(n, user) {
+            if (user.email == email) {
+                found = true;
+                return false; // stop $.each loop
+            }
+        });
+        return found;
     },
 
     // load app data for current user
@@ -85,14 +280,25 @@ var roomFinder = {
                         response.error.message + " (error code:" + response.error.code + ")");
             }
             else {
-                thisObj.appdata = response[thisObj.currentJiveUser.id];
-                callbackFn();
+                //thisObj.appdata = response[thisObj.currentJiveUser.id];
+
+                // response will contain an object property keyed by current user's ID
+                // which we dont have and dont want to query just for this purpose, so
+                // we'll just grab the first non-function property
+                for (var prop in response) {
+                    if (response.hasOwnProperty(prop) && typeof(prop) !== 'function') {
+                        thisObj.appdata = response[prop];
+                    }
+                }
             }
+
+            // continue execution even in the case of errors since appdata is not critical
+            callbackFn();
         });
     },
 
     // load available room locations from server
-    loadLocations: function() {
+    loadLocations: function(callback) {
         var options = {
             alias: "roomfinder",
             headers: {"Accept": ["application/json"]},
@@ -100,84 +306,140 @@ var roomFinder = {
             refreshInterval: 3600 // cache 1hr
         };
 
-        var callback = gadgets.util.makeClosure(this, this.handleLocationResponse);
-        osapi.jive.connects.get(options).execute(callback);
+        var handler = gadgets.util.makeClosure(this, this.handleLocationResponse, callback);
+        osapi.jive.connects.get(options).execute(handler);
     },
 
-    // handle button click to add more time to the meeting end
-    handleAddTimeClick: function() {
-        // extend meeting end time out another 30mins when user clicks on add time
-        // and repeat the search for same location
-        this.reqEndExtension++;
-        if (this.reqEndExtension > 2) {
-            $("#add-time").attr('disabled', 'disabled');
-        }
-        this.getAvailability(this.reqLocation);
-    },
-
-    // handle button click to search for available rooms for a location
-    handleLocationClick: function(location) {
-        // save previously selected location
-        osapi.appdata.update({data: {defaultLocation: location}}).execute(function(resp) {
-            if (resp.error) {
-                console.error(resp.error.message + " (error code:" + resp.error.code + ")");
-            }
-        });
-
-        // reset meeting end time to default 30mins out when user clicks on a location
-        this.reqEndExtension = 0;
-        $("#add-time").removeAttr('disabled');
-        this.getAvailability(location);
-    },
-
-    // query server for room availability for a location
-    getAvailability: function(location) {
+    clearResults: function(showSearchMessage) {
         $("#results").hide();
-        $("#timewindow").hide();
+
+        // empty all response data
+        this.availabilityIndex = -1;
+        this.availabilityResponse = [];
+
+        if ($("#location-controls input:checked").length > 0) {
+            $("#messages").hide();
+            $("#search-button").show();
+            if (showSearchMessage) {
+                $("#search-message").show();
+            }
+            else {
+                $("#search-message").hide();
+            }
+        }
+        else {
+            // no locations are selected, show a message to help with that
+            $("#search-button").hide();
+            this.showMessage("Please select a location");
+        }
+    },
+
+    currentAvailability: function() {
+        if (this.availabilityIndex < 0) {
+            return null;
+        }
+        return this.availabilityResponse[this.availabilityIndex];
+    },
+
+    /**
+     * Find prev available meeting time without changing criteria
+     */
+    prevAvailability: function() {
+        if (this.availabilityIndex > 0) {
+            this.availabilityIndex--;
+            this.showResults();
+        }
+    },
+
+    /**
+     * Find next available meeting time without changing criteria
+     */
+    nextAvailability: function() {
+        if (this.availabilityIndex < this.availabilityResponse.length-1) {
+            // there is a previously loaded availability following the current one, so just move to it
+            this.availabilityIndex++;
+            this.showResults();
+        }
+        else {
+            // figure out new start time by moving end time forward by 30mins regardless of
+            // meeting length and subtracting desired meeting length
+            var newEnd = new Date(this.currentAvailability().endDate.getTime() + 1000*60*30);
+            if (newEnd.getHours() == 0 && newEnd.getMinutes() > 0) {
+                // must have rolled into next day.. dont allow that
+                return;
+            }
+            var newStart = new Date(newEnd.getTime() - 1000*60*this.reqLength);
+
+            // todo when searching for people availability, and next brings up a
+            // slot on the next day, the following next click does not work
+
+            this.getAvailability(newStart);
+        }
+    },
+
+    // query server for room availability using filters saved in properties
+    getAvailability: function(startDate) {
+        $("#search-button").hide();
+        $("#search-message").hide();
+        $("#messages").hide();
+        $("#results").hide();
 
         $("img.activity-indicator").show();
 
-        // figure out requested time window based on current time
-        var helperDate = new Date();
-        helperDate.setSeconds(0, 0);
-        var delayMsec = 1000*60*3; // add 3min because start must be in the future
-        var reqStartMsec = helperDate.getTime() + delayMsec;
-        helperDate.setMinutes(0, 0, 0);
-        var reqEndMsec = helperDate.getTime();  // add 30min until at least extX30min + 20min past start
-        var minDuration = 1000*60*(20 + 30*this.reqEndExtension);
-        while (reqEndMsec < reqStartMsec + minDuration) {
-            reqEndMsec += 1000*60*30;
-        }
+        this.reqLocation = $("#location-controls input:checked").map(function() {
+            return $(this).prop("id");
+        }).get();
+        this.reqLength = $("#length-select").val();
 
-        // start timer that will automatically reset the view 10sec before start time
-        if (this.resetTimer != null) {
-            clearTimeout(this.resetTimer);
-        }
-        this.resetTimer = setTimeout(gadgets.util.makeClosure(this, this.showInitialView), delayMsec - 10000);
-
-        // save request params for later display
-        this.reqStartDate = new Date(reqStartMsec);
-        this.reqEndDate = new Date(reqEndMsec);
-        this.reqLocation = location;
+        // Save latest selected locations as defaults for this user
+        osapi.appdata.update({
+            data: {defaultLocations: this.reqLocation}
+        }).execute(function(response) {
+            if (response.error) {
+                console.log(response.error.message + " (error code:" + response.error.code + ")");
+            }
+        });
 
         var options = {
             alias: "roomfinder",
             headers: {"Accept": ["application/json"]},
             href: "/room-finder",
-            params: {"location": [location], "start": [reqStartMsec], "end": [reqEndMsec]}
+            params: {"location": this.reqLocation, "length": [this.reqLength]}
         };
 
+        if (this.reqPeople.length > 0) {
+            options.params.person = $.map(this.reqPeople, function(user) {
+                return user.email;
+            })
+        }
+
+        if (this.reqStartDate || this.reqStartHour || startDate) {
+            if (!startDate) {
+                // combine the selected start date and time, defaulting to today if no start date is selected
+                // and 8am if no time is selected
+                startDate = (this.reqStartDate == null) ? new Date() : this.reqStartDate;
+                var startHour = (this.reqStartHour == null) ? 8 : this.reqStartHour;
+                var startMinute = (this.reqStartMinute == null) ? 0 : this.reqStartMinute;
+                startDate.setHours(startHour, startMinute, 0, 0);
+            }
+            options.params.start = [startDate.getTime()];
+            console.log("Requesting availability starting " + startDate);
+        }
+
         // define a function to handle server response
-        var callback = gadgets.util.makeClosure(this, this.handleAvailabilityResponse, location);
+        var callback = gadgets.util.makeClosure(this, this.handleAvailabilityResponse);
         osapi.jive.connects.get(options).execute(callback);
     },
 
     // handle server response to a room availability request
-    handleAvailabilityResponse: function(location, response) {
+    handleAvailabilityResponse: function(response) {
+        var thisObj = this;
         if (response.error) {
             // define a callback function for retry operation if need to re-enter credentials
-            var retryFunc = gadgets.util.makeClosure(this, this.getAvailability, location);
-            this.handleJiveConnectsError(response, retryFunc);
+            //var retryFunc = gadgets.util.makeClosure(this, this.getAvailability);
+            this.handleJiveConnectsError(response, function() {
+                thisObj.getAvailability();
+            });
         }
         else if (response.content == undefined) {
             // The response is not what the API defines, must be a server error
@@ -186,16 +448,42 @@ var roomFinder = {
                            "known Apps authentication timeout issue. Please try to reload your browser.");
         }
         else {
-            this.availableRooms = response.content;
+            // availability is queried only as an initial search when response array is empty
+            // or when user clicks next to find next availability, so we can just append to the array here
+            if (response.content.locations) {
+                this.availabilityResponse.push(response.content);
+                this.availabilityIndex++;
+
+                var avail = this.currentAvailability();
+                avail.startDate = new Date(avail.start);
+                avail.endDate = new Date(avail.end);
+
+                // create a timer to clear data before meeting start time passes, do this only
+                // for the first meeting time slot, and not following ones
+                if (this.availabilityIndex == 0) {
+                    if (this.resetTimer != null) {
+                        clearTimeout(this.resetTimer);
+                    }
+                    var now = new Date();
+                    var delayMsec = avail.start - now.getTime();
+                    if (delayMsec < 1000*60*60*24) { // if start is more than 24hrs out, assume browser wont be up that long
+                        this.resetTimer = setTimeout(gadgets.util.makeClosure(this, this.clearResults, true), delayMsec);
+                    }
+                }
+            }
+            else {
+                this.availabilityResponse.push(null);
+                this.availabilityIndex++;
+            }
             this.showResults();
         }
     },
 
     // handle server response to a location metadata request
-    handleLocationResponse: function(response) {
+    handleLocationResponse: function(callback, response) {
         if (response.error) {
             // define a callback function for retry operation if need to re-enter credentials
-            var retryFunc = gadgets.util.makeClosure(this, this.loadLocations);
+            var retryFunc = gadgets.util.makeClosure(this, this.loadLocations, callback);
             this.handleJiveConnectsError(response, retryFunc);
         }
         else if (response.content == undefined) {
@@ -206,186 +494,223 @@ var roomFinder = {
         }
         else {
             this.locations = response.content;
-            this.showLocations();
+            this.showLocations(callback);
         }
     },
 
     // render location buttons based on server response
-    showLocations: function() {
+    showLocations: function(callback) {
         if (this.locations.length == 0) {
             this.showError("No locations configured on server.");
             return;
         }
 
-        var thisObj = this;
+        // create dom elements and a jquery button for each location
+        var appObj = this;
         $.each(this.locations, function(index, loc) {
-            var btn = $("<input>", {type: "button", class: "appbutton", value: loc.label})
-                    .click(gadgets.util.makeClosure(thisObj, thisObj.handleLocationClick, loc.name));
-            $("#controls").append(btn);
-        });
+            var label = $("<label>", {"for": loc.name}).addClass("location").text(loc.label);
+            var check = $("<input>", {type: "checkbox", id: loc.name}).click(
+                gadgets.util.makeClosure(appObj, appObj.clearResults, false));
 
+            $("#location-controls").append(check).append(label);
+
+            // automatically select previously selected location
+            if (appObj.appdata && appObj.appdata.defaultLocations) {
+                if (appObj.appdata.defaultLocations.indexOf(loc.name) > -1) {
+                    check.prop('checked', true);
+                }
+            }
+        });
+        if ($("#location-controls input:checked").length == 0) {
+            $("#portland").prop('checked', true); // initial default
+        }
+        $("#location-controls input").button();
         $("#controls").show();
+
+        if (callback) {
+            callback();
+        }
     },
 
-    // render room divs to home view from search results
     showResults: function() {
         $("img.activity-indicator").hide();
-        $("#instruction").slideUp("fast");
-        $("#results").empty();
+        $("#locations").empty();
+        var thisObj = this;
 
-        var locationName = this.getLocationDisplayName(this.reqLocation);
-        var timespan = this.formatTimeString(this.reqStartDate) + " - " + this.formatTimeString(this.reqEndDate);
-
-        if (this.availableRooms.length == 0) {
-            $("#timewindow-text").html("No rooms available in " + locationName + " " + timespan);
-            $("#timewindow").show();
+        if (this.currentAvailability() == null) {
+            this.showMessage("Sorry, no rooms are available.");
             return;
         }
 
-        $("#timewindow-text").html("Available in " + locationName + " " + timespan);
-        $("#timewindow").show();
+        // Create a div for each location with available rooms
+        $.each(this.currentAvailability().locations, function(n, loc) {
+            var locdiv = $("<div>").addClass("location");
+            var locationName = thisObj.getLocationDisplayName(loc.location);
+            $("<div>").addClass("locname").html(locationName).appendTo(locdiv);
+            $("#locations").append(locdiv);
+            var floorSections = [];
 
-        // Create a div for each available room with name, timeslot and book link
-        var thisObj = this;
-        var floorSections = [];
-        $.each(this.availableRooms, function(n, info) {
-            /*
-                <div class="floor">
-                    <div class="floorname">3rd floor</div>
-                    <div class="roomlist">
-                        <div class="room">
-                            <span class="roomname">Trapezoid</span>
-                            <span class="roomtime">(from 2:30pm to 2:45pm)</span>
-                            <div class="roombook">
-                                <a href="#">book</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             */
-
-            var roomdiv = $("<div>").addClass("room");
-            var roomname = $("<span>").addClass("roomname").html(info.room.name);
-            roomdiv.append(roomname);
-            var timewindow = thisObj.formatAvailabilityTimewindow(info);
-            if (timewindow) {
-                roomdiv.append($("<span>").addClass("roomtime").html(timewindow));
-            }
-
-            // create a link to book this room
-            var meetingStartMsec = info.availableFrom ?  info.availableFrom : thisObj.reqStartDate.getTime();
-            var meetingEndMsec = info.availableTo ?  info.availableTo : thisObj.reqEndDate.getTime();
-            var book = $("<a>", {href: "#"}).html("book").click(
-                    gadgets.util.makeClosure(thisObj, thisObj.bookRoom, meetingStartMsec, meetingEndMsec, info.room)
-            );
-            var bookdiv = $("<div>").addClass("roombook").append(book);
-            roomdiv.append(bookdiv);
-
-            // find a roomlist div for this floor and create one if not found
-            var roomlist;
-            for (i=0; i<floorSections.length; i++) {
-                if (floorSections[i].floor == info.room.floor) {
-                    roomlist = floorSections[i].roomlist;
-                    break;
-                }
-            }
-            if (!roomlist) { // does not exist yet, create new
-                var floordiv = $("<div>").addClass("floor");
-                var icon = $("<span>").addClass("indicator");
-                var floorname = $("<div>").addClass("floorname expanded").append(icon).append("Floor " + info.room.floor);
-                var propKey = thisObj.getPropertyKey(thisObj.reqLocation, info.room.floor);
-                // Show/hide room list when floor header is clicked and persist to appdata
-                floorname.click( function() {
-                    var value = $(this).hasClass("expanded") ? 0 : 1;
-                    var data = {};
-                    data[propKey] = value;
-                    osapi.appdata.update({data: data}).execute(function(resp) {
-                        if (resp.error) {
-                            console.error(resp.error.message + " (error code:" + resp.error.code + ")");
-                        }
-                        else { // also update the in-memory value
-                            thisObj.appdata[propKey] = value;
-                        }
-                    });
-                    $(this).toggleClass("expanded");
-                    $(this).next().slideToggle("fast");
-                    return false;
+            $.each(loc.rooms, function(m, room) {
+                var roomdiv = $("<div>").addClass("room").click( function() {
+                    $(this).toggleClass("highlight");
+                    room.selected = !room.selected ? true : false;
+                    thisObj.updateBookMessage();
                 });
 
-                roomlist = $("<div>").addClass("roomlist");
-
-                floordiv.append(floorname).append(roomlist);
-                $("#results").append(floordiv);
-                floorSections.push({floor: info.room.floor, roomlist:roomlist});
-
-                if (thisObj.appdata[propKey] == "0") {
-                    // this floor section has been hidden before -> hide it by default
-                    floorname.removeClass("expanded");
-                    roomlist.hide();
+                if (room.selected) {
+                    roomdiv.addClass("highlight");
                 }
-            }
-            roomlist.append(roomdiv);
+
+                var roomname = $("<span>").addClass("roomname").html(room.name);
+                roomdiv.append(roomname);
+
+                // find a roomlist div for this floor and create one if not found
+                var roomlist;
+                for (i=0; i<floorSections.length; i++) {
+                    if (floorSections[i].floor == room.floor) {
+                        roomlist = floorSections[i].roomlist;
+                        break;
+                    }
+                }
+                if (!roomlist) { // does not exist yet, create new
+                    var floordiv = $("<div>").addClass("floor");
+                    var icon = $("<span>").addClass("indicator");
+                    var floorname = $("<div>").addClass("floorname expanded").append(icon).append("Floor " + room.floor);
+
+                    // Show/hide room list when floor header is clicked
+                    floorname.click( function() {
+                        $(this).toggleClass("expanded");
+                        $(this).next().slideToggle("fast");
+                        return false;
+                    });
+
+                    roomlist = $("<div>").addClass("roomlist");
+                    floordiv.append(floorname).append(roomlist);
+                    locdiv.append(floordiv);
+                    floorSections.push({floor: room.floor, roomlist:roomlist});
+                }
+                roomlist.append(roomdiv);
+            });
         });
 
+        // moving to previous only makes sense when not on the first cached availability data
+        $("#prev-link").toggle(this.availabilityIndex > 0);
+
+        this.updateBookMessage();
         $("#results").show();
+        gadgets.window.adjustHeight();
     },
 
-    // Return the object property key used to save appdata settings
-    getPropertyKey: function(location, floor) {
-        return location + "_" + floor;
+    updateBookMessage: function() {
+        var roomnames = [];
+        $.each( this.currentAvailability().locations, function(n, loc) {
+            $.each( loc.rooms, function(m, room) {
+                if (room.selected) {
+                    roomnames.push(room.name);
+                }
+            });
+        });
+
+        var startTime = this.formatTimeString(this.currentAvailability().startDate);
+        var endTime = this.formatTimeString(this.currentAvailability().endDate);
+        var meetingDate = "";
+        if (!this.isSameDay(new Date(), this.currentAvailability().startDate)) {
+            // meeting starting tomorrow or later
+            meetingDate = this.formatDateLabel(this.currentAvailability().startDate) + " ";
+        }
+        $("#book-time").html(meetingDate + startTime + " - " + endTime);
+
+        if (roomnames.length == 0) {
+            $("#book-rooms").addClass("disabled").html("Select rooms to book");
+            $("#subject-field").hide();
+            $("#book-button").attr('disabled', 'disabled');
+            return;
+        }
+
+        // format the elements for room list message
+        var roomlist = this.formatList(roomnames);
+
+        var peopleList = "";
+        if (this.reqPeople.length > 0) {
+            peopleList = " with " + this.formatPeopleLabel();
+        }
+
+        $("#book-rooms").removeClass("disabled").html(roomlist + " " + peopleList);
+        $("#subject-field").show();
+        $("#book-button").removeAttr('disabled');
     },
 
-    // format display string for room availability time, return null if no display needed
-    formatAvailabilityTimewindow: function(availabilityInfo) {
-        var fromTime, toTime;
-        if (availabilityInfo.availableFrom) {
-            fromTime = this.formatTimeString(new Date(availabilityInfo.availableFrom));
+    /**
+     * Return a string where given array items are listed comma separated
+     * and the last two are separated with 'and'
+     * @param arr
+     * @return {String}
+     */
+    formatList: function(arr) {
+        var last = arr.pop();
+        var comma_list = "";
+        if (arr.length > 0) {
+            comma_list = arr.join(", ") + " and ";
         }
-        if (availabilityInfo.availableTo) {
-            toTime = this.formatTimeString(new Date(availabilityInfo.availableTo));
-        }
+        return comma_list + last;
+    },
 
-        if (fromTime && toTime) {
-            return "available " + fromTime + " - " + toTime;
-        }
-        else if (fromTime) {
-            return "available at " + fromTime;
-        }
-        else if (toTime) {
-            return "available until " + toTime;
-        }
-        else {
-            return null;
-        }
+    isSameDay: function(a, b) {
+        return a.getFullYear() == b.getFullYear() &&
+            a.getMonth() == b.getMonth() &&
+            a.getDate() == b.getDate();
     },
 
     // send a request to server to book a room
-    bookRoom: function(start, end, room) {
-        $("#timewindow").hide();
-        $("#results").empty();
+    bookMeeting: function() {
+        $("#results").hide();
         $("img.activity-indicator").show();
 
+        var thisObj = this;
+        var start = this.currentAvailability().startDate;
+        var end = this.currentAvailability().endDate;
+
+        var subject = $("#meeting-subject-input").val();
         var options = {
             alias: "roomfinder",
             href: "/room-finder",
-            params: {"action": ["book"], "start": [start], "end": [end], "room":[room.email]}
+            params: {"action": ["book"], "start": [start.getTime()], "end": [end.getTime()], "subject": subject, "room": []}
         };
 
-        var callback = gadgets.util.makeClosure(this, this.handleBookResponse, start, end, room);
+        // Add required users to booking request
+        if (this.reqPeople.length > 0) {
+            options.params.person = $.map(this.reqPeople, function(user) {
+                return user.email;
+            })
+        }
+
+        // Then add selected rooms
+        this.selectedRooms = [];
+        $.each( this.currentAvailability().locations, function(n, loc) {
+            $.each( loc.rooms, function(m, room) {
+                if (room.selected) {
+                    thisObj.selectedRooms.push(room);
+                    options.params.room.push(room.email);
+                }
+            });
+        });
+
+        var callback = gadgets.util.makeClosure(this, this.handleBookResponse, start, end);
         osapi.jive.connects.post(options).execute(callback);
     },
 
     // handle server response from booking request
-    handleBookResponse: function(start, end, room, response) {
+    handleBookResponse: function(start, end, response) {
         $("img.activity-indicator").hide();
         if (response.error) {
             if (response.error.code == 409) {
-                // Room is no longer available,
-                this.showError("Sorry, " + room.name + " was just booked. Please click on a location to try again.");
+                // Room or participant is no longer available,
+                this.showError("Sorry, room availability has just changed. Please click Search to try again.");
+                $("#search-button").show();
             }
             else {
                 // define a callback function for retry operation if need to re-enter credentials
-                var retryFunc = gadgets.util.makeClosure(this, this.handleBookResponse, start, end, room);
+                var retryFunc = gadgets.util.makeClosure(this, this.handleBookResponse, start, end);
                 this.handleJiveConnectsError(response, retryFunc);
             }
         }
@@ -396,15 +721,16 @@ var roomFinder = {
                            "known Apps authentication timeout issue. Please try to reload your browser.");
         }
         else {
-            var startDisplay = this.formatTimeString(new Date(start));
-            var endDisplay = this.formatTimeString(new Date(end));
-            var str = room.name + " booked from " + startDisplay + " to " + endDisplay + "!";
-            var message = $("<div>").addClass("booked-message").html(str);
+            var startDisplay = this.formatTimeString(start);
+            var endDisplay = this.formatTimeString(end);
 
-            var cancellation = $("<p>").addClass("booked-cancel").html(
-                    "If you didn't intend to book, please cancel the meeting from Outlook.");
+            var roomNames = $.map(this.selectedRooms, function(room) {
+                return room.name;
+            })
+            var roomList = this.formatList(roomNames);
+            var str = roomList + " booked from " + startDisplay + " to " + endDisplay + "!";
 
-            $("#results").append(message).append(cancellation);
+            this.showBookedMessage(str);
         }
     },
 
@@ -446,24 +772,19 @@ var roomFinder = {
         }
     },
 
-    // show an error message
     showError: function(msg) {
-        $("#timewindow").hide();
         $("img.activity-indicator").hide();
-        $("#results").empty();
-        $("<div>").addClass("error").html(msg).appendTo($("#results"));
-        $("#results").show();
+        $("#messages").html(msg).removeClass("booked").addClass("error").show();
     },
 
-    // reset view to instruction message and location buttons
-    showInitialView: function() {
-        $("#results").hide();
-        $("#timewindow").hide();
-        $("#instruction").show();
+    showMessage: function(msg) {
+        $("img.activity-indicator").hide();
+        $("#messages").html(msg).removeClass("error booked").show();
+    },
 
-        this.minimsg.createTimerMessage("Room results were cleared because the start time " +
-                this.formatTimeString(this.reqStartDate) +
-                " has passed. Please click on a location again to get new results.", 30);
+    showBookedMessage: function(msg) {
+        $("img.activity-indicator").hide();
+        $("#messages").html(msg).removeClass("error").addClass("booked").show();
     },
 
     // return US formatted time string hh:mm am/pm

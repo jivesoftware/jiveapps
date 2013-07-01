@@ -1,26 +1,66 @@
+<link rel="stylesheet" href="stylesheets/dropkick.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/jquery-ui-1.10.1.custom.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/jquery-ui-1.10.1.custom.bluetheme.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="stylesheets/jquery.ui.timepicker.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" />
+
+<script type="text/javascript" charset="utf-8" src="javascripts/jquery-ui-1.10.1.custom.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/jquery.dropkick-1.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/jquery.ui.timepicker.js"></script>
 <script type="text/javascript" charset="utf-8" src="javascripts/main.js"></script>
 
 <div id="container">
-    <div id="controls" style="display: none;">
-        <div id="instruction" style="display: none;">
-            Choose a location to see available conference rooms. Then click book!
+    <div id="controls">
+        <div id="location-controls">
+        </div>
+        <div id="filter-controls">
+            <select name="pretty" id="length-select" class="pretty dk" tabindex="1">
+                <option value="30">30min</option>
+                <option value="60">60min</option>
+                <option value="90">90min</option>
+            </select>
+            <input id="start-input-date" type="hidden">
+            <input id="start-input-time" type="hidden">
+            <button id="timepicker-trigger" class="timepicker_button_trigger">time...</button>
+            <button id="people-button">people...</button>
+        </div>
+        <div class="content-marker"></div>
+    </div>
+    <div id="messages" style="display: none;">
+    </div>
+    <div id="results" style="display: none;">
+        <div id="locations">
+
+        </div>
+        <div id="book-controls" class="bluetheme">
+            <div id="book-time"></div>
+            <div id="book-rooms"></div>
+            <div id="subject-field-container">
+                <div id="subject-field" style="display: none;">
+                    <label>Subject:</label>
+                    <input id="meeting-subject-input" type="text" value="My meeting">
+                </div>
+            </div>
+            <a id="prev-link" href="#" style="display: none;">go back..</a>
+            <button id="book-button">Book</button>
+            <a id="next-link" href="#">..or find next</a>
         </div>
     </div>
-    <div id="timewindow" style="display: none;">
-        <span id="timewindow-text"></span>
-        <input type="button" id="add-time" class="appbutton" value="add time"/>
-    </div>
-    <div id="results">
+    <div id="search" class="bluetheme">
+        <div id="search-message" style="display: none;">Sorry, your room results were getting old. Click Search to refresh!</div>
+        <button id="search-button" style="display: none;">Search</button>
     </div>
     <img class="activity-indicator" src="images/activity-48.gif" alt="loading..." style="display: none;">
-    <div id="minimessage">
-    </div>
+</div>
+
+<div id="people-dialog" title="Edit People" style="display: none;">
+    <ul id="people-list">
+    </ul>
 </div>
 
 <!--
 /*
- * Copyright 2012, Jive Software Inc.
+ * Copyright 2013, Jive Software Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. The ASF licenses this file
