@@ -108,7 +108,7 @@ if (typeof (osapi &&
                 "osapi.jive.core.Update": getLoader(osapi.jive.corev3.contents, 1464927464),
                 "osapi.jive.core.DirectMessage": getLoader(osapi.jive.corev3.dms),
                 "osapi.jive.core.Space": getLoader(osapi.jive.corev3.places, 14),
-                "osapi.jive.core.Group": getLoader(osapi.jive.corev3.places, 4),
+                "osapi.jive.core.Group": getLoader(osapi.jive.corev3.places, 700),
                 "osapi.jive.core.Project": getLoader(osapi.jive.corev3.places, 600),
                 "osapi.jive.core.User": getLoader(osapi.jive.corev3.people),
                 "osapi.jive.core.Attachment": getLoader(osapi.jive.corev3.attachments),
