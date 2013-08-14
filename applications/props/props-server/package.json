@@ -2,14 +2,14 @@
   "name": "propsapp",
   "version": "0.0.1",
   "engines": {
-    "node": "0.8.x",
-    "npm":  "1.1.x"
+    "node": "0.10.x",
+    "npm":  "1.3.x"
   },
   "scripts": {
-    "start": "coffee web.coffee"
+    "start": "coffee lib/web.coffee"
   },
   "dependencies": {
-      "express":            "2.5.9",
+      "express":            "3.x",
       "coffee-script":      "1.3.3",
       "redis-url":          "0.1.0",
       "simpledb":           "git://github.com/aarong/simpledb.git#master",

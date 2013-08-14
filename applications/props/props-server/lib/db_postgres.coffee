@@ -20,14 +20,10 @@
 # Require Libraries
 #
 $         = require 'jquery'
+util      = require './util.js'
 pg        = require 'pg'
 log       = require 'util'
-
-util      = require './util.js'
-require './init.js'
-
-# Default environment
-_env = 'development'
+fs        = require 'fs'
 
 # Return a date N days ago
 daysAgo = (n=0) ->
@@ -39,81 +35,101 @@ daysAgo = (n=0) ->
 e = (str) -> str.replace(/'/g, "''")
 
 DB =
-  env: (val) ->
-    if val
-      _env = val
-    else
-      (if _env then _env else 'development')
-
 # Standard Callback that will log any db errors and call passed callback, then call done() to return the postgres client to the pool.
   standardCallback: (callback, query, done) ->
     (error, result) ->
       if error
-        log.debug "  Postgres error on query #{query}: ", JSON.stringify error
+        log.debug "  Postgres error on query #{query}: "+ JSON.stringify error
         callback error, null
       done();
       callback error, result
 
-  padNumber: (number, length) ->
-    str = '' + (number || 0)
-    while str.length < length
-      str = '0' + str
-    str
+#  padNumber: (number, length) ->
+#    str = '' + (number || 0)
+#    while str.length < length
+#      str = '0' + str
+#    str
 
 # Pull a postgres client from the client pool, and use it to run the query.
   query: (query, callback) ->
-    log.log "  Postgres Query   " + query
-    pg.connect(exports.DB_LOCATION, (err, client, done) ->
+    console.log "  Postgres Query   " + query
+    pg.connect(util.DB_LOCATION, (err, client, done) ->
       if err
         log.debug("connect error: "+JSON.stringify(err))
+        callback(err);
       else
-        client.query(query, DB.standardCallback(callback, query, done))
+        client.query(query, DB.standardCallback(callback, query, done));
     );
+
+  parametrizedQuery: (query, params, callback) ->
+    console.log " Postgres Query " + query
+    pg.connect util.DB_LOCATION, (err, client, done) ->
+      if err
+        log.debug "connect error: "+JSON.stringify err
+      else
+        client.query(query, params, DB.standardCallback(callback, query, done));
 
 ## Models
   Instances:
     tableName: () ->
-      "#{DB.env()}jiveinstances"
+      "jiveinstances"
+
+    checkRegistration: (jiveInstanceid, callback) ->
+      queryStr = "SELECT EXISTS (SELECT * FROM #{DB.Instances.tableName()} WHERE instanceid='#{jiveInstanceid}');"
+      DB.query queryStr, (err, res) ->
+        if err
+          console.log("Error querying table of jive instances: #{err}")
+        else
+          if (!res.rows[0].exists)
+            DB.Instances.register(jiveInstanceid, callback);
+          else
+            callback();
 
     register: (jiveInstanceid, callback) ->
       queryStr = "INSERT INTO #{DB.Instances.tableName()} values('#{jiveInstanceid}');"
-      DB.query(queryStr, (err, res) ->
+      DB.query(queryStr, (err) ->
         if err && err.code != '23505'
           log.debug("error registering new instance: #{JSON.stringify err}")
           callback(err)
         else
           if err && err.code == '23505'
             log.log("jive instance is already registered. resetting...")
-            DB.PropType.resetTable(jiveInstanceid)
+            DB.PropType.resetTable(jiveInstanceid, callback)
           else
             log.log("registered new jive instance into props app")
-            DB.PropType.populateTable(jiveInstanceid)
-          callback()
+            DB.PropType.populateTable(jiveInstanceid, callback)
       );
 
   PropType:
-    #since prop types can be customized, each jive instanance has its own prop types table.
     tableName: () ->
-      "#{DB.env()}proptypes"
+      "proptypes"
 
     fixtures: () ->
-      require('./defproptypes.js').propTypes
+      require('./defproptypes.js').propTypes;
 
     #fill the prop types table with the default prop types
-    populateTable: (jiveInstanceid) ->
-      for type in DB.PropType.fixtures()
-        DB.PropType.insert jiveInstanceid, type, (err, result) ->
-          if (err)
-            log.debug "Error initializing data into PropTypes table: "+ JSON.stringify err
-          else
-            log.log "Adding default prop type: " + JSON.stringify result
+    populateTable: (jiveInstanceid, callback) ->
+      iterator = (types, done) ->
+        if (types.length == 0)
+          done();
+        else
+          type = types[0];
+          DB.PropType.insert jiveInstanceid, type, (err, result) ->
+            if (err)
+              console.log "Error initializing data into PropTypes table: "+ JSON.stringify err
+            else
+              console.log "Adding default prop type: " + JSON.stringify result
+            iterator(types.slice(1), done);
+      iterator(DB.PropType.fixtures().slice(), callback);
 
-    resetTable: (jiveInstanceid) ->
-      DB.PropType.delete jiveInstanceid, null, (err, res) ->
+    resetTable: (jiveInstanceid, callback) ->
+      console.log("resetting for instance id:", jiveInstanceid);
+      DB.PropType.delete jiveInstanceid, null, (err) ->
         if err
           log.debug "error resetting table: could not delete existing prop types: #{JSON.stringify err}"
+          callback();
         else
-          DB.PropType.populateTable(jiveInstanceid)
+          DB.PropType.populateTable(jiveInstanceid, callback)
 
     propTypeObjFromRow: (row) ->
       {
@@ -126,8 +142,9 @@ DB =
       }
 
     findAllByLevel: (jiveInstanceid, level, callback) ->
-      level = DB.padNumber(level, 4)
-      query = "SELECT * FROM "+DB.PropType.tableName()+" WHERE jiveInstanceId='#{jiveInstanceid}'"
+#      level = DB.padNumber(level, 4)
+      console.log("getting types for instance id: ", jiveInstanceid);
+      query = "SELECT id, title, definition, level, image_url, jiveInstanceId FROM "+DB.PropType.tableName()+" WHERE jiveInstanceId='#{jiveInstanceid}'"
       query += " AND level <= '#{e(level)}';" if level
       DB.query query, (err, result) ->
         if err
@@ -138,13 +155,14 @@ DB =
             types.push DB.PropType.propTypeObjFromRow row
           callback(err, types)
 
-    # find a prop type by its title. Calculates the hash (based on title and instance id) and finds that entryh in the DB.
+    # find a prop type by its title. Calculates the hash (based on title and instance id) and finds that entry in the DB.
     findByName: (jiveInstanceid, name, callback) ->
       id = util.stringHash(name+jiveInstanceid)
       DB.PropType.findById(jiveInstanceid, id, callback)
 
     findById: (jiveInstanceid, id, callback) ->
-      DB.query("SELECT * FROM "+DB.PropType.tableName()+" WHERE jiveInstanceId='#{jiveInstanceid}' AND id='"+id+"';", (err, result) ->
+      query = "SELECT id, title, definition, level, image_url, jiveInstanceId FROM #{DB.PropType.tableName()} WHERE id='#{id}';";
+      DB.query query, (err, result) ->
         if (err)
           log.debug("findbyname error: "+JSON.stringify err);
           callback(err)
@@ -153,24 +171,66 @@ DB =
             callback(null, DB.PropType.propTypeObjFromRow(result.rows[0]));
           else
             callback(null, null)
-      )
+
+    fetchImage: (jiveInstanceid, type_id, callback) ->
+      query = "SELECT image FROM #{DB.PropType.tableName()} WHERE jiveinstanceid='#{jiveInstanceid}' AND id='#{type_id}'"
+      DB.query query, (err, result) ->
+        if (err)
+          console.log("error getting image from DB: ", err);
+          callback(404);
+        else if (!(result.rows[0]))
+          console.log("image not found in DB:", result);
+          callback(404);
+        else
+#          console.log("db result: ", result);
+          fs.writeFile 'public/img/prop_types/'+type_id+'.png', result.rows[0].image, () ->
+            callback(200);
+
+    imageURLWithTimestamp: (jiveInstanceid, id) ->
+      util.BASE_URL+"/props/types/image/"+jiveInstanceid+"/"+id+'/'+((new Date().getTime()/1000) | 0);
 
     modify: (jiveInstanceid, body, callback) ->
-      DB.PropType.delete jiveInstanceid, util.stringHash(body.title+jiveInstanceid), (err, result) ->
+      id = util.stringHash(body.title+jiveInstanceid);
+      DB.PropType.findById jiveInstanceid, id, (err, res) ->
         if err
-          callback err
+          console.log "error finding if this is an edit:", err
         else
-          DB.PropType.insert jiveInstanceid, body, (err1, res) ->
-            if err1
-              callback err1
+          if (res)
+            query = "UPDATE #{DB.PropType.tableName()} SET ";
+            if (res.title != e(body.title))
+              query += "title = '#{e(body.title)}',"
+            if (res.definition != e(body.definition))
+              query += "definition = '#{e(body.definition)}',"
+            if (res.level != body.level)
+              query += "level = #{body.level},"
+            if (res.image_url != body.image_url)
+              util.download body.image_url, id, () ->
+                filename ="public/img/#{id}.png";
+                fs.readFile filename, 'hex', (err, img) ->
+                  img = '\\x'+img;
+                  query += "image = $1,image_url='#{DB.PropType.imageURLWithTimestamp(jiveInstanceid, id)}' WHERE id='#{id}' RETURNING (id,title,definition,level,image_url,jiveInstanceId)";
+                  DB.parametrizedQuery(query, [img], callback)
             else
-              callback null, DB.PropType.propTypeObjFromRow res.rows[0]
+              query = query.slice(0,-1);
+              query += " WHERE id='#{id}' RETURNING (id,title,definition,level,image_url,jiveInstanceId);";
+              DB.query query, callback
+          else
+            DB.PropType.insert jiveInstanceid, body, (err1, res) ->
+              if err1
+                callback err1
+              else
+                callback null, DB.PropType.propTypeObjFromRow res.rows[0]
 
     insert: (jiveInstanceid, body, callback) ->
-      queryStr = "INSERT INTO "+DB.PropType.tableName()+" values ";
-      queryStr += "('"+util.stringHash(body.title+jiveInstanceid)+"','"+e(body.title)+"','"+e(body.definition)+"','"+e(body.level)+"','"+e(body.image_url)+"','"+e(jiveInstanceid)+"')"
-      queryStr += " RETURNING (id,title,definition,level,image_url,jiveInstanceId);";
-      DB.query queryStr, callback
+      id = util.stringHash(body.title+jiveInstanceid)
+      filename = "public/img/#{id}.png"
+      util.download body.image_url, id, () ->
+        fs.readFile filename, 'hex', (err, img) ->
+          img = '\\x'+img;
+          queryStr = "INSERT INTO #{DB.PropType.tableName()} values ";
+          queryStr += "('#{id}','#{e(body.title)}','#{e(body.definition)}','#{body.level}','#{jiveInstanceid}',$1,'#{DB.PropType.imageURLWithTimestamp(jiveInstanceid, id)}')"
+          queryStr += " RETURNING (id,title,definition,level,image_url,jiveInstanceId);";
+          DB.parametrizedQuery queryStr, [img], callback
 
     delete: (jiveInstanceid, id, callback) ->
       queryStr = "DELETE FROM #{DB.Prop.tableName()} WHERE jiveInstanceId='#{jiveInstanceid}' " #first delete props of the prop type (or all props if this is a reset).
@@ -195,13 +255,13 @@ DB =
 
   Prop:
     tableName: () ->
-      "#{DB.env()}props"
+      "props"
 
     contentTableName: () ->
-      "#{DB.env()}linkedcontent"
+      "linkedcontent"
 
     sanitizeOutputCallback: (err, res, callback) ->
-      if res.rows
+      if res && res.rows
         for row in res.rows
           for k,v of row
             if $.trim(v)=='NULL'
@@ -227,7 +287,7 @@ DB =
 
     #find prop by id
     find: (jiveInstanceId, id, callback) ->
-      queryStr = "SELECT * FROM "+DB.Prop.tableName()+" WHERE jiveInstanceId='#{jiveInstanceId}' AND name='"+id+"';"
+      queryStr = "SELECT * FROM "+DB.Prop.tableName()+" WHERE jiveInstanceId='#{jiveInstanceId}' AND id='"+id+"';"
       DB.query queryStr, (err, res) ->
         DB.Prop.sanitizeOutputCallback(err, res, callback)
 
@@ -316,7 +376,7 @@ DB =
           if linkedcontent.content_id != 'NULL'
             queryStr = "INSERT INTO #{DB.Prop.contentTableName()} "
             queryStr = " VALUES ('#{e(linkedcontent.content_id)}','#{e(linkedcontent.content_type)}','#{e(linkedcontent.content_link)}','#{e(linkedcontent.content_title)}','#{jiveInstanceId}'"
-            DB.query queryStr, (err,res) ->
+            DB.query queryStr, (err) ->
               if err
                 log.debug "error putting linked content"
               else

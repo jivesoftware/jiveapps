@@ -35,10 +35,6 @@ exports.parseParams = function(key) {
 
     var query = request.query;
 
-      function getPrefix() {
-	  return query.oauth_consumer_key == key ? '' : "dev";
-      }
-
     request.opensocial = {
 
       getAppId: function() {
@@ -55,7 +51,7 @@ exports.parseParams = function(key) {
       getJiveId: function() {
         var m = query.opensocial_owner_id.match(/(\d+)@(.+)/);
         if(m.length == 3) {
-            return getPrefix() + m[2];
+            return m[2];
         }
       }
 

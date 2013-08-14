@@ -85,7 +85,7 @@ var cleanUp = function() {
 d.run(function() {
     var instancename = "testinstance";
     DB.env("test");
-    DB.DB_LOCATION = "postgres://akshay.narayan@localhost:5432/akshay.narayan" //#connection string: "postgres://username:password@hostname:port/database"
+    DB.DB_LOCATION = "postgres://akshay.narayan@localhost:5432/akshay.narayan"; //#connection string: "postgres://username:password@hostname:port/database"
 
     DB.Instances.register(instancename, function(err) {
         if(err) {
