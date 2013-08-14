@@ -55,36 +55,7 @@ Welcome to the new and improved version of the props app!
 ##Postgres DB Structure##
 -------------------------
 
-1.  Jive Instances: 1 column
-    - jiveinstanceid primary key:  varchar(50)
-
-2.  Prop Types: 6 columns: primary key ID (integer, hash of instanceID and title), text title, text definition, integer level,
-    - ID (primary key): integer, hash of instanceID and title
-    - title: text
-    - definition: text
-    - level: integer (level required to give)
-    - jiveinstanceid (foreign key, references Jive Instances table): varchar(50)
-    - image: bytea (the actual prop image)
-    - image_url: text (link to prop image)
-
-3.  Linked Content: stores information about content linked to by embedded props.
-    - content_id (primary key):	varchar(50)
-    - content_type:	text
-    - content_link:	text
-    - content_title: text
-    - jiveinstanceid (foreign key, references Jive Instances table): varchar(50)
-
-4.  Props Table: stores given props
-    - id (primary key):	varchar(50)
-    - user_id not null:	integer
-    - giver_id not null:	integer
-    - prop_type (foreign key, references Prop Types table) not null:	integer
-    - message not null:	text
-    - stream_entry_url:	text
-    - orig_id:	varchar(50)
-    - jiveinstanceid (foreign key, references Jive Instances table) not null: varchar(50)
-    - created_at not null:	timestamp
-    - content_id (foreign key, can be null): varchar(50)
+See props-server/lib/dbsetup.sql
 
 ##New Endpoints##
 -----------------
