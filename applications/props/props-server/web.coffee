@@ -20,18 +20,19 @@ crypto       = require "crypto"
 express      = require "express"
 fs           = require "fs"
 request      = require "request"
-im           = require "imagemagick"
 log          = require "util"
 
 # Require Project Libraries
 #
-init       = require "./init.js"
-oauth      = require "./oauth.js"
-opensocial = require "./opensocial.js"
-DB         = require "./db_postgres.coffee"
-activity   = require "./activity.coffee"
-util       = require './util.js'
-proptypes  = require "./defproptypes.js"
+oauth      = require "./lib/oauth.js"
+opensocial = require "./lib/opensocial.js"
+DB         = require "./lib/db_postgres.coffee"
+activity   = require "./lib/activity.coffee"
+util       = require './lib/util.js'
+proptypes  = require "./lib/defproptypes.js"
+#bunchball  = require "./lib/bunchball.js" ##see line 295. To enable bunchball gamification, please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com
+
+console.log("current dir:", __dirname);
 
 # App OAuth Credentials
 #
@@ -78,6 +79,9 @@ handlePostgresDbErrors = (error, request, response, noSuchDomainResponse=[]) ->
   else
     response.send error, 400
 
+checkInstanceRegistration = (req, res, next) ->
+  jiveinstanceid = req.opensocial.getJiveId();
+  DB.Instances.checkRegistration(jiveinstanceid, next);
 
 # Lookup oauth keys...
 #
@@ -95,10 +99,11 @@ oauthLookup = (request, type, appId, callback) ->
 
 # Setup Webserver
 #
-app = express.createServer(express.logger())
+app = express()
 
 # Setup Web App Middleware
 #
+app.use express.logger()
 app.use oauth.parseHeader()
 app.use opensocial.parseParams(oauthCreds[prodAppId].key)
 app.use express.bodyParser()
@@ -107,49 +112,16 @@ app.use express.static(__dirname + '/public')
 app.use setContentType = (req, res, next) ->
   res.header "Content-Type", "application/json"
   next()
-
-app.error handleError
-
-download = (uri, filename) ->
-  filename = __dirname+'/public/img/prop_types/'+filename;
-  log.debug("image download:", uri, "->", filename)
-  req = request(uri).pipe(fs.createWriteStream(filename))
-  req.on('finish', () ->
-    log.debug("got image");
-    im.resize({
-      srcPath:filename,
-      dstPath:filename,
-      width:128
-    }, (err) ->
-      if err
-        log.debug("resize image err: "+err);
-      else
-        log.debug("saved!");
-    );
-  );
-
-undownload = (filename, callback) ->
-  fs.unlink(__dirname+'/public/img/prop_types/'+filename, callback);
+app.use handleError
 
 # ########## App Routes ###########
-
-app.get "/instances/register", (req, res) ->
-  if req.query.jiveInstanceId
-    DB.Instances.register(req.query.jiveInstanceId, (err) ->
-      if err
-        res.send "Registration failed", 500
-      else
-        res.send "Successfully registered jive Instace #{req.query.jiveInstanceId} into props app!", 200
-    );
-  else
-    res.send "Need jive Instance id!", 400
 
 # ### Prop Types ###
 
 # GET /props/types
 # Get default prop types, optionally filter by current request level
 #
-app.get "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
+app.get "/props/types", oauth.verifySignature(oauthLookup), checkInstanceRegistration, (req, res) ->
   DB.PropType.findAllByLevel req.opensocial.getJiveId(), req.query.level, (error, result) ->
     if error
       res.send error, 400
@@ -157,8 +129,9 @@ app.get "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
       res.send result, 200
 
 app.get "/props/types/reset", oauth.verifySignature(oauthLookup), (req, res) ->
-  DB.PropType.resetTable(req.opensocial.getJiveId())
-  res.send("Resetting prop types.\n")
+  DB.PropType.resetTable(req.opensocial.getJiveId(), () ->
+    res.send("Resetting prop types.\n")
+  );
 
 # GET /testRemove
 # testing for removing a prop type
@@ -187,24 +160,33 @@ app.get "/props/types/remove", oauth.verifySignature(oauthLookup), (req,res) ->
           if error
             res.send error, 400
           else
-            undownload util.stringHash(propTypeResult.title+jiveInstanceid)+'.png', (err) ->
-              if (err)
-                res.send err, 200
-              else
-                res.send "successfully removed prop type "+req.query.type, 200
+            res.send "successfully removed prop type "+req.query.type, 200
       else
         res.send "already removed: "+req.query.type, 200
 
+# GET /props/types/image/...
+# Get image for a prop type.
+# Params are
+# the :jiveinstance for which the prop type is relevant
+# the :id of the prop type
+# to prevent browser displaying an old cached image after a change, a timestamp of the last time the prop image was changed.
+app.get "/props/types/image/:jiveinstance/:id/:lastmodifiedtime", (req, res) ->
+  console.log("trying to get image: ", req.params.id);
+  DB.PropType.fetchImage req.params.jiveinstance, req.params.id, (code) ->
+    if (code != 200)
+      res.send(code)
+    else
+      res.header('Content-Type', 'image/png');
+      res.sendfile('public/img/prop_types/'+req.params.id+'.png');
+
 # POST /props/types
 # Create a new type of prop, or modify an existing prop type
-# prop types are uniquely identified by name.
+# prop types are uniquely identified by title.
 app.post "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
   log.log("create new prop type request: "+req.body)
   body = req.body
   if (body.title && body.definition && body.image_url && body.level)
     jiveInstanceid = req.opensocial.getJiveId();
-    download(body.image_url, util.stringHash(body.title+jiveInstanceid)+'.png')
-    body.image_url = body.reflection_image_url = exports.BASE_URL+'/img/prop_types/'+util.stringHash(body.title+jiveInstanceid)+'.png'
     DB.PropType.modify(jiveInstanceid, body, (error, result) ->
       if error
         res.send error, 400
@@ -228,7 +210,7 @@ app.post "/props/types", oauth.verifySignature(oauthLookup), (req, res) ->
 #   giver_id  - id of the user who gave the prop
 #   prop_type - the type of prop
 #
-app.get "/props", oauth.verifySignature(oauthLookup), (req, res) ->
+app.get "/props", oauth.verifySignature(oauthLookup), checkInstanceRegistration, (req, res) ->
   options = $.extend({}, req.query)
   options.jiveInstanceId = req.opensocial.getJiveId()
   options.ownerId = req.opensocial.getOwnerId()
@@ -247,7 +229,7 @@ app.get "/props", oauth.verifySignature(oauthLookup), (req, res) ->
 #   prop_type - the type of prop
 #   days_ago  - number of days back to count
 #
-app.get "/props/count", oauth.verifySignature(oauthLookup), (req, res) ->
+app.get "/props/count", oauth.verifySignature(oauthLookup),checkInstanceRegistration, (req, res) ->
   options = $.extend({}, req.query)
   options.ownerId = req.opensocial.getOwnerId()
 
@@ -260,7 +242,7 @@ app.get "/props/count", oauth.verifySignature(oauthLookup), (req, res) ->
 # GET /props/stream
 # Get the streams of props given during certain period from the request.
 #
-app.get "/props/stream", oauth.verifySignature(oauthLookup), (req, res) ->
+app.get "/props/stream", oauth.verifySignature(oauthLookup), checkInstanceRegistration, (req, res) ->
   options = $.extend({}, req.query)
 
   DB.Prop.stream req.opensocial.getJiveId(), options, (error, result, meta) ->
@@ -297,9 +279,17 @@ app.post "/props", oauth.verifySignature(oauthLookup), (req, res) ->
       res.send err, 400
     else
       DB.PropType.findById req.opensocial.getJiveId(), propObj.prop_type, (err1, propTypeResult) ->
-        propImageUrl = propTypeResult.image_url
+        # propImageUrl = propTypeResult.image_url
         # creds = oauthCreds[req.opensocial.getAppId()]
         # activity.postProp req.opensocial.getJiveId(), propObj, propImageUrl, creds
+
+        #post this prop to bunchball gamification. comment this function call out to disable.
+
+        #######################################################################################################################
+        ### to see the bunchball call, please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com ####
+        #######################################################################################################################
+
+        # if not using bunchball, un-comment this line to just send an http response
         res.send result, 201
   );
 
@@ -340,11 +330,9 @@ app.delete "/keys/:app_id", (req, res) ->
     delete oauthCreds[req.params.app_id]
     res.send 200
 
-
 app.get "/manage/help", (req, res) ->
   res.send("Jive Props App Backend Server\n
   Public Endpoints:
-  GET /instances/register to register a new Jive Instance into the Props App Database.\n
   POST /props to create a prop\n
   GET /props to get all props for a user\n
   GET /props/stream to get recent props\n
@@ -362,27 +350,22 @@ app.get "/manage/version", (req, res) ->
   res.send("1.1.0", 200)
 
 app.get "/manage/health/check", (req, res) ->
-  require("./dbhealth_postgres.js").healthTest((result, code) ->
+  require("./lib/dbhealth_postgres.js").healthTest((result, code) ->
     res.send(result,200)
   );
 
 app.get "/manage/health/connectivity", (req, res) ->
-  require("./dbhealth_postgres.js").connectivityCheck (result, code) ->
+  require("./lib/dbhealth_postgres.js").connectivityCheck (result, code) ->
     res.send(result,200)
 
 app.get "/manage/health/metrics", (req, res) ->
-  require("./dbhealth_postgres.js").getStats((result, code) ->
+  require("./lib/dbhealth_postgres.js").getStats((result, code) ->
     res.send(result,200)
   );
-
-app.get "/manage/health/shutdown", (req, res) ->
-  res.send("Shutting down...", 200);
-  process.exit();
 
 # Listen for requests on the specified port
 #
 port = process.env.PORT or 5000
 log.debug("about to listen...")
 app.listen port, ->
-  DB.env process.env.NODE_ENV # Set db environment (development/production/etc)
-  log.debug "Running in #{DB.env()} mode, listening on #{port}"
+  log.debug "Running props server, listening on #{port}"

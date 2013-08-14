@@ -15,7 +15,7 @@
 //
 
 // change this to point to your backend service
-window.BACKEND_HOST='http://gentle-scrubland-4425.herokuapp.com';
+window.BACKEND_HOST='[YOUR_BACKEND_HERE]';
 //
 // Copyright 2013 Jive Software
 //
@@ -1361,7 +1361,7 @@ window.GivePropsWizardView = Backbone.View.extend({
                         el.append('<div class="trophies"></div>');
                         $row = el.find('.trophies').last();
                     }
-
+                    console.log(propType);
                     var trophyHtml = that.trophyTemplate(propType.toJSON());
                     if(propType.get('level') <= viewerPoints) {
                         trophyHtml = $(trophyHtml).addClass('enabled');
@@ -1755,10 +1755,12 @@ gadgets.util.registerOnLoadHandler(function() {
     window.props     = new Props();
     window.propTypes = new PropTypes();
     window.propTypes.fetch({success: function() {
+        afterFirstRequest();
         if(currentView === 'canvas' || currentView === 'default') props.fetch();
         window.propTypes.ready = true;
         window.propTypes.callOnLoadCallbacks();
     }});
+
     window.viewer = new Person();
 
     // Get viewer's level
@@ -1852,7 +1854,7 @@ gadgets.util.registerOnLoadHandler(function() {
 
         }
 
-    // otherwise, show main view
+        // otherwise, show main view
     } else {
         // Initialize additional components for main view
         window.sidebarView         = new SidebarView({el: '.sidebar'});
@@ -1866,99 +1868,100 @@ gadgets.util.registerOnLoadHandler(function() {
         findTrophyCaseView.trophyDisplayView.on("trophySelected", trophySidebarView.render);
     }
 
-    console.log("browser: "+$.browser)
     if ($.browser.msie) {
         console.log("IE detected!");
         $('#propModal').removeClass('hide').removeClass('fade').hide();
     }
+});
 
+function afterFirstRequest() {
     $('#panel-loading').hide();
     $('#panel-main').show();
 
-    // ======================================================
-    // Debug View
-    // ======================================================
-    var showDebugView = function() {
-        givePropsWizardView.toggle();
-        trophyDisplayView.hide();
-        $('#debug-view').toggle();
-        $('#main-title').html($('#main-title').html() === "Debug View" ? "Give Props!" : "Debug View");
-        $('#btnDebugView').html($('#btnDebugView').html() === "Debug View" ? "Give Props" : "Debug View");
-    };
-    $('#btnDebugView').click(showDebugView);
-
-    // // Temporary
-    // if(currentView === 'embedded.embedProp') {
-    //     showDebugView();
-    // }
-
-    $('#debug_backend_request_submit').click(function() {
-        var method = $('#debug_backend_request_method').val().toLowerCase();
-
-        var options = {
-            href: $('#debug_backend_request_url').val(),
-            format: 'json',
-            authz: 'signed',
-            noCache: true,
-            headers: {"Content-Type":["application/json"]}
-        };
-
-        var params = $('#debug_backend_request_params').val();
-        if(params.length > 0) {
-            var paramsJSON = JSON.parse(params);
-            options['body'] = JSON.stringify(paramsJSON);
-        }
-
-        osapi.http[method](options).execute(function(res) {
-            // console.log(res);
-            $('#debug_backend_request_result').val(JSON.stringify(res, null, 2));
-        });
-    });
-
-    $('#debug_drop_rte_artifact').click(function(e) {
-        e.preventDefault();
-
-        var propType = propTypes.at(0);
-
-        alert("icon + label + embedded id");
-
-        // osapi.jive.core.container.closeApp({
-        //   "display": {
-        //     "type": "text",
-        //     "icon": propType.get('image_url'),
-        //     "label": "You Got Props!"
-        //   },
-        //   "target": {
-        //     "type": "embed",
-        //     "view": "embedded.embedProp",
-        //     "context": {
-        //       "id": "EDIT_ME_ID",
-        //       "lastUpdated": "2012-Jan-23"
-        //     }
-        //   }
-        // });
-
-        osapi.jive.core.container.closeApp({
-          data:{
-            display: {
-              type: "text",
-              icon: "http://apphosting.jivesoftware.com/apps/dev/props/img/icon16.png",
-              label: "You got props, son. (or daughter)"
-            },
-            target: {
-                type: "embed",
-                view: "embedded.showProp",
-                context: {
-                    "id": "EDIT_ME_ID"
-                }
-            }
-            // target: {
-            //   type: "url",
-            //   url: propType.get('image_url')
-            // }
-          }
-        });
-    });
+//    // ======================================================
+//    // Debug View
+//    // ======================================================
+//    var showDebugView = function() {
+//        givePropsWizardView.toggle();
+//        trophyDisplayView.hide();
+//        $('#debug-view').toggle();
+//        $('#main-title').html($('#main-title').html() === "Debug View" ? "Give Props!" : "Debug View");
+//        $('#btnDebugView').html($('#btnDebugView').html() === "Debug View" ? "Give Props" : "Debug View");
+//    };
+//    $('#btnDebugView').click(showDebugView);
+//
+//    // // Temporary
+//    // if(currentView === 'embedded.embedProp') {
+//    //     showDebugView();
+//    // }
+//
+//    $('#debug_backend_request_submit').click(function() {
+//        var method = $('#debug_backend_request_method').val().toLowerCase();
+//
+//        var options = {
+//            href: $('#debug_backend_request_url').val(),
+//            format: 'json',
+//            authz: 'signed',
+//            noCache: true,
+//            headers: {"Content-Type":["application/json"]}
+//        };
+//
+//        var params = $('#debug_backend_request_params').val();
+//        if(params.length > 0) {
+//            var paramsJSON = JSON.parse(params);
+//            options['body'] = JSON.stringify(paramsJSON);
+//        }
+//
+//        osapi.http[method](options).execute(function(res) {
+//            // console.log(res);
+//            $('#debug_backend_request_result').val(JSON.stringify(res, null, 2));
+//        });
+//    });
+//
+//    $('#debug_drop_rte_artifact').click(function(e) {
+//        e.preventDefault();
+//
+//        var propType = propTypes.at(0);
+//
+//        alert("icon + label + embedded id");
+//
+//        // osapi.jive.core.container.closeApp({
+//        //   "display": {
+//        //     "type": "text",
+//        //     "icon": propType.get('image_url'),
+//        //     "label": "You Got Props!"
+//        //   },
+//        //   "target": {
+//        //     "type": "embed",
+//        //     "view": "embedded.embedProp",
+//        //     "context": {
+//        //       "id": "EDIT_ME_ID",
+//        //       "lastUpdated": "2012-Jan-23"
+//        //     }
+//        //   }
+//        // });
+//
+//        osapi.jive.core.container.closeApp({
+//            data:{
+//                display: {
+//                    type: "text",
+//                    icon: "http://apphosting.jivesoftware.com/apps/dev/props/img/icon16.png",
+//                    label: "You got props, son. (or daughter)"
+//                },
+//                target: {
+//                    type: "embed",
+//                    view: "embedded.showProp",
+//                    context: {
+//                        "id": "EDIT_ME_ID"
+//                    }
+//                }
+//                // target: {
+//                //   type: "url",
+//                //   url: propType.get('image_url')
+//                // }
+//            }
+//        });
+//    });
 
     // ======================================================
     // Preload Images
@@ -1967,14 +1970,13 @@ gadgets.util.registerOnLoadHandler(function() {
     function preloadCssBackgrounds(cssSelector) {
         $(cssSelector).each(function() {
             var str = $(this).css('background-image');
-	    if(str != 'none') {
-		str = str.substring(4, str.length-1);
-		$('<img/>')[0].src = str;
-	    }
+            if(str != 'none') {
+                str = str.substring(4, str.length-1);
+                $('<img/>')[0].src = str;
+            }
         });
     }
 
     preloadCssBackgrounds('.trophies');
     preloadCssBackgrounds('.trophy .bg');
-
-});
+}
