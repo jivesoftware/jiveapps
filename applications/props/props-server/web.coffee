@@ -30,7 +30,8 @@ DB         = require "./lib/db_postgres.coffee"
 activity   = require "./lib/activity.coffee"
 util       = require './lib/util.js'
 proptypes  = require "./lib/defproptypes.js"
-#bunchball  = require "./lib/bunchball.js" ##see line 295. To enable bunchball gamification, please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com
+#To enable bunchball gamification, please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com
+#bunchball  = require "./lib/bunchball.js" ##Un-comment to enable. see line 282.
 
 console.log("current dir:", __dirname);
 
@@ -279,17 +280,15 @@ app.post "/props", oauth.verifySignature(oauthLookup), (req, res) ->
       res.send err, 400
     else
       DB.PropType.findById req.opensocial.getJiveId(), propObj.prop_type, (err1, propTypeResult) ->
-        # propImageUrl = propTypeResult.image_url
-        # creds = oauthCreds[req.opensocial.getAppId()]
-        # activity.postProp req.opensocial.getJiveId(), propObj, propImageUrl, creds
+        #post this prop to bunchball gamification. un-comment these lines out to enable.
+        #if (propTypeResult)
+        #  bunchball.newProp(propObj.user_id, propObj.giver_id, propTypeResult.title, () ->
+        #    res.send result, 201
+        #  );
+        #else
+        #  res.send result, 201
 
-        #post this prop to bunchball gamification. comment this function call out to disable.
-
-        #######################################################################################################################
-        ### to see the bunchball call, please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com ####
-        #######################################################################################################################
-
-        # if not using bunchball, un-comment this line to just send an http response
+        # if not using bunchball, comment out this line
         res.send result, 201
   );
 

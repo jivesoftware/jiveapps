@@ -16,6 +16,7 @@ Welcome to the new and improved version of the props app!
 - Edit lib/util.js in props-server to point to your database and your server.
 - In your database, run dbsetup.sql
     - If using heroku: cat dbsetup.sql | heroku pg:psql
+    - otherwise: psql < dbsetup.sql
 
 ####Bunchball####
 - Please contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com to get the bunchball gamification library for props app
@@ -51,6 +52,14 @@ Welcome to the new and improved version of the props app!
         There should be at least one Jive instance registered, and at least 8 prop types.
 8.  Deploy props-app in your instance (git push jiveapps ...)
 9.  Profit!
+
+###Enabling Bunchball Gamification###
+0.  Contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com to get the bunchball gamification library for props app.
+1.  Place the bunchball.js file in the lib directory of props-server.
+2.  Un-comment line 34 of web.coffee (the require statement)
+3.  Un-comment lines 283-291 of web.coffee. Be careful not to mess with the indentation.
+4.  Comment out line 292 of web.coffee.
+5.  Do any configuration inside bunchball to set up gamification.
 
 ##Postgres DB Structure##
 -------------------------
