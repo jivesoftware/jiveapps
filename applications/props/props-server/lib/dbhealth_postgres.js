@@ -16,48 +16,36 @@
 
 $         = require('jquery');
 util      = require('./util.js');
-pg     = require('pg');
-log   = require('util');
+pg        = require('pg');
+log       = require('util');
 
 /**
  * This is a helper class to test the server's connection to the database. It also returns basic metrics.
  */
-
-// Default environment
-var _env = 'development';
-
-var env =  function(val) {
-    if(val)
-        return _env = val;
-    else
-        if(_env)
-            return _env;
-        else
-            return 'development';
-};
-
-var query = function(query, callback) {
+function query(query, callback) {
     log.debug("test database query: "+query);
-    pg.connect(exports.DB_LOCATION, function(err, client, done){
+    console.log("DB location: ", util.DB_LOCATION);
+    pg.connect(util.DB_LOCATION, function(err, client, done){
         if(err) {
-            callback("ERROR:Could not connect to database: "+err, 500);
+            callback("ERROR:Could not connect to database: "+err, 200);
         }
         else {
             client.query(query, function(error, result) {
                 if(error) {
-                    callback("ERROR:Connected to database, but query failed: "+error, 500);
+                    callback("ERROR:Connected to database, but query failed: "+error, 200);
+                    done();
                 }
                 else {
                     callback(result, 200);
+                    done();
                 }
             });
         }
     });
-};
+}
 
-var healthTest = function(callback) {
-    var envStr = env();
-    var queryStr = util.format("SELECT table_name FROM information_schema.tables WHERE table_name IN ('%sproptypes','%sprops','%sjiveinstances','%slinkedcontent');",envStr,envStr,envStr,envStr);
+function healthTest(callback) {
+    var queryStr = log.format("SELECT table_name FROM information_schema.tables WHERE table_name IN ('proptypes','props','jiveinstances','linkedcontent');");
     query(queryStr, function(result, code) {
         if(code != 200) {
             callback(result, code);
@@ -72,55 +60,65 @@ var healthTest = function(callback) {
             }
         }
     });
-};
+}
 
-var connectivityCheck = function(callback) {
-    var queryStr = "SELECT EXISTS (SELECT table_name FROM information_schema.tables WHERE table_name='"+env();
+function connectivityCheck(callback) {
+    function printToResp(resp, passed, name) {
+        if (passed) {
+            return resp + "Table of "+name+"..........OK\n"
+        }
+        else {
+            return resp + "Table of "+name+"..........FAIL\n";
+        }
+    }
+    function findInRows(w, arr) {
+        for (var i=0;i<arr.length;i++) {
+            if (arr[i].column_name == w) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function check(arr, rows) {
+        var good = (arr.length == rows.length);
+        for (var i=0;i<arr.length;i++) {
+            if (!good) {
+                return false;
+            }
+            good = good && findInRows(arr[i], rows);
+        }
+        return good;
+    }
+    var queryStr = "SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '";
     var resp = "";
-    query(queryStr+"jiveinstances');", function(result, code) {
-        if (code != 200) {
+    query(queryStr+"jiveinstances';", function(result, code) {
+        if (code != 200 || !(result.rows)) {
             callback("Table of Jive Instances: "+result, code);
         }
         else {
-            if(result.rows[0].exists) {
-                resp += "Table of Jive Instances..........OK\n"
-            }
-            else {
-                resp += "Table of Jive Instances..........FAIL\n"
-            }
-            query(queryStr+"linkedcontent');", function(result, code) {
-                if (code != 200)  {
+            result = result.rows;
+            resp = printToResp(resp, (result.length == 1 && result[0].column_name == 'instanceid'), "Jive Instances");
+            query(queryStr+"linkedcontent';", function(result, code) {
+                if (code != 200 || !(result.rows))  {
                     callback (resp+"Table of Linked Content: "+result, code)
                 }
                 else {
-                    if(result.rows[0].exists) {
-                        resp += "Table of Linked Content..........OK\n"
-                    }
-                    else {
-                        resp += "Table of Linked Content..........FAIL\n"
-                    }
-                    query(queryStr+"proptypes');", function(result, code) {
-                        if (code != 200)  {
+                    result = result.rows;
+                    resp = printToResp(resp, check(["content_id","content_type","content_link","content_title","jiveinstanceid"], result), "Linked Content");
+                    query(queryStr+"proptypes';", function(result, code) {
+                        if (code != 200 || !(result.rows))  {
                             callback (resp+"Table of Prop Types: "+result, code)
                         }
                         else {
-                            if(result.rows[0].exists) {
-                                resp += "Table of Prop Types..............OK\n"
-                            }
-                            else {
-                                resp += "Table of Prop Types..............FAIL\n"
-                            }
-                            query(queryStr+"props');", function(result, code) {
-                                if (code != 200)  {
+                            result = result.rows;
+                            resp = printToResp(resp, check(["id","title","definition","level","jiveinstanceid","image","image_url"], result), "Prop Types");
+                            query(queryStr+"props';", function(result, code) {
+                                if (code != 200 || !(result.rows))  {
                                     callback (resp+"Table of Props Given: "+result, code)
                                 }
                                 else {
-                                    if(result.rows[0].exists) {
-                                        resp += "Table of Props Given.............OK\n"
-                                    }
-                                    else {
-                                        resp += "Table of Props Given.............FAIL\n"
-                                    }
+                                    result = result.rows;
+                                    resp = printToResp(resp, check(["id","user_id","giver_id","prop_type","message","stream_entry_url","orig_id","jiveinstanceid","created_at","content_id"], result), "Props Given");
                                     callback(resp, 200);
                                 }
                             });
@@ -130,10 +128,10 @@ var connectivityCheck = function(callback) {
             });
         }
     });
-};
+}
 
-var getStats = function(callback) {
-    var queryStr = "SELECT * FROM "+env()+"jiveinstances";
+function getStats(callback) {
+    var queryStr = "SELECT * FROM jiveinstances";
     var resp = "";
     query(queryStr, function(result, code) {
         if(code != 200) {
@@ -141,14 +139,14 @@ var getStats = function(callback) {
         }
         else {
             resp += "Jive Instances registered: "+result.rowCount+"\n";
-            queryStr = "SELECT * FROM "+env()+"props";
+            queryStr = "SELECT * FROM props";
             query(queryStr, function(result, code) {
                 if(code!=200) {
                     callback(resp+result, code);
                 }
                 else {
                     resp += "Props given: "+result.rowCount+"\n";
-                    queryStr = "SELECT * FROM "+env()+"proptypes";
+                    queryStr = "SELECT * FROM proptypes";
                     query(queryStr, function(result, code) {
                         if (code!= 200) {
                             callback(resp+result, code);
@@ -162,7 +160,7 @@ var getStats = function(callback) {
             });
         }
     });
-};
+}
 
 exports.healthTest = healthTest;
 exports.connectivityCheck = connectivityCheck;

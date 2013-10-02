@@ -14,7 +14,7 @@
    limitations under the License.
 **/
 
-var rootUrl = 'http://gentle-scrubland-4425.herokuapp.com/';
+var rootUrl = require('./util.js').BASE_URL+'/';
 
 exports.propTypes = [
     {

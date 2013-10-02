@@ -126,7 +126,7 @@ window.GivePropsWizardView = Backbone.View.extend({
                         el.append('<div class="trophies"></div>');
                         $row = el.find('.trophies').last();
                     }
-
+                    console.log(propType);
                     var trophyHtml = that.trophyTemplate(propType.toJSON());
                     if(propType.get('level') <= viewerPoints) {
                         trophyHtml = $(trophyHtml).addClass('enabled');

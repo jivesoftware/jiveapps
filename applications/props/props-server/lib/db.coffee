@@ -14,7 +14,6 @@
 
 #
 # DB Abstraction Layer
-# No longer used after the move to postgres. See db_postgres.coffee for the actual implementation of the DB abstraction layer.
 #
 
 #
@@ -28,8 +27,8 @@ util      = require './util.js'
 # AWS Credentials
 #
 awsCredentials =
-  keyid: "<key>"
-  secret: "<secret>"
+  keyid: "[YOUR_KEY_HERE]"
+  secret: "[YOUR_SECRET_HERE]"
 
 # Default environment
 _env = 'development'

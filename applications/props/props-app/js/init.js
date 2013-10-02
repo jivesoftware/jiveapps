@@ -15,4 +15,4 @@
 //
 
 // change this to point to your backend service
-window.BACKEND_HOST='http://yourapp.example.com';
+window.BACKEND_HOST='[YOUR_BACKEND_HERE]';

@@ -27,54 +27,74 @@
 </div>
 
 
-<div class="container-fluid" id="admin-panel-main" style="display:none">
+<div class="container-fluid max-height no-overflow" id="admin-panel-main" style="display:none">
+    <div class="alert" style="display:none">
+        <!--Area for alerts to appear-->
+    </div>
     <!-- ******** NavBar ********* -->
-    <ul class="span6 nav nav-pills" style="padding-left: 128px;padding-top: 24px;">
-        <li class="active"><a href="#" id="create-prop-type-tab">Create/Modify</a></li>
-        <li><a href="#" id="remove-prop-type-tab">Remove</a></li>
-    </ul>
-    <hr class="span6">
+    <div class="row-fluid" style="padding-top: 5px">
+        <div style="margin-left: 5px">
+            <h4>Customize what props can be given and received in your community.</h4>
+        </div>
+    </div>
+    <hr style="margin:5px">
     <!-- ******** Main Content ********* -->
-    <div class="span6 main-content">
+    <div class="row-fluid main-content">
+        <div style="text-align:right;margin-right:20px">
+            <a class="btn btn-small" href="#" id="create-prop-type-tab">New Prop</a>
+            <a class="btn btn-small" href="#" id="remove-prop-type-tab" style="display:none">All Props</a>
+        </div>
         <!-- Create Prop Type -->
-        <div class="sub-container" id="create-prop-types">
+        <div class="sub-container" id="create-prop-types" style="display:none">
             <div class="span4 well propType-adder">
                 <div class="row-fluid">
-                    <strong>Create New Prop Type</strong>
-                    <input type="text" placeholder="Title" id="title-inp">
-                    <input type="text" placeholder="Level Needed to Give" id="level-inp">
-                    <textarea class="input-large" id="definition-inp" rows="3" placeholder="Your Prop's Tagline"></textarea>
+                    <label for="title-inp" style="margin:0px">Title</label>
+                    <input type="text" placeholder="Unique Name For This Prop" id="title-inp" maxlength=15>
+                    <label for="level-inp" style="margin:0px">Level Required to Give This Prop (0-1000)</label>
+                    <input class="input-mini" type="text" placeholder="Level" id="level-inp" maxlength=4>
+                    <label for="definition-inp" style="margin:0px">Description</label>
+                    <textarea class="input-large" id="definition-inp" rows="3" placeholder="Your Prop's Tagline" style="resize:none"></textarea>
+                    <p style="margin:0px">Image URL<br><small>Provide a Fully Qualified URL To The Image For This Prop.</small></p>
                     <input type="text" id="img-inp" placeholder="Link to Image">
-                    <a href="#" class="btn btn-success create-it">Create Prop!</a>
+                    <p style="margin:0px"><small>All images will be scaled to 128x128</small></p>
+                    <a href="#" class="btn btn-primary" id="create-it">Save Prop!</a>
                 </div>
             </div>
         </div>
 
         <!-- Remove Prop Types -->
-        <div class="sub-container" id="remove-prop-types" style="display:none">
-            <div class="btn-toolbar">
-                <div class="btn-group">
-                    <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">
-                        Remove Prop Type
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <!-- all types available to remove -->
-                    </ul>
-                </div>
-                <div class="btn-group">
-                    <a class="btn btn-danger" id="resetToDefaults" href="#" style="padding-top:5px">Reset To Default Prop Types</a>
-                </div>
+        <div class="sub-container" id="remove-prop-types" style="height:400px;overflow:auto">
+            <h4>Custom Props</h4>
+            <table id="customtable" class="table table-striped table-condensed">
+                <!--Custom Prop Types available to Remove-->
+            </table>
+            <h4>Default Props</h4>
+            <table id="defaulttable" class="table table-striped table-condensed">
+                <tbody>
+                    <tr><td>No Default Props</td></tr>
+                </tbody>
+                <!--Default Prop Types available to Remove-->
+            </table>
+            <div class="well sub-container">
+                <label>To copy a prop, change its title.</label>
             </div>
+            <!--<div class="well sub-container">-->
+            <!--This is removed because resetting prop types would cause all given props to be deleted, which is probably not what the users want. Un-comment to re-enable.-->
+            <!--<div class="row-fluid">-->
+                    <!--<p class="span6">Remove custom props and only display the default set.</p>-->
+                    <!--<a class="span3 btn btn-small" id="resetToDefaults" href="#">Reset Props</a>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </div>
 </body>
 
-<script type="text/javascript" charset="utf-8" src="vendor/jquery-1.7.2/jquery.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="vendor/bootstrap/bootstrap-dropdown.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/make_http_request.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/admin_main.js"></script>
+<!--<script type="text/javascript" charset="utf-8" src="vendor/jquery-1.7.2/jquery.min.js"></script>-->
+<!--<script type="text/javascript" charset="utf-8" src="vendor/bootstrap/bootstrap-dropdown.js"></script>-->
+<!--<script type="text/javascript" charset="utf-8" src="js/make_http_request.js"></script>-->
+<!--<script type="text/javascript" charset="utf-8" src="js/admin_main.js"></script>-->
+
+<script type="text/javascript" charset="utf-8" src="dist/admin.min.js"></script>
 
 </html>
-

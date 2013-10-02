@@ -21,6 +21,14 @@ https = require('https');
 url = require('url');
 qs = require('querystring');
 hash = require('string-hash');
+fs = require('fs');
+im = require("imagemagick");
+request = require("request");
+
+exports.BASE_URL = '[YOUR_URL_HERE]';
+
+//connection string: "postgres://username:password@hostname:port/database"
+exports.DB_LOCATION = "postgres://username:password@hostname:port/database"
 
 exports.S4 = function() {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -32,6 +40,30 @@ exports.guid = function() {
 
 exports.stringHash = function(string) {
     return hash(string)-2147483648; //subtract 2^31 to change the range from [0,2^32] to [-2^31,2^31]
+};
+
+exports.download = function(uri, filename, callback) {
+    filename = 'public/img/'+filename+'.png';
+    console.log("downloading:", uri, "to", filename);
+    var req = request(uri).pipe(fs.createWriteStream(filename));
+    req.on('finish', function() {
+        console.log("finished downloading image:", filename);
+        im.resize({
+            srcPath:filename,
+            dstPath:filename,
+            format:'png',
+            width:128,
+            height:128
+        }, function(err) {
+            if(err) {
+                console.log("resize image err: "+err);
+            }
+            else {
+                console.log("resized image:", filename);
+                callback();
+            }
+        });
+    });
 };
 
 exports.escapeMessage = function(message) {
