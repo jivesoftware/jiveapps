@@ -8,8 +8,11 @@ The application uses Vidyo SOAP/XML web services and provides a REST style web
 service API with JSON content to query Vidyo user status and start conference calls. 
 It uses JAX-RS/Jersey to implement the web services.
 
-To configure the application edit application.properties and to build the application
-war file run "ant war" and the deploy according to your servlet container instructions.
+To configure and build the application follow these steps 
+- edit application.properties 
+- generate Vidyo web service client classes from WSDL into src/com/vidyo/admin and src/com/vidyo/user
+- run "ant war" 
+- deploy according to your servlet container instructions
 
 To use this server from the Vidyo Call app, you need to configure a Jive Connects 
 service in your Jive instance. Log in as administrator and go to Admin Console, System,
