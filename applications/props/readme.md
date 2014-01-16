@@ -52,6 +52,9 @@ Welcome to the new and improved version of the props app!
         There should be at least one Jive instance registered, and at least 8 prop types.
 8.  Deploy props-app in your instance (git push jiveapps ...)
 9.  Profit!
+10.  
+
+##### You wil need System Admin rights once the Props App is installed to access the **Props App - App Settings** interface to manage your custom props
 
 ###Enabling Bunchball Gamification###
 0.  Contact jive-dev [at] jivesoftware.com or post in community.jivesoftware.com to get the bunchball gamification library for props app.
