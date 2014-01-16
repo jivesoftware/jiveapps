@@ -85,5 +85,6 @@ See props-server/lib/dbsetup.sql
 ##Requirements to run##
 -----------------------
 - node.js
-- imagemagick: used to process images. Images are downloaded and stored in the database, after being resized by imagemagick to 128x128.
-Note: These requirements are taken care of if your app is run on heroku. Props app uses a heroku buildpack with all dependencies included.
+- imagemagick: used to process images. Images are downloaded and stored in the database, after being resized by imagemagick to 128x128.  
+    - Note: These requirements are taken care of if your app is run on heroku. Props app uses a heroku buildpack with all dependencies included.
+    - Note:  For non-Heroku installs, you will need to install Image Magick manually.  To do this, on CentOS/RedHat, you can use the following command: **yum install ImageMagick**
