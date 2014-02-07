@@ -63,6 +63,7 @@ Welcome to the new and improved version of the props app!
 4.  Comment out line 292 of web.coffee.
 5.  Do any configuration inside bunchball to set up gamification.
 -- Actions include:  **Props Received**, **Props Given** with metadata values:  **type** : **NAME_OF_PROP** (i.e. Thank You, Beer, ...)
+-- If you renamed the entity "Props" to "Abc" then this action will most likely be "Abc Received" etc... 
 
 ##Postgres DB Structure##
 -------------------------
