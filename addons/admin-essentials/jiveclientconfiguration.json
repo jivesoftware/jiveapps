@@ -1,6 +1,6 @@
 {
-    "clientUrl": "http://jivedev.ryanrutan.com",
-    "port": "18090",
+    "clientUrl": "http://localhost",
+    "port": "8090",
     "development": true,
     "logLevel" : "DEBUG",
     "extensionInfo" : {
