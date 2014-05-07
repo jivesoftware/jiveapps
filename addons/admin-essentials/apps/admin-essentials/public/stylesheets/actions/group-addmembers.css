@@ -1,0 +1,11 @@
+#add-member-results { border-top: 1px black solid; padding-top: 20px; }
+#btn_user_picker { width: 100%; }
+#picker-selected-list { padding: 4px 0px; }
+div.selected-user { float: left; width: 100%; margin: 2px 0px; border: 1px #cecece; background-color: #efefef; border-radius: 4px; padding: 2px 4px; }
+div.selected-user.memberadd-success { border: 1px #72d572 solid; background-color: #defbde; }
+div.selected-user.memberadd-error { border: 1px #FF0000 solid; background-color: #ffeeee; }
+div.selected-user.memberadd-warn { border: 1px #E8A400 solid; background-color: #FFF4D8; }
+div.selected-user p { font-size: .8em; }
+div.selected-user img { width: 22px; height: 22px; }
+div.selected-user span.userid { display: none;}
+div.selected-user a.fullname { padding-left: 4px; text-decoration: none; }

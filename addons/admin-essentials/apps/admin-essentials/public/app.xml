@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+  <ModulePrefs title="Admin Essentials"
+               description="A cloud friendly version for some of the original Admin Essentials features"
+               author="Ryan Rutan"
+               authoraffiliation="Jive Software (Open Source)"
+               authoremail="ryan.rutan@jivesoftware.com">
+
+    <!-- Commonly used features -->
+        <Link rel="Icon" href="images/icon16.png"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="embedded-experiences"/>
+        <Require feature="jive-core-v2" />
+        <Require feature="jive-core-v3"/>
+        <Require feature="minimessage"/>
+        <Require feature="setprefs"/>
+        <Require feature="osapi"/>
+        <Require feature="views"/>
+        <Require feature="actions">
+			<Param name="action-contributions">
+				<![CDATA[
+				<action id="org.jivesoftware.adminessentials.group.rename"
+						path="jive/settings/places/group"
+						label="Rename Group URL"
+						view="group-rename"
+						icon="images/icon16.png"
+				/>
+				<action id="org.jivesoftware.adminessentials.group.addMembers"
+						path="jive/settings/places/group"
+						label="Add Members"
+						view="group-addmembers"
+						icon="images/icon16.png"
+				/>
+				<action id="org.jivesoftware.adminessentials.group.addMembersBulk"
+						path="jive/settings/places/group"
+						label="Add Members (Bulk)"
+						view="group-addmembers-bulk"
+						icon="images/icon16.png"
+				/>
+				]]>
+			</Param>
+		</Require>
+
+      <Link rel="Icon"       href="images/icon16.png" />
+      <Link rel="MediumIcon" href="images/icon48.png" />
+      <Link rel="LargeIcon"  href="images/icon128.png" />
+
+      <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
+      <Link rel="Screenshot1" href="images/screenshot01.png" />
+      <Link rel="Screenshot2" href="images/screenshot02.png" />
+      <Link rel="Screenshot3" href="images/screenshot03.png" />
+      <Link rel="Screenshot4" href="images/screenshot04.png" />
+      <Link rel="Screenshot5" href="images/screenshot05.png" />
+
+  </ModulePrefs>
+  
+  <Content type="html" view="home,canvas" href="main.html" preferred_height="200" />
+
+  <Content type="html" view="group-rename" href="group-rename.html"  preferred_height="400"  preferred_width="500"  />
+  <Content type="html" view="group-addmembers" href="group-addmembers.html"  preferred_height="400"  preferred_width="500"  />
+  <Content type="html" view="group-addmembers-bulk" href="group-addmembers-bulk.html"  preferred_height="600"  preferred_width="500"  />
+  <Content type="html" view="system-settings" href="main.html" preferred_height="570" preferred_width="840"/>
+
+</Module>

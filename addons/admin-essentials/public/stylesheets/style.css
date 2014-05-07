@@ -1,0 +1,33 @@
+* {
+    font-family: Arial, sans-serif;
+}
+
+
+body {
+    background-color: #b6f5ff;
+    margin:20px;
+}
+
+.j-card {
+}
+
+.j-card .hidden {
+    display: none;
+}
+
+h2 {
+    margin-bottom: -2px;
+}
+
+h3 {
+    margin-bottom: -8px;
+}
+
+ul {
+    margin-left:0px; padding-left:20px; list-style-type:square;
+}
+
+.j-textarea {
+    width: 50%;
+    height: 512px;
+}

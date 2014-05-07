@@ -1,0 +1,11 @@
+{
+    "clientUrl": "http://jivedev.ryanrutan.com",
+    "port": "18090",
+    "development": true,
+    "logLevel" : "DEBUG",
+    "extensionInfo" : {
+        "uuid": "cc764e3e-8411-427b-9243-ec9bfc7d9eaf",
+        "name" : "Admin Essentials",
+        "description" : "A cloud friendly version for some of the original Admin Essentials features"
+    }
+}

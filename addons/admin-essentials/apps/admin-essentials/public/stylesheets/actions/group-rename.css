@@ -1,0 +1,3 @@
+#groupURL.rename-success { border: 1px #72d572 solid; background-color: #defbde; }
+#groupURL.rename-error { border: 1px #FF0000 solid; background-color: #ffeeee; }
+#groupURL.rename-warn { border: 1px #E8A400 solid; background-color: #FFF4D8; }

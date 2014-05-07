@@ -1,0 +1,48 @@
+
+<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" media="screen">
+<link rel="stylesheet" type="text/css" href="stylesheets/actions/global.css">
+<link rel="stylesheet" type="text/css" href="stylesheets/actions/group-addmembers-bulk.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="javascripts/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="javascripts/actions/group-addmembers-bulk.js"></script>
+
+<div id="main-wrapper">
+    <div id="currentGroup">
+        <h1></h1>
+        <p>loading</p>
+    </div>
+    <p>Bulk add members (not invite) to the group.  Simply paste a list of Jive User IDs (i.e. 1234) <strong>1 per line</strong> into the box below and click <strong>Bulk Add Member(s)</strong></p>
+    <hr/>
+    <div>
+        <div id="add-bulk-form">
+            <div id="form-nav">
+                <div id="form-buttons">
+                    <button id="form-bulk-submit">Bulk Add Member(s)</button>
+                    <button id="form-bulk-cancel">Cancel</button>
+                </div>
+                <div id="working" style="display: none;">
+                    <div>
+                    <img src="images/busy-16x16.gif"/> working
+                    </div>
+                </div>
+            </div>
+            <textarea id="userIDs"></textarea>
+            <p id="line-count"><span>0</span> lines</p>
+            <hr/>
+            <div id="messages" style="display: none;">
+                <div id="status-message" class="clearfix">
+                    <div id="counts">
+                        <span id="success-count" class="log-count">0</span>
+                        <span id="error-count" class="log-count">0</span>
+                        <span id="warn-count" class="log-count">0</span>
+                    </div>
+                    <div id="processed-count" class="log-count">
+                        <span>0</span> processed
+                    </div>
+                </div>
+                <div id="message-log">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
