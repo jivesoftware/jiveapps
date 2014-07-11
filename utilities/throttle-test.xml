@@ -22,6 +22,9 @@
         <Require feature="dynamic-height"/>
         <Require feature="osapi"/>
         <Require feature="views" />
+	    <Link rel="Icon"       href="icons/puppy.16x16.png" />
+	    <Link rel="MediumIcon" href="icons/puppy.48x48.png" />
+	    <Link rel="LargeIcon"  href="icons/puppy.128x128.png" />
     </ModulePrefs>
     <Content type="html" view="home,canvas" preferred_height="400">
     <![CDATA[
