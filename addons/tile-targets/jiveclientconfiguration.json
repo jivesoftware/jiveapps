@@ -1,0 +1,12 @@
+{
+    "clientUrl": "http://localhost",
+    "port": "8090",
+    "development": true,
+    "logLevel": "DEBUG",
+    "ignoreExtensionRegistrationSource" : true,
+    "extensionInfo" : {
+        "uuid": "22a99760-18e3-11e4-8c21-0800200c9a66",
+        "name" : "TileTargets",
+        "description" : "Easily configure Jive tile end-points to push data into your Jive platform."
+    }
+}

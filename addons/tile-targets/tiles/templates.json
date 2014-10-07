@@ -1,0 +1,10 @@
+{
+    "default": {
+        "name": "defaultTemplate",
+        "displayName": "TileTargets",
+        "description": "Easily configure Jive tile end-points to push data into your Jive platform.",
+        "tiles": [
+            "tiletarget-list"
+        ]
+    }
+}

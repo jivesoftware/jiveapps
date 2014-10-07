@@ -1,0 +1,21 @@
+{
+    "sampleData" : {
+        "title" : "TileTarget - Generic List",
+        "contents" : [ {
+            "text" : "Once configured, view the TileTarget application to retrieve your Tile end-point information"
+        } ],
+        "config" : {
+               "listStyle" : "contentList"
+        }
+    },
+    "displayName" : "TileTarget - Generic List",
+    "name" : "tiletarget-list",
+    "description" : "Generic TileTarget capable of displaying list information.",
+    "style" : "LIST",
+    "icons" : {
+      "16"  : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8091/images/icon16.png",
+      "48"  : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8091/images/icon48.png",
+      "128" : "http://speedy-thunder-87-131578.use1-2.nitrousbox.com:8091/images/icon128.png"
+    },
+    "action": "/list-target/action"
+}
