@@ -106,6 +106,7 @@ if (typeof (osapi &&
                 "osapi.jive.core.Message": getLoader(osapi.jive.corev3.contents, 2),
                 "osapi.jive.core.Post": getLoader(osapi.jive.corev3.contents, 38),
                 "osapi.jive.core.Update": getLoader(osapi.jive.corev3.contents, 1464927464),
+                "osapi.jive.core.TileStreamEntry": getLoader(osapi.jive.corev3.contents, -960826044),
                 "osapi.jive.core.DirectMessage": getLoader(osapi.jive.corev3.dms),
                 "osapi.jive.core.Space": getLoader(osapi.jive.corev3.places, 14),
                 "osapi.jive.core.Group": getLoader(osapi.jive.corev3.places, 700),
