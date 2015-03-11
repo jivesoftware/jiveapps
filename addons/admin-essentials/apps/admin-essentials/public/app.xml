@@ -19,6 +19,11 @@
         <Require feature="actions">
 			<Param name="action-contributions">
 				<![CDATA[
+				
+				<!-- HIDE THE CANVAS UI -->
+				<action id="org.jivesoftware.adminessentials.launcherlessapp"  
+				  		path="jive/apps/launcher?filter=false()"/>
+
 				<action id="org.jivesoftware.adminessentials.group.rename"
 						path="jive/settings/places/group"
 						label="Rename Group URL"
