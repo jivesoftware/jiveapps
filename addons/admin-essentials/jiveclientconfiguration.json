@@ -3,6 +3,7 @@
     "port": "8090",
     "development": true,
     "logLevel" : "DEBUG",
+    "suppressAddonRegistration": true,
     "extensionInfo" : {
         "uuid": "cc764e3e-8411-427b-9243-ec9bfc7d9eaf",
         "name" : "Admin Essentials",
