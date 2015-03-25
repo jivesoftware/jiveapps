@@ -7,3 +7,5 @@ All of the code in here is covered under the Apache 2 license and it's our hope 
 Please join the conversation in the [Jive Open Innovation Group](https://community.jivesoftware.com/groups/join) in the Jive Community.
 
 Enjoy!
+
+
