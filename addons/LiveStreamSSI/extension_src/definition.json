@@ -1,0 +1,41 @@
+{
+    "integrationUser": {
+        "systemAdmin": false
+    },
+    "tiles": [
+        {
+            "displayName": "LiveStreamSSI",
+            "name": "LiveStreamSSI",
+            "description": "LiveStream Activity and viewer App",
+            "style": "ACTIVITY",
+            "icons": {
+                "16": "icon-16.png",
+                "48": "icon-48.png"
+            },
+            "config": "/public/configuration.html?features=jq-1.11,core-v3,tile&ts=1473401347008",
+            "transform": {
+                "script": "xform.js"
+            },
+            "pageTypes": [
+                "PLACE",
+                "MOBILE",
+                "NEWS"
+            ],
+            "categories": [
+                "other"
+            ],
+            "displayWidth": "ALL",
+            "i18n": "*",
+            "id": "83ea1db7-28a7-4628-aad9-3aad7a6fa7d4",
+            "definitionDirName": "LiveStreamSSI"
+        }
+    ],
+    "osapps": [
+        {
+            "id": "64404b68-73cb-4dc7-a774-dad72a34b878",
+            "name": "LiveStreamApp",
+            "appPath": "64404b6873cb4dc7a774dad72a34b878",
+            "url": "/public/apps/LiveStreamApp/app.xml"
+        }
+    ]
+}

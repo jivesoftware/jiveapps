@@ -1,0 +1,14 @@
+{
+    "package_version": "1.0",
+    "id": "ba97eae7-ce08-fde1-a57f-9e4865038228",
+    "type": "client-app",
+    "name": "LiveStreamSSI",
+    "description": "LiveStream Activity and viewer App",
+    "minimum_version": "0080300000",
+    "icon_16": "icon-16.png",
+    "icon_48": "icon-48.png",
+    "icon_128": "icon-128.png",
+    "released_on": "2013-03-08T19:11:11.234Z",
+    "service_url": "http://localhost",
+    "redirect_url": "%serviceURL%"
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module specificationVersion="1">
+  <ModulePrefs title="LiveStreamApp_app-ext-object"
+               description="Description of LiveStreamApp_app-ext-object"
+               author="Rashed Talukder"
+               author_affiliation="Jive"
+               author_email="jivedev@jivesoftware.com">
+
+    <!-- Commonly used features -->
+    <Require feature="dynamic-height" />
+    <Require feature="jive-core-v2" />
+    <Require feature="jquery-1.6" />
+    <Require feature="osapi"/>
+    <Require feature="settitle"/>
+    <Require feature="views" />
+    <Require feature="jive-core-v3" />
+    <Require feature="embedded-experiences" />
+	<Require feature="actions">  
+		<Param name="action-contributions">  
+			<![CDATA[
+				<!-- HIDE THE CANVAS UI -->
+				<action id="org.jivesoftware.sdk.example.64404b68-73cb-4dc7-a774-dad72a34b877.launcherlessapp"  
+				  		path="jive/apps/launcher?filter=false()"/>
+			]]>  
+		</Param>  
+	</Require>  
+
+    <!-- Icons: 3 sizes, 16x16, 48x48, 128x128 -->
+    <Link rel="Icon"       href="images/icon16.png" />
+    <Link rel="MediumIcon" href="images/icon48.png" />
+    <Link rel="LargeIcon"  href="images/icon128.png" />
+
+    <!-- Screenshots: 600w x 400h, should include at least 1 and up to 5 -->
+    <!--
+    <Link rel="Screenshot1" href="images/screenshot1.png" />
+    <Link rel="Screenshot2" href="images/screenshot2.png" />
+    <Link rel="Screenshot3" href="images/screenshot3.png" />
+    <Link rel="Screenshot4" href="images/screenshot4.png" />
+    <Link rel="Screenshot5" href="images/screenshot5.png" />
+    -->
+
+    <!-- OAuth Services: https://developers.jivesoftware.com/community/docs/DOC-1161 -->
+    <!--
+    <OAuth>
+      <Service name="example">
+        <Access url="http://api.example.com/oauth/access_token" method="POST" />
+        <Request url="http://api.example.com/oauth/request_token" method="POST" />
+        <Authorization url="http://api.example.com/oauth/authorize" />
+      </Service>
+    </OAuth>
+    -->
+
+    <!-- Lifecycle Events: https://developers.jivesoftware.com/community/docs/DOC-1119 -->
+    <!--
+    <Link rel="event.addapp" href="http://www.example.com/add" />
+    <Link rel="event.removeapp" href="http://www.example.com/remove" />
+    -->
+
+    <!-- Preloaded Content: http://wiki.opensocial.org/index.php?title=Remote_Data_Requests_%28v0.9%29#Preloading_data -->
+    <!--
+    <Preload href="http://www.example.com" />
+    -->
+
+  </ModulePrefs>
+
+  <!-- User Preferences: http://code.google.com/apis/gadgets/docs/reference.html#Userprefs_Ref -->
+  <!--
+  <UserPref name="where_i_live" display_name="Where I Live" datatype="string" default_value="" required="false" />
+  <UserPref name="subscribe_to_newsletter" display_name="Subscribe to Newsletter" datatype="bool" default_value="" required="false" />
+  <UserPref name="difficulty"
+       display_name="Difficulty"
+       datatype="enum"
+       default_value="2">
+    <EnumValue value="1" display_value="Easy"/>
+    <EnumValue value="2" display_value="Medium"/>
+    <EnumValue value="3" display_value="Hard"/>
+  </UserPref>
+  -->
+
+  <Content type="html" view="ext-object" href="ext-object.html" />
+</Module>

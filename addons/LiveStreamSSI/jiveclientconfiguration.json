@@ -1,0 +1,62 @@
+{
+    "clientUrl": "http://localhost",
+    "port": "8090",
+    "development" : true,
+	  "clientUrlExcludesPort": true,
+		"extensionInfo" :{
+			"id" : "ba97eae7-ce08-fde1-a57f-9e4865038228",
+			"uuid" : "ba97eae7-ce08-fde1-a57f-9e4865038228",
+			"name" : "LiveStreamSSI",
+			"description" : "LiveStream Activity and viewer App",
+			"icon_16": "icon-16.png",
+			"icon_48": "icon-48.png",
+			"icon_128": "icon-128.png",
+			"type" : "client-app"
+		},
+	"ext" : {
+		"your-recommended-place" : "to-store-your-app-system-config"
+	},
+	"otherPropertiesToConsider" : {
+		"ignoreExtensionRegistrationSource": true,
+    "packageApps" : false,
+    "skipCreateExtension" : true,
+		"suppressAddonRegistration" : true,
+    "suppressHttpLogging": false,
+    "customServiceLogger": {},
+    "persistence": "mongo",
+    "persistenceInitializer" : {},
+    "suppressMonitoring" : false,
+    "monitoringInterval": 1000,
+    "codeVersionString": "jive",
+    "adminPort" : 8091,
+    "statsdClientConfig": {
+      "host" : "localhost",
+      "port" : 8125,
+      "interval" : 1000,
+      "servicePrefix" : "jive"
+    },
+    "role" : "worker",
+    "scheduler": {},
+		"extensionInfo": {
+			"registerURL": "%serviceURL%/jive/oauth/register",
+			"unregisterURL": "%serviceURL%/jive/oauth/unregister",
+			"redirectURL" : "%serviceURL%/oauth/authorize",
+			"health_url": "%serviceURL%/monitor/health",
+			"config_url": "%serviceURL%/configure",
+			"author" : "Developer Name",
+			"author_affiliation" : "Developer Company",
+			"author_email" : "Developer Email",
+			"website_url": "http://www.somedomain.com",
+			"community_url": "https://community.jivesoftware.com/xxxx",
+			"support_info": "http://support.somedomain.com",
+			"info_email": "info@somedomain.com",
+			"tags": "jive,integration,service,addon",
+			"overview": "overview.html",
+			"install_instructions": "install_instructions.html",
+			"eula_filename": "eula.html",
+			"privacy_policy": "privacy_policy.html",
+			"screen_shots": ["screenshot_1.png","screenshot_2.png"]
+		}
+	},
+	"forPropertyDocumentation" : "https://community.jivesoftware.com/docs/DOC-103487"
+}

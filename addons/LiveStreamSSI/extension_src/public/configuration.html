@@ -1,0 +1,83 @@
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="jive-ee.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="common.js"></script>
+    <script src="main.js"></script>
+    <script src="config-adaptor.js"></script>
+    <script src="diagnostics.js"></script>
+    </head><body>
+
+
+
+
+<div class="j-main-view">
+
+    <form class="j-form">
+        <label>LiveStreamSSI Configuration</label>
+
+        <div class="j-listBuilder">
+
+            <fieldset>
+                <p class="j-note">
+                    <label>Stream Title</label>
+                </p>
+                <input type="text" id="j-activity-stream-title">
+            </fieldset>
+            <br>
+
+            <fieldset>
+                <p class="j-note">
+                    <label>HTTP POST URL</label>
+                </p><p>Supply this URL to LiveStreamSSI to push activity into your stream:</p>
+                <br>
+                <div id="rest-endpoint"></div>
+                <br>
+                <a href="/wp-content/uploads/2015/06/configuration.html#" id="btn-regenerate" type="button">Regenerate URL</a>
+                <br>
+                <p class="j-note">
+                    <span class="j-note-emphasis j-caution">CAUTION:</span> If you regenerate
+                    this URL, requests to the previous URL will fail.
+                </p>
+            </fieldset>
+
+            
+
+        </div>
+    </form>
+    <div class="j-btn-row">
+        <button id="btn-apply" class="j-btn-callout j-pull-right" type="button">Apply</button>
+        <button id="btn-test" class="j-btn-callout j-pull-right" type="button">Diagnostics</button>
+        <button id="btn-cancel">Cancel</button>
+    </div>
+    <p class="j-note" id="test-btn-warning"></p>
+</div>
+
+<div id="diagnostics-view">
+    <form class="j-form">
+        <fieldset>
+            <label>Diagnostics</label>
+            <div class="j-listBuilder">
+
+                <p class="j-note">
+                    <label>HTTP POST URL</label>
+                    <span id="test-endpoint"></span>
+                </p>
+
+            </div>
+            <p class="j-note">POST data to URL, then click Refresh to see the result.</p>
+            <label for="txt-test-Results">Last Test Results</label>
+            <textarea readonly="" id="txt-test-Results" class="jive-form-textarea">            </textarea>
+        </fieldset>
+
+        <div class="j-btn-row">
+            <button id="btn-refresh" class="j-btn-callout" type="button">Refresh</button>
+            <button id="btn-done" type="button">Done</button>
+        </div>
+    </form>
+
+</div>
+
+
+
+</body></html>

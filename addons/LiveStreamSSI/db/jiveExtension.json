@@ -1,0 +1,12 @@
+{
+  "jiveExtension": {
+    "id": "ba97eae7-ce08-fde1-a57f-9e4865038228",
+    "uuid": "ba97eae7-ce08-fde1-a57f-9e4865038228",
+    "name": "LiveStreamSSI",
+    "description": "LiveStream Activity and viewer App",
+    "icon_16": "icon-16.png",
+    "icon_48": "icon-48.png",
+    "icon_128": "icon-128.png",
+    "type": "client-app"
+  }
+}

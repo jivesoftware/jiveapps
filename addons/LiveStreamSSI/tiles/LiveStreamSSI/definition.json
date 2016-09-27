@@ -1,0 +1,24 @@
+{
+	"displayName": "LiveStreamSSI",
+	"name": "LiveStreamSSI",
+	"description": "LiveStream Activity and viewer App",
+	"style": "ACTIVITY",
+	"icons": {
+		"16": "icon-16.png",
+		"48": "icon-48.png"
+	},
+	"config": "/public/configuration.html?features=jq-1.11,core-v3,tile",
+	"transform": {
+		"script": "xform.js"
+	},
+	"pageTypes": [
+		"PLACE",
+		"MOBILE",
+		"NEWS"
+	],
+	"categories": [
+		"other"
+	],
+	"displayWidth": "ALL",
+	"i18n": "*"
+}

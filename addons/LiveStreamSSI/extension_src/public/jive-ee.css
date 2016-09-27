@@ -1,0 +1,1799 @@
+/*
+ * $Revision$
+ * $Date$
+ *
+ * Copyright (C) 1999-2012 Jive Software. All rights reserved.
+ *
+ * This software is the proprietary information of Jive Software. Use is subject to license terms.
+ */
+
+/*
+
+#main {
+    font-family: sans-serif;
+    font-size: 12px;
+    font: 13px "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    color: #333333;
+}
+
+ */
+
+/* ---------------------------------------------------------------------------------------------- */
+/*!XRST*/
+/*! RESET */
+/* ---------------------------------------------------------------------------------------------- */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+dfn, em, font, img, kbd, q, s, samp,
+small, strike, strong, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+header, nav, section, footer, summary, article {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /*outline: 0;*/
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+/*!XCFX*/
+/*! CLEARFIX */
+/* ---------------------------------------------------------------------------------------------- */
+/* for modern browsers */
+.jive-widget:after,
+.clearfix:after {
+    clear: both;
+    content: "'";
+    display: block;
+    font-size: 0; /* fix FF bug */
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+/* for IE7 */
+.clearfix {
+    min-height: 0;
+}
+
+/* for IE<7 \*/
+* html .clearfix {
+    height: 1%;
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+/*!XGBL*/
+/*! GLOBAL STYLES */
+/* ---------------------------------------------------------------------------------------------- */
+
+body {
+    color: #3d3d3d;
+    background-color: #fff;
+    font: 13px "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    line-height: 1.25;
+    text-align: left;
+    margin: 0 auto;
+    /* max width can be applied here however it messes with closing popovers (clicking outside to close) */
+    /*max-width: 1260px; */
+    /* 1300px - 40px padding */
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+}
+
+h2 {
+    font-size: 18px;
+    color: #666;
+    border-top: solid 1px #fff;
+    margin: 0;
+}
+
+legend,
+h3 {
+    font-size: 14px;
+    margin: 0 0 15px;
+    font-weight: bold;
+}
+
+legend {
+    margin: 0 0 10px;
+}
+
+/* use this to fix things like type-ahead autocompletes */
+
+a:link,
+a:visited {
+    color: #3778c7;
+    text-decoration: none;
+}
+
+a:hover,
+a:active,
+a:focus {
+    color: #3778c7;
+    text-decoration: underline;
+    outline: 0;
+    outline: none;
+}
+
+/* ---------------------------------------------------------------------- */
+/* font colors              											 */
+/* ---------------------------------------------------------------------- */
+.font-color-normal,
+a.font-color-normal:link,
+a.font-color-normal:visited {
+    color: #333;
+}
+
+a.font-color-normal:hover,
+a.font-color-normal:active {
+    color: #000;
+}
+
+.font-color-meta,
+a.font-color-meta:link,
+a.font-color-meta:visited {
+    color: #666;
+}
+
+a.font-color-meta:hover,
+a.font-color-meta:active {
+    color: #333;
+}
+
+.font-color-meta-light,
+a.font-color-meta-light:link,
+a.font-color-meta-light:visited {
+    color: #999;
+}
+
+a.font-color-meta-light:hover,
+a.font-color-meta-light:active {
+    color: #666;
+}
+
+.font-color-link {
+    color: #06698C;
+}
+
+.font-color-okay {
+    color: #3bc200;
+}
+
+.font-color-danger,
+a.font-color-danger:link,
+a.font-color-danger:visited {
+    color: #c20000;
+}
+
+a.font-color-danger:hover,
+a.font-color-danger:active {
+    color: #a00;
+}
+
+.font-color-notify,
+a.font-color-notify:link,
+a.font-color-notify:visited {
+    color: #da6e16;
+}
+
+a.font-color-notify:hover,
+a.font-color-notify:active {
+    color: #CF630C;
+}
+
+.font-color-new {
+    color: #197400;
+}
+
+.font-color-white,
+a.font-color-white:link,
+a.font-color-white:visited {
+    color: #fff;
+}
+
+a.font-color-white:hover,
+a.font-color-white:active {
+    color: #fff;
+}
+
+a.no-underline:link, a.no-underline:visited {
+    text-decoration: none;
+}
+
+a.no-underline:hover, a.no-underline:active {
+    text-decoration: underline;
+}
+
+/*----- Errors, success, info -----*/
+
+.j-form .jive-error-box input[type="text"],
+.j-form .jive-error-box textarea {
+    border-color: #c20000;
+    box-shadow: 0 0 4px #cc5151;
+    background: #f7ddd9;
+}
+
+.j-form .jive-error-box input:focus,
+.j-form .jive-error-box textarea:focus {
+    background: #fff;
+}
+
+.jive-error-message {
+    display: none;
+    color: #c00;
+    font-weight: bold;
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+/*!XBTN*/
+/*! BUTTON STYLES */
+/* ---------------------------------------------------------------------------------------------- */
+
+/*
+	generic styles applied as applicable to input, button or link.
+	See http://gorn.jiveland.com/release_steelhead/code/global/button.html
+	Styles show here tested in FF 3.6, IE 7+8 and Safari 5.0.2
+*/
+
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+.j-btn-global {
+    color: #3778C7;
+    padding: 7px 16px;
+    text-align: center;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    background: #fff; /* IE8 */
+    background: #fff linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 0%, rgba(0, 0, 0, 0.07) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.13);
+    cursor: pointer;
+    display: inline-block;
+    line-height: normal; /* FF uses "normal !important" internally (roughly 1.2) */
+    text-shadow: 0 1px 0 white;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    background-clip: padding-box;
+    margin: 0 10px 0 0;
+    text-decoration: none;
+    outline: none;
+}
+
+/*small and large variations */
+button.j-btn-small,
+input[type="button"].j-btn-small,
+input[type="reset"].j-btn-small,
+input[type="submit"].j-btn-small,
+.j-btn-global.j-btn-small {
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
+/* extra small (for button groups mostly) */
+button.j-btn-xsmall,
+input[type="button"].j-btn-xsmall,
+input[type="reset"].j-btn-xsmall,
+input[type="submit"].j-btn-xsmall,
+.j-btn-global.j-btn-xsmall {
+    font-size: 11px;
+    padding: 4px 7px;
+    box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.4), 0 0px 2px rgba(0, 0, 0, 0.13);
+}
+
+button.j-btn-big,
+input[type="button"].j-btn-big,
+input[type="reset"].j-btn-big,
+input[type="submit"].j-btn-big,
+.j-btn-global.j-btn-big {
+    font-size: 16px;
+    padding: 12px 25px;
+}
+
+button:active,
+input[type="button"]:active,
+input[type="reset"]:active,
+input[type="submit"]:active,
+.j-btn-global:active {
+    text-decoration: none;
+}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner {
+    /* fix inconsistent styling between link-buttons and form-buttons in FF */
+    padding: 0;
+    border: 0;
+}
+
+button.j-btn-callout,
+input[type="button"].j-btn-callout,
+input[type="reset"].j-btn-callout,
+input[type="submit"].j-btn-callout,
+.j-btn-callout {
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    border: 1px solid #3169aa;
+    border-color: rgba(46, 106, 182, 0.8);
+    background: #408bd0; /* IE8 */
+    background: linear-gradient(to bottom, #62acde 0%, #4a8cca 100%);
+    font-weight: 600;
+}
+
+a.j-btn-callout:link,
+a.j-btn-callout:visited,
+a.j-btn-callout:hover,
+a.j-btn-callout:focus {
+    color: white;
+}
+
+button:hover,
+button:focus,
+[type="button"]:hover,
+[type="button"]:focus,
+[type="reset"]:hover,
+[type="reset"]:focus,
+[type="submit"]:hover,
+[type="submit"]:focus,
+.j-btn-global:hover,
+.j-btn-global:focus {
+    text-decoration: none;
+    background: #f6f6f6; /* IE8 */
+    background: #fff linear-gradient(to bottom, rgba(193, 193, 193, 0.15) 0%, rgba(62, 62, 62, 0.15) 100%);
+}
+
+button:hover,
+button:focus,
+[type="button"]:hover,
+[type="button"]:focus,
+[type="reset"]:hover,
+[type="reset"]:focus,
+[type="submit"]:hover,
+[type="submit"]:focus,
+.j-btn-global:hover,
+.j-btn-global:focus {
+    text-decoration: none;
+    background: #f6f6f6; /* IE8 */
+    background: #fff linear-gradient(to bottom, rgba(193, 193, 193, 0.15) 0%, rgba(62, 62, 62, 0.15) 100%);
+}
+
+button:active,
+input[type="button"]:active,
+input[type="reset"]:active,
+input[type="submit"]:active,
+.j-btn-global:active {
+    background: #f6f6f6; /* IE8 */
+    background: #fff linear-gradient(to bottom, rgba(193, 193, 193, 0.15) 0%, rgba(62, 62, 62, 0.15) 100%);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+}
+
+button.j-btn-callout:hover,
+button.j-btn-callout:focus,
+input[type="button"].j-btn-callout:hover,
+input[type="button"].j-btn-callout:focus,
+input[type="reset"].j-btn-callout:hover,
+input[type="reset"].j-btn-callout:focus,
+input[type="submit"].j-btn-callout:hover,
+input[type="submit"].j-btn-callout:focus,
+.j-btn-callout:hover,
+.j-btn-callout:focus {
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    border-color: rgba(46, 106, 182, 0.8);
+    background: #2270bb;
+    background: linear-gradient(to bottom, #3f94ce 0%, #2270bb 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.28);
+    outline: none;
+}
+
+button.j-btn-callout:active,
+input[type="button"].j-btn-callout:active,
+input[type="submit"].j-btn-callout:active,
+.j-btn-callout:active {
+    background: #2270bb;
+    background: linear-gradient(to bottom, #3f94ce 0%, #2270bb 100%);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.25);
+}
+
+/* disabled buttons */
+button[disabled],
+input[type="button"][disabled],
+input[type="reset"][disabled],
+input[type="submit"][disabled] {
+    border-color: #ccc;
+    color: #bebebe;
+    text-shadow: none;
+    background: #fff; /* IE8 */
+    background: #fff linear-gradient(to bottom, rgba(215, 215, 215, 0.1) 0%, rgba(83, 83, 83, 0.1) 100%);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+button.j-btn-callout[disabled],
+[type="button"].j-btn-callout[disabled],
+[type="reset"].j-btn-callout[disabled],
+[type="submit"].j-btn-callout[disabled] {
+    /* IE8 */
+    color: #bebebe;
+    background: #eef;
+    border: 1px solid #ccc;
+    /* other browers */
+    opacity: .8;
+    color: rgba(255, 255, 255, .6);
+    border-color: rgba(46, 106, 182, 0.8);
+    background: linear-gradient(to bottom, #3f94ce 0%, #2270bb 100%);
+}
+
+/* remove hover from all disabled states... WHEW */
+button[disabled]:hover,
+button[disabled]:focus,
+input[type="button"][disabled]:hover,
+input[type="button"][disabled]:focus,
+input[type="reset"][disabled]:hover,
+input[type="reset"][disabled]:focus,
+input[type="submit"][disabled]:hover,
+input[type="submit"][disabled]:focus {
+    border-color: #ccc;
+    color: #bebebe;
+    text-shadow: none;
+    background: #fff linear-gradient(to bottom, rgba(215, 215, 215, 0.1) 0%, rgba(83, 83, 83, 0.1) 100%);
+    box-shadow: none;
+}
+
+button.j-btn-callout[disabled]:hover,
+button.j-btn-callout[disabled]:focus,
+input.j-btn-callout[type="button"][disabled]:hover,
+input.j-btn-callout[type="button"][disabled]:focus,
+input.j-btn-callout[type="reset"][disabled]:hover,
+input.j-btn-callout[type="reset"][disabled]:focus,
+input.j-btn-callout[type="submit"][disabled]:hover,
+input.j-btn-callout[type="submit"][disabled]:focus,
+.j-btn-callout[disabled]:hover,
+.j-btn-callout[disabled]:focus {
+    opacity: 1;
+    background: #fff; /* IE8 */
+    background: linear-gradient(to bottom, #FFF 0%, #E8E8E8 100%);
+    border: 1px solid #c6c6c6;
+    text-shadow: 0 1px 0 #fff;
+    color: #9a9a9a;
+    box-shadow: inset 0 1px 0 #fff, 0 1px 3px rgba(0, 0, 0, .3);
+}
+
+.j-btn-group button,
+.j-btn-group .j-btn-global,
+.j-btn-group input {
+    display: inline-block;
+    margin: 0;
+    position: relative;
+}
+
+.j-btn-group-list {
+    width: 250px;
+}
+
+.j-btn-group-list button,
+.j-btn-group-list .j-btn-global,
+.j-btn-group-list input {
+    display: block;
+    margin: 0;
+    width: 100%;
+}
+
+.j-btn-group button:first-child,
+.j-btn-group .j-btn-global:first-child,
+.j-btn-group input:first-child {
+    border-radius: 3px 0 0 3px;
+}
+
+.j-btn-group-list button:first-child,
+.j-btn-group-list .j-btn-global:first-child,
+.j-btn-group-list input:first-child {
+    border-radius: 3px 3px 0 0;
+}
+
+/*when there is only one button in the button group (i.e. webex integrations set dynamically) */
+.j-btn-group button:first-child:last-child,
+.j-btn-group .j-btn-global:first-child:last-child,
+.j-btn-group input:first-child:last-child {
+    border-radius: 3px;
+    padding: 4px 3px 4px 7px;
+}
+
+.j-btn-group button + button,
+.j-btn-group .j-btn-global + .j-btn-global,
+.j-btn-group input + input {
+    margin-left: -4px;
+    border-radius: 0;
+    border-left: 0 none transparent;
+}
+
+.j-btn-group button:after,
+.j-btn-group .j-btn-global:after,
+.j-btn-group input:after {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #ccc;
+    z-index: 2;
+}
+
+.j-btn-group button:first-child:after,
+.j-btn-group .j-btn-global:first-child:after,
+.j-btn-group input:first-child:after {
+    background: transparent;
+}
+
+.j-btn-group-list button + button,
+.j-btn-group-list .j-btn-global + .j-btn-global,
+.j-btn-group-list input + input {
+    border-radius: 0;
+    border-top: 0 none transparent;
+}
+
+.j-btn-group button:last-child,
+.j-btn-group .j-btn-global:last-child,
+.j-btn-group input:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+.j-btn-group-list button:last-child,
+.j-btn-group-list .j-btn-global:last-child,
+.j-btn-group-list input:last-child {
+    border-radius: 0 0 3px 3px;
+}
+
+
+.j-btn-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 0 1px 0 0;
+    position: relative;
+    overflow: hidden;
+    left: -3px;
+    top: 3px;
+}
+
+.j-icon-button {
+    /*adjust height for 16x16 icon*/
+    height: 22px;
+}
+
+/* hide small column in case it exists in code */
+
+/* ---------------------------------------------------------------------------------------------- */
+/*!XFRM*/
+/*! Forms! */
+/* ---------------------------------------------------------------------------------------------- */
+
+.j-form {
+    margin: -5px 0 20px;
+}
+
+.j-form .j-form-row {
+    margin-bottom: 20px;
+    position: relative;
+    z-index: auto;
+}
+
+.j-btn-row {
+    margin: 10px 0;
+    border-top: solid 1px #dadada;
+    padding: 20px 0 0;
+}
+
+.j-btn-row .j-tile-config-msg {
+    font-size: 12px;
+    font-weight: bold;
+    float: right;
+    width: 400px;
+    color: #da6e16;
+}
+
+.j-form label,
+.j-form h4 {
+    position: relative;
+    padding: 0;
+    margin: 10px 0;
+    font-weight: bold;
+    display: block;
+    color: #5e5e5e;
+}
+
+.j-form label.checkboxLabel {
+    padding: 0 0 0 20px;
+}
+
+.j-form .j-subheader {
+    font-size: 11px;
+    margin: 10px 0;
+}
+
+.j-form label input {
+    position: absolute;
+    top: 0;
+    left: 1px;
+}
+
+.required {
+    color: #ab1e18;
+}
+
+.j-form label > .required,
+.j-form legend > .required {
+    color: #ab1e18;
+    font-size: 13px;
+}
+
+.j-form label > .optional,
+.j-form legend > .optional {
+    color: #999;
+}
+
+.j-form .j-note {
+    font-size: 13px;
+    font-weight: normal;
+    margin: 5px 0;
+}
+
+.j-form label.j-form-label-special em,
+.j-form legend.j-form-label-special em {
+    color: #999;
+}
+
+.j-form .error {
+    display: block;
+}
+
+.j-form input[type="checkbox"],
+.j-form input[type="radio"] {
+    float: left;
+    margin: 2px 5px 0 0;
+}
+
+.j-form input[type="text"],
+.j-form input[type="email"],
+.j-form input[type="url"],
+.j-form input[type="number"],
+.j-form input[type="password"],
+.j-form input[type="tel"],
+.j-form textarea,
+input.j-form-elem-special,
+.j-fake-disabled-input,
+.j-fake-input,
+input.j-publish-input-entry,
+.hteSkin table.mceLayout {
+    /*outline: none;*/
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    border-bottom: 1px solid #dadada;
+    padding: 6px 4px;
+    transition: all;
+    -webkit-transition: all .3s linear;
+    -moz-transition: all .3s linear;
+    transition: all .3s linear;
+    width: 100%;
+    outline: none;
+    font: 13px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.j-fake-disabled-input {
+    color: #7f7f7f;
+}
+
+/* implicit labeling for address fields */
+
+.j-form input[type="text"]:focus,
+.j-form input[type="search"]:focus,
+.j-form input[type="password"]:focus,
+.j-form textarea:focus,
+.j-fake-input.focus,
+input.j-publish-input-entry:focus,
+.hteSkin table.mceLayout.focus {
+    border-color: #2989c5;
+    box-shadow: 0 0 10px #dcecf5;
+}
+
+.j-form input.error,
+.j-form textarea.error {
+    border-color: #cc5151;
+    box-shadow: 0 0 4px #cc5151;
+}
+
+.j-form > p.j-info {
+    border-radius: 4px;
+    background: #f1f9ff;
+    position: relative;
+    padding: 5px 5px 5px 26px;
+    margin-bottom: 10px;
+    margin-left: -6px; /* aligns icon with the content in the form */
+}
+
+.j-info-icon {
+    background-position: -56px -35px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.j-form .j-info-icon {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.j-form > p.j-warn {
+    border-radius: 4px;
+    background: #fffee9;
+    position: relative;
+    padding: 5px 5px 5px 22px;
+    margin-bottom: 10px;
+    margin-left: -6px;
+}
+
+.j-form > p.j-warn + .j-user-autocomplete {
+    margin-top: 8px;
+}
+
+.j-form p.j-form-note {
+    margin: 8px 0;
+}
+
+.j-form .j-note-inline {
+    padding: 0 0 0 5px;
+    font-weight: normal;
+}
+
+.j-508-label {
+    display: block !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    width: 1px;
+    height: 1px;
+}
+
+.j-addActionLink a {
+    font-weight: bold;
+}
+
+.j-addActionLink {
+    padding: 0 0 0 20px;
+    margin: 30px 0;
+}
+
+.j-addActionLinkForm {
+    margin: -20px 0 30px 20px;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    line-height: 1em;
+}
+
+/* -- Specific Form Styles -- */
+
+.j-form input.j-input-small {
+    width: 120px;
+}
+
+/* TODO .j-sortable styles copied to jive-base.css so they can be globally used. if the config experiences
+ *      are ever able to leverage jive-base.css the .j-sortable and .ui-state-highlight declarations here can die
+ */
+.j-sortable {
+    margin-bottom: 1px;
+}
+
+.j-sortable li {
+    cursor: move;
+    list-style: none;
+    padding: 7px 50px 7px 20px;
+    position: relative;
+    border: solid 1px #dadada;
+    margin: 0 0 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    background-color: #f2f8ff;
+    height: 18px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: auto;
+}
+/*for multiline dragable list items (i.e. carousel)*/
+.j-sortable li .linkMetaText {
+    font-weight: normal;
+    margin: 5px 0;
+    font-size: 11px;
+}
+.j-sortable .listItem .j-contentName {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.j-sortable li:hover {
+    background: #f5f5f5;
+}
+
+.someSlides .j-sortable {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.someImages .j-sortable li,
+.someSlides .j-sortable li {
+    border: none;
+    border-bottom: solid 1px #444;
+    background-color: transparent;
+    margin: 0;
+}
+
+.someImages .j-sortable .j-input-large,
+.someSlides .j-sortable .j-input-large {
+    width: 250px;
+    background: transparent;
+    border: none;
+    color: #fff;
+}
+
+.someImages .j-sortable .j-delete,
+.someSlides .j-sortable .j-delete {
+    background: none;
+    color: #def;
+    top: 8px;
+    right: 12px;
+}
+
+.someSlides .j-sortable .jive-form-textarea {
+    width: 350px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    height: 50px;
+}
+
+.j-sortable li img {
+    float: left;
+    margin: 0 10px 0 0;
+}
+
+.j-sortable li a.j-link,
+.j-sortable li span.j-link {
+    cursor: move;
+    display: block;
+    float: left;
+    max-width: 400px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.j-carousel-config .j-sortable li .j-link {
+    max-width: 350px;
+    float: none;
+}
+
+.j-sortable .j-delete,
+.j-sortable .j-controls {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    background: #f2f8ff;
+    padding: 7px 10px;
+}
+
+.j-sortable .j-empty {
+    text-align: center;
+    background: #eee;
+    display: none;
+}
+
+#listConfig fieldset {
+    margin-bottom: 20px;
+}
+
+#listConfig legend {
+    font-size: 12px;
+}
+
+#listConfig .j-toggle {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.j-listBuilder {
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    line-height: 1em;
+}
+
+.j-listBuilder .j-searchInstructions {
+    display: inline-block;
+    width: 225px;
+    position: relative;
+    top: 5px;
+}
+
+.j-form .j-listBuilder label {
+    margin: 0 0 5px;
+}
+
+.j-form .j-listBuilder .j-form-row {
+    margin: 0 0 15px;
+}
+
+.j-listBuilder input.j-input-title {
+    width: 315px;
+    display: inline-block;
+    margin: 0 12px 0 0;
+}
+
+.j-listBuilder input.j-input-date {
+    width: 115px;
+    display: inline-block;
+}
+
+.j-listBuilder .j-addButton {
+    margin: 0 0 5px;
+}
+
+/*for input fields that can go side by side*/
+.j-form .j-formCol {
+    display: inline-block;
+}
+
+.ui-state-highlight {
+    background: #fbf9ee;
+    background: rgba(0, 0, 0, .04);
+    box-shadow: inset 0 0 2px 2px rgba(0, 0, 0, .05);
+    border: 1px solid #ddd;
+    color: #363636;
+    min-height: 12px;
+}
+
+.j-sortable .ui-state-highlight {
+    background: #fbf9ee;
+    background: rgba(0, 0, 0, .04);
+    box-shadow: inset 0 0 2px 2px rgba(0, 0, 0, .05);
+    border: 1px solid #ddd;
+}
+
+/*events*/
+.j-eventListing .j-eventDate {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.j-eventListing .j-eventDate:before {
+    content: "-";
+    display: inline-block;
+    line-height: 12px;
+    margin: 0 10px 0 5px;
+    overflow: hidden;
+}
+
+.j-eventListing .j-eventDisplay {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    margin: 0 5px 0 0;
+}
+
+.j-eventListing .j-eventDescription {
+    display: none;
+}
+
+/*similar places form styles*/
+.j-similarPlaceForm p {
+    margin: 5px 0;
+}
+
+/*Status Gauge initial style*/
+.j-slider-marks {
+    list-style: none;
+}
+
+.j-slider-marks li {
+    float: left;
+    padding: 15px 0 0;
+    width: 47px;
+    text-align: left;
+}
+
+/* slider number positioning, so they line up with the segments 1-10 */
+.j-slider-marks li.s1 {
+    text-align: left;
+}
+
+.j-slider-marks li.s2 {
+    text-indent: 5px;
+}
+
+.j-slider-marks li.s3 {
+    text-indent: 10px;
+}
+
+.j-slider-marks li.s4 {
+    text-indent: 15px;
+}
+
+.j-slider-marks li.s5 {
+    text-indent: 20px;
+}
+
+.j-slider-marks li.s6 {
+    text-indent: 25px;
+}
+
+.j-slider-marks li.s7 {
+    text-indent: 30px;
+}
+
+.j-slider-marks li.s8 {
+    text-indent: 35px;
+}
+
+.j-slider-marks li.s9 {
+    text-indent: 40px;
+}
+
+.j-slider-marks li.s10 {
+    text-align: right;
+}
+
+.j-disabled {
+    color: lightgrey;
+}
+
+#tileAttributes .ui-widget-content {
+    background: white;
+}
+
+.tileSlider {
+    padding: 15px 13px 5px;
+    border: solid 1px #f0f0f0;
+    background: #fafafa;
+    border-radius: 4px;
+}
+
+.tileSlider .ui-slider {
+    width: 470px;
+}
+
+#tileAttributes .ui-widget-header {
+    background: #d7ecf4;
+}
+
+.j-slider-overlay {
+    right: 0;
+    background: darkgrey;
+}
+
+.j-slider-overlay-header {
+    background: red;
+    width: 2px;
+}
+
+#curSegMarks li {
+    font-weight: bold;
+}
+
+#curSegMarks li.disabled {
+    font-weight: normal;
+}
+
+/* Component containers
+----------------------------------*/
+.ui-widget {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 1.1em;
+}
+
+.ui-widget .ui-widget {
+    font-size: 1em;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 1em;
+}
+
+.ui-widget-content {
+    border: 1px solid #aaa;
+    background: #eee 50% 0 repeat-x;
+    color: #333;
+}
+
+.ui-widget-content a {
+    color: #333;
+}
+
+.ui-widget-header {
+    background: #fff;
+    color: #222;
+    font-weight: bold;
+}
+
+.ui-widget-header a {
+    color: #222;
+}
+
+/* Interaction states
+----------------------------------*/
+.ui-state-default, .ui-widget-content .ui-state-default {
+    border: 1px solid #ccc;
+    background: #f6f6f6 50% 50% repeat-x;
+    font-weight: bold;
+    color: #3778c7;
+}
+
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+    color: #3778c7;
+    text-decoration: none;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus {
+    border: 1px solid #fbcb09;
+    background: #fdf5ce 50% 50% repeat-x;
+    font-weight: bold;
+    color: #c20;
+}
+
+.ui-state-hover a, .ui-state-hover a:hover {
+    color: #c20;
+    text-decoration: none;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+    border: 1px solid #fbd850;
+    background: #fff 50% 50% repeat-x;
+    font-weight: bold;
+    color: #eb8f00;
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+    color: #eb8f00;
+    text-decoration: none;
+}
+
+.ui-widget :active {
+    outline: none;
+}
+
+/* Interaction Cues
+----------------------------------*/
+.ui-state-highlight, .ui-widget-content .ui-state-highlight {
+    border: 1px solid #fed22f;
+    background: #ffe45c 50% top repeat-x;
+    color: #363636;
+}
+
+.ui-state-highlight a, .ui-widget-content .ui-state-highlight a {
+    color: #363636;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error {
+    border: 1px solid #cd0a0a;
+    background: #b81900 50% 50% repeat;
+    color: #fff;
+}
+
+.ui-state-error a, .ui-widget-content .ui-state-error a {
+    color: #fff;
+}
+
+.ui-state-error-text, .ui-widget-content .ui-state-error-text {
+    color: #fff;
+}
+
+.ui-priority-primary, .ui-widget-content .ui-priority-primary {
+    font-weight: bold;
+}
+
+.ui-priority-secondary, .ui-widget-content .ui-priority-secondary {
+    opacity: .7;
+    filter: Alpha(Opacity=70);
+    font-weight: normal;
+}
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled {
+    opacity: .35;
+    filter: Alpha(Opacity=35);
+    background-image: none;
+}
+
+.ui-corner-tl {
+    border-top-left-radius: 4px;
+}
+
+.ui-corner-tr {
+    border-top-right-radius: 4px;
+}
+
+.ui-corner-bl {
+    border-bottom-left-radius: 4px;
+}
+
+.ui-corner-br {
+    border-bottom-right-radius: 4px;
+}
+
+.ui-corner-top {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.ui-corner-bottom {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.ui-corner-right {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.ui-corner-left {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.ui-corner-all {
+    border-radius: 4px;
+}
+
+/* Slider
+----------------------------------*/
+.ui-slider {
+    position: relative;
+    text-align: left;
+}
+
+.ui-slider .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    width: 1.2em;
+    height: 1.2em;
+    cursor: default;
+}
+
+.ui-slider .ui-slider-range {
+    position: absolute;
+    z-index: 1;
+    font-size: .7em;
+    display: block;
+    border: 0;
+    background-position: 0 0;
+}
+
+.ui-slider-horizontal {
+    height: .8em;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    top: -.3em;
+    margin-left: -.6em;
+}
+
+.ui-slider-horizontal .ui-slider-range {
+    top: 0;
+    height: 100%;
+}
+
+.ui-slider-horizontal .ui-slider-range-min {
+    left: 0;
+}
+
+.ui-slider-horizontal .ui-slider-range-max {
+    right: 0;
+}
+
+.ui-slider-vertical {
+    width: .8em;
+    height: 100px;
+}
+
+.ui-slider-vertical .ui-slider-handle {
+    left: -.3em;
+    margin-left: 0;
+    margin-bottom: -.6em;
+}
+
+.ui-slider-vertical .ui-slider-range {
+    left: 0;
+    width: 100%;
+}
+
+.ui-slider-vertical .ui-slider-range-min {
+    bottom: 0;
+}
+
+.ui-slider-vertical .ui-slider-range-max {
+    top: 0;
+}
+
+/*date picker*/
+
+.ui-datepicker {
+    width: 227px;
+    background: #fff; 
+    line-height: 1em;
+    position: absolute;
+    top: -20px;
+    border: 1px solid #dadada;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+table.ui-datepicker-calendar {
+    border-spacing: 2px;
+}
+
+.ui-datepicker-title {
+    display: inline-block;
+    text-align: center;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.ui-datepicker .ui-widget-header a {
+    font-weight: normal;
+}
+
+.ui-datepicker .ui-state-default,
+.ui-datepicker  .ui-widget-content .ui-state-default {
+    border: 1px solid #ccc;
+    background: #f6f6f6 50% 50% repeat-x;
+}
+
+span.ui-state-default, .ui-widget-content span.ui-state-default {
+    color: #333;
+}
+
+
+.ui-datepicker .ui-state-default.ui-state-active {
+    background: #3778c7;
+    color: #fff;
+    border-radius: 50%;
+}
+
+.ui-datepicker-calendar td .ui-state-default,
+.ui-datepicker-calendar td .ui-widget-content .ui-state-default,
+.ui-datepicker-calendar td .ui-priority-secondary,
+.ui-datepicker-calendar td .ui-widget-content .ui-priority-secondary {
+    display: inline-block;
+    height: 22px;
+    text-align: center;
+    padding: 8px 0 0;
+    width: 30px;
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+}
+
+.ui-datepicker-prev {
+    font-size: 11px;
+    position: absolute;
+    top: 10px;
+    left: 9px;
+}
+
+.ui-datepicker-next {
+    font-size: 11px;
+    position: absolute;
+    top: 10px;
+    right: 9px;
+}
+
+.ui-datepicker-calendar th {
+    font-weight: bold;
+    padding: 3px 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+    background: #f6f6f6;
+}
+
+.ui-datepicker .ui-state-highlight,
+.ui-datepicker .ui-datepicker-header .ui-state-hover,
+.ui-datepicker .ui-widget-content .ui-state-highlight {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+
+.ui-datepicker-calendar td.ui-datepicker-today a {
+    background: #c20;
+    color: #fff;
+    font-weight: bold;
+}
+
+.ui-datepicker-calendar td .ui-state-hover,
+.ui-datepicker-calendar td .ui-widget-content .ui-state-hover,
+.ui-datepicker-calendar td .ui-state-focus,
+.ui-datepicker-calendar td .ui-widget-content .ui-state-focus {
+    border: none;
+    background: #f2f2f2;
+}
+
+/*  Gallery configuration  */
+.j-galleryConfigPop {
+    right: 390px;
+    margin-top: -40px;
+}
+
+.j-galleryConfigPop .j-form {
+    width: 545px;
+}
+
+.j-galleryConfigPop .j-pop-main {
+    width: 545px;
+    height: 670px;
+}
+
+.j-galleryConfigPop .jive-form-row {
+    margin: 0 0 20px;
+}
+
+.j-carouselConfigPop .jive-form-row.carouselCheck,
+.j-galleryConfigPop .jive-form-row.galCheck {
+    margin-bottom: 10px;
+}
+
+.carouselList {
+    background: #eee;
+}
+.j-item-image-input {
+    padding: 4px;
+    background: #ddd;
+    border-radius: 4px;
+    border: solid 1px #ddd;
+}
+.jive-error-box .j-item-image-input {
+    background: #f7ddd9;
+    border: solid 1px #c20000;
+    box-shadow: 0 0 4px #cc5151;
+}
+
+.j-carousel-image-select strong {
+    font-weight: bold;
+}
+
+.j-carousel-image-select .j-note {
+    font-size: 11px;
+}
+
+.j-carousel-image-select #currentImage {
+    float: left;
+    margin: 0 10px 0 0;
+}
+
+.j-addSlideButton  .j-note.warning {
+    display: inline-block;
+    width: 320px;
+    color: #ff7e01;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.j-carousel-autoplay-settings {
+    margin: 0 15px;
+    padding: 5px 10px 15px;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.j-carousel-autoplay-settings .jive-form-row.carouselCheck {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 20px 0 0;
+}
+
+.jive-form-row.carouselCheck.delayTransition label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.j-carousel-autoplay-settings .j-note {
+    font-size: 11px;
+    margin-bottom: 0;
+}
+
+.jive-form-row.carouselCheck.delayTransition .j-input-text {
+    width: 35px;
+}
+
+.j-carouselBuilder .listItem {
+    height: 64px;
+}
+
+.galleryImageList {
+    height: 310px;
+    background: #333;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 10px 0 20px;
+    position: relative;
+    box-shadow: inset 0 10px 20px rgba(0, 0, 0, .3);
+    cursor: pointer;
+}
+
+#imageDrop:hover {
+
+    background: #444;
+}
+
+.galleryImageList .noImages {
+    padding: 105px 0 0;
+    text-align: center;
+}
+
+.galleryImageList .noImages h4 {
+    font-size: 20px;
+    margin: 0 0 20px;
+}
+
+.galleryImageList .noImages strong {
+    display: block;
+    margin: 0 0 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.galleryImageList .noImages button {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.galleryConfigImageList {
+    width: 545px;
+}
+
+.galleryConfigImageList li span {
+    padding: 10px 15px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.galleryConfigImageList th {
+    font-weight: bold;
+    background: #222;
+    color: #ccc;
+}
+
+.galleryConfigImageList li:nth-child(even) {
+    background: #2b2b2b;
+}
+
+.galleryConfigImageList .img {
+    width: 50px;
+    text-align: center;
+    padding-right: 0;
+}
+
+.galleryConfigImageList .caption {
+    font-weight: bold;
+    width: 345px;
+}
+
+.galleryConfigImageList .remove {
+    width: 50px;
+    text-align: right;
+    padding-right: 25px;
+}
+
+.removed {
+    position: absolute;
+    background: #060;
+    width: 80px;
+    top: 150px;
+    left: 50%;
+    text-align: center;
+    padding: 10px;
+    color: #fff;
+    margin-left: -40px;
+    font-weight: bold;
+    z-index: 2;
+
+}
+
+.galleryConfigImageList .caption.active .addCaption,
+.galleryConfigImageList .caption .captionInput {
+    display: none;
+}
+
+.galleryConfigImageList .caption .addCaption,
+.galleryConfigImageList .caption.active .captionInput {
+    display: block;
+}
+
+.galleryConfigImageList img {
+    max-width: 50px;
+    max-height: 50px;
+    display: inline-block;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.addMoreImagesContainer,
+.addMoreSlidesContainer {
+    float: right;
+    margin: 15px 0 0 10px;
+}
+
+.galleryImageList .j-img-upload-error {
+    margin: 5px;
+    padding: 5px;
+    background: #f7ddd9;
+}
+
+.addMoreImagesContainer a,
+.addMoreSlidesContainer a {
+    position: relative;
+    margin: 0;
+    display: inline-block;
+}
+
+.j-imageUploadForm {
+    opacity: 0;
+    filter: alpha(opacity=0);
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.j-imageUploadForm input {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    font-size: 100px;
+}
+
+.basicAddImageContainer a {
+    position: relative;
+    margin: 0;
+    display: inline-block;
+}
+
+/*share-able tiles, select a category*/
+.catSelect {
+    list-style: none;
+}
+
+.catSelect li.listItem {
+    display: inline-block;
+    margin: 0 20px 0 0;
+}
+
+.catSelect li.listItem label {
+    display: inline-block;
+    font-weight: normal;
+}
+
+.j-form .catSelect input[type = 'checkbox'], .j-form .catSelect input[type = 'radio'] {
+    display: inline-block;
+    float: none;
+}
+
+.tileCategorySet {
+    padding-left: 16px;
+}
+
+.j-form label.lighterLabel {
+    font-weight: normal;
+}
+
+/* Accordion */
+.j-sortable li.j-warn {
+    color: #ff7e01;
+    height: auto;
+}
+
+.j-sortable li.j-editing {
+    height: auto;
+}
+
+#listSections.editMode .j-edit {
+    display: none;
+}
+
+.j-controls a {
+    padding: 0 0 0 10px;
+}
+
+.j-listEdit {
+    padding: 5px 0 0 0;
+    /*for sortable lists within sortable lists*/
+    margin-right: -30px;
+}
+
+.j-sectionDesc {
+    height: 75px;
+}
+
+.j-addContent {
+    background: #E7E7E7;
+    border-bottom: solid 2px #C8C8C8;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.j-addContentPanel {
+    line-height: 15px;
+    padding: 0 0 0 20px;
+    margin: auto;
+    display: inline-block;
+}
+
+.j-noContent {
+    text-align: center;
+    font-style: italic;
+    padding: 15px;
+}
+
+.j-subSection {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.j-warn .j-delete {
+    background: none;
+}
+
+.j-warn .j-icon-warn {
+    height: 24px;
+    width: 24px;
+    background-position: 295px -30px;
+    display: inline-block;
+}
+
+.j-warn-note {
+    color: #333;
+    font-size: 11px;
+    font-weight: normal;
+    margin: 5px 0;
+}
