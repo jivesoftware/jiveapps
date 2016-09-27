@@ -1,0 +1,26 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/LiveStreamTile/stylesheets/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="/LiveStreamTile/javascripts/configuration.js"></script>
+</head>
+
+<body>
+    <div class="j-card">
+        <h2>LiveStream Configuration</h2>
+        <p>
+            Select a video:
+            <select id="the_list">
+            </select>
+        </p>
+        <p>
+            Simple Stream Integration Subscriber URL: (optional)<br />
+            <input type="url" name="ssi_url" id="ssi_url">
+        </p>
+        <button class="j-btn" id="btn_submit">Submit</button>
+
+    </div>
+    <!-- NOTE: main.js SHOULD RUN LAST -->
+    <script src="/LiveStreamTile/javascripts/main.js"></script>
+</body>
+</html>

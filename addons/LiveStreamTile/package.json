@@ -1,0 +1,19 @@
+{
+    "name": "LiveStreamTile",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "4.14.0",
+        "body-parser": "1.15.2",
+        "method-override": "2.3.6",
+        "errorhandler": "1.4.3",
+        "serve-favicon": "2.3.0",
+        "jive-sdk":"*",
+        "consolidate": "0.14.1",
+        "q": "1.4.1",
+        "request": "2.74.0"
+    }
+}

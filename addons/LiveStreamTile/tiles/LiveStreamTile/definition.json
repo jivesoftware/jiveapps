@@ -1,0 +1,24 @@
+{
+    "sampleData" : {
+        "embed_id" : null,
+        "account_id" : null,
+        "event_data" : null,
+        "total" : null,
+        "event_id" : null,
+        "webhook_URI" : null,
+        "activities" : null
+    },
+    "displayName" : "LiveStream Tile",
+    "name" : "LiveStreamTile",
+    "description" : "LiveStream Viewer Tile",
+    "style": "CUSTOM_VIEW",
+    "displayWidth" : "ALL",
+    "pageTypes" : [ "PLACE", "USER" ],
+    "icons": {
+        "16": "extension-16.png",
+        "48": "extension-48.png",
+        "128": "extension-128.png"
+    },
+    "config": "/LiveStreamTile/configuration.html?features=responsive,tile,core-v3",
+    "view": "/LiveStreamTile/view.html?features=responsive,tile,core-v3"
+}
